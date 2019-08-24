@@ -1,3 +1,0 @@
-Timesheet files - TimeSheet_Group23_WkY.xls - Version controlled on github
-Booked-hours - Booked_Group23_WkY - Sent through discord, managed by time keeper
-Meeting minutes - Minutes_Group23_WkY - Time keeper managed (sent by emailed/discord)
