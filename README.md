@@ -1,10 +1,10 @@
 
-# UWAHS Map App
+# UWAHS Campus Map
 
-[insert some dope description]
+A web application for the UWA Historical Society. The app will use a map of the UWA Crawley Campus to orientate new students and utilise excerpts from the [UWAHS Oral Collection](https://www.web.uwa.edu.au/uwahs/oral-histories) in the History Mode.
 
 ## Meetings
-Find the meeting agendas and minutes at the [wiki](https://github.com/LightXEthan/CITS3200Project_23/wiki).
+Find the meeting agendas and minutes at the [wiki](https://github.com/LightXEthan/uwahs-campus-map/wiki).
 
 ## Scripts
 
