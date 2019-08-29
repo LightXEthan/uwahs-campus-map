@@ -1,14 +1,10 @@
 {
   "firestore": {
-    "rules": "src/components/Firebase/firebase.rules",
-    "indexes": "src/components/Firebase/firestore.indexes.json"
+    "rules": "./firebase.rules",
+    "indexes": "./firestore.indexes.json"
   },
   "hosting": {
-    "public": "public",
-    "ignore": [
-      "firebase.json",
-      "**/.*",
-      "**/node_modules/**"
-    ]
+    "public": "build",
+    "ignore": ["firebase.json", "**/.*", "**/node_modules/**"]
   }
 }
