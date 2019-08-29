@@ -19,9 +19,10 @@ Find the meeting agendas and minutes at the [wiki](https://github.com/LightXEtha
 2. `npm i -g firebase-tools`  to install the Firebase CLI.
 3. `firebase login` to connect your machine to Firebase.
 4. `firebase init` to initialize your Firebase project in this app. Select `hosting` when prompted.
-5. `npm run build` to build the React app.
-6. Modify the `public` key-value pair in `firebase.json` to `"public": "build"`.
-7. `firebase deploy` to deploy.
+5. Create a `.env` file in the root directory and add the project configuration found in the Firebase project settings.
+6. `npm run build` to build the React app.
+7. Modify the `public` key-value pair in `firebase.json` to `"public": "build"`.
+8. `firebase deploy` to deploy.
 
 ## Tech Stack
 
