@@ -14,7 +14,8 @@ const App = () => (
     <Fragment>
       <Navigation />
       
-  </Fragment>
+      <h1>Hello Goodbye</h1>
+
       <Route path={ROUTES.SIGN_IN} component={SignInPage} />
       <Route path={ROUTES.ADMIN} component={AdminPage} />
       <Route path={ROUTES.PASSWORD_FORGET} component={PasswordForgetPage} />
