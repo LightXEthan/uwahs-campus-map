@@ -15,10 +15,8 @@ const App = () => (
   <Router>
     <Fragment>
       <Navigation />
-
       <Route exact path={ROUTES.MAP} component={MapPage} />
       <Route path={ROUTES.ABOUT} component={AboutPage} />
-      <Route path={ROUTES.SIGN_IN} component={SignInPage} />
       <Route path={ROUTES.SIGN_IN} component={SignInPage} />
       <Route path={ROUTES.ADMIN} component={AdminPage} />
       <Route path={ROUTES.PASSWORD_FORGET} component={PasswordForgetPage} />
