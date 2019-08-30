@@ -1,3 +1,4 @@
+import React, { Component } from "react";
 import app from "firebase/app";
 import "firebase/auth";
 
@@ -12,9 +13,9 @@ const config = {
   messagingSenderId: process.env.REACT_APP_MESSAGINGSENDERID,
   appId: process.env.REACT_APP_APPID
 };
-
-class Firebase {
+class Firebase extends Component {
   constructor() {
+    super();
     app.initializeApp(config);
 
     this.auth = app.auth();
