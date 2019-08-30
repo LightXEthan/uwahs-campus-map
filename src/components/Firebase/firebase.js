@@ -1,6 +1,7 @@
-import React, { Component } from "react";
+import React from "react";
 import app from "firebase/app";
 import "firebase/auth";
+import "firebase/firestore";
 
 require("dotenv").config();
 
@@ -13,13 +14,18 @@ const config = {
   messagingSenderId: process.env.REACT_APP_MESSAGINGSENDERID,
   appId: process.env.REACT_APP_APPID
 };
-class Firebase extends Component {
+class Firebase {
   constructor() {
-    super();
     app.initializeApp(config);
 
     this.auth = app.auth();
+
+    this.db = app.firestore();
   }
+
+  poi = poiid => this.db.doc(`poi/${poiid}`);
+
+  pois = () => this.db.collection("poi");
 }
 
 export default Firebase;
