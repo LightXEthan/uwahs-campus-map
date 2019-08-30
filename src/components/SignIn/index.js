@@ -3,7 +3,7 @@ import { withRouter } from "react-router-dom";
 import { compose } from "recompose";
 
 import { withFirebase } from "../Firebase";
-import * as ROUTES from "../../costants/routes";
+import * as ROUTES from "../../constants/routes";
 
 const SignIn = () => (
     <div>
@@ -32,7 +32,7 @@ class SignInFormBase extends Component {
             .doSignInWithEmailAndPassword(email, password)
             .then(() => {
                 this.setState({ ...INITIAL_STATE });
-                this.props.history.push(ROUTES.HOME);
+                this.props.history.push(ROUTES.ADMIN);
             })
             .catch(error => {
                 this.setState({ error });
