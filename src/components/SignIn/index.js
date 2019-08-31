@@ -83,7 +83,7 @@ class SignInFormBase extends Component {
                                     />
                                 </FormGroup>
                                 <FormGroup>
-                                    <Label htmlFor="forgetpassword" className="text-primary">Forget Password?</Label>
+                                    <Label htmlFor="forgotpassword" className="text-primary">Forgot Password?</Label>
                                 </FormGroup>
                                 <Button color="primary" size="lg" block
                                     disable={isInvalid}
