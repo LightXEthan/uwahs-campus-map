@@ -46,8 +46,9 @@ class POIList extends Component {
           <ul>
             {poilist.map(poi => (
               <li>
-                name: {poi.name} longitude: {poi.longitude} latitude:
-                {poi.latitude}
+                name: {poi.name},
+                latitude: {poi.location.latitude},
+                longitude: {poi.location.longitude}
               </li>
             ))}
           </ul>
