@@ -1,14 +1,13 @@
 import React, { Component } from "react";
 import { withRouter } from "react-router-dom";
 import { compose } from "recompose";
-import { Button, Form, FormGroup, Label, Input } from 'reactstrap';
+import { Container, Row, Button, Form, FormGroup, Label, Input, Col } from 'reactstrap';
 
 import { withFirebase } from "../Firebase";
 import * as ROUTES from "../../constants/routes";
 
 const SignIn = () => (
     <div>
-        <h1>SignIn Page</h1>
         <SignInForm />
     </div>
 );
@@ -51,48 +50,55 @@ class SignInFormBase extends Component {
         const isInvalid = password === '' || email === '';
 
         return (
-            <Form onSubmit = {this.onSubmit}>
-                <FormGroup>
-                    <Label htmlFor="email">Email</Label>
-                    <Input
-                        id="email"
-                        name="email"
-                        value={email}
-                        onChange={this.onChange}
-                        type="email"
-                        placeholder="Email Address"
-                    />
-                </FormGroup>
-                <FormGroup>
-                    <Label htmlFor="password">Password</Label>
-                    <Input
-                        id="password"
-                        name="password"
-                        value={password}
-                        onChange={this.onChange}
-                        type="password"
-                        placeholder="Password"
-                    />
-                </FormGroup>
-                <FormGroup check>
-                    <Label check>
-                        <Input
-                            type="checkbox" 
-                            name="remember"
-                        />
-                        Remember me
-                    </Label>
-                </FormGroup>
-                <Button 
-                    disable={isInvalid}
-                    type="submit"
-                    value="submit"
-                    colour="primary">
-                    Login
-                </Button>
-
-                {error && <p>{error.message}</p>}
-            </Form>
+            <div>
+                <Container>
+                    <Row>
+                        <Col sm="12" md={{ size: 6, offset: 3 }}>
+                            <h3  className="text-center">Sign in to UWAHS Campus Map</h3>
+                        </Col>
+                    </Row>
+                    <Row> 
+                        <Col sm="12" md={{ size: 6, offset: 3 }}>
+                            <Form onSubmit = {this.onSubmit}>
+                                <FormGroup>
+                                    <Label htmlFor="email">Email</Label>
+                                    <Input
+                                        id="email"
+                                        name="email"
+                                        value={email}
+                                        onChange={this.onChange}
+                                        type="email"
+                                        placeholder="Email Address"
+                                    />
+                                </FormGroup>
+                                <FormGroup>
+                                    <Label htmlFor="password">Password</Label>
+                                    <Input
+                                        id="password"
+                                        name="password"
+                                        value={password}
+                                        onChange={this.onChange}
+                                        type="password"
+                                        placeholder="Password"
+                                    />
+                                </FormGroup>
+                                <FormGroup>
+                                    <Label htmlFor="forgetpassword" className="text-primary">Forget Password?</Label>
+                                </FormGroup>
+                                <Button color="primary" size="lg" block
+                                    disable={isInvalid}
+                                    type="submit"
+                                    value="submit"
+                                    colour="primary">
+                                    Login
+                                </Button>
+                                {error && <p>{error.message}</p>}
+                            </Form>
+                        </Col>
+                    </Row>
+                </Container>
+            </div>
+           
         );
     }
 }
