@@ -12,7 +12,8 @@ class POIForm extends Component {
     this.state = {
       name: "",
       longitude: 0,
-      latitude: 0
+      latitude: 0,
+      timestamp: 0
     };
   }
 
@@ -26,7 +27,8 @@ class POIForm extends Component {
 
     const data = {
       name: name,
-      location: new firebase.firestore.GeoPoint(parseFloat(latitude), parseFloat(longitude))
+      location: new firebase.firestore.GeoPoint(parseFloat(latitude), parseFloat(longitude)),
+      timestamp: firebase.firestore.Timestamp.now()
     };
 
     this.props.firebase.poi(name).set(data, { merge: true });
