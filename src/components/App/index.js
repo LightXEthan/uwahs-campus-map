@@ -1,7 +1,7 @@
 import React, { Fragment } from "react";
 import { BrowserRouter as Router, Route } from "react-router-dom";
 
-import MapPage from "../Map";
+import MapPage from "../MapPage";
 import AboutPage from "../About";
 import Navigation from "../Navigation";
 import SignInPage from "../SignIn";

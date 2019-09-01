@@ -23,9 +23,25 @@ class Firebase {
     this.db = app.firestore();
   }
 
+  // Points of interest firestore database
   poi = poiid => this.db.doc(`poi/${poiid}`);
 
   pois = () => this.db.collection("poi");
+
+  // *** Auth API ***
+
+  doSignInWithEmailAndPassword = (email, password) =>
+    this.auth.signInWithEmailAndPassword(email, password);
+
+  doSignOut = () => 
+    this.auth.signOut();
+
+  doPasswordReset = email => 
+    this.auth.sendPasswordResetEmail(email);
+
+  doPasswordUpdate = password =>
+    this.auth.currentUser.updatePassword(password);
+
 }
 
 export default Firebase;
