@@ -53,15 +53,6 @@ class PasswordForgetFormBase extends Component {
         this.setState({ [event.target.name]: event.target.value});
     };
 
-    /*updateSuccessful = event => {
-        this.setState({successful:!this.state.successful});
-        this.props.history.push(ROUTES.SIGN_IN);
-    };*/
-
-    redirectToSignIn = event => {
-        this.context.history.push(ROUTES.SIGN_IN);
-    }
-
     render() {
         const { email, error} = this.state;
         const isInvalid = email === '';
@@ -103,11 +94,11 @@ class PasswordForgetFormBase extends Component {
                     <Col sm="12" md={{ size: 4, offset: 4 }}>
                         <Card body>
                             <CardTitle>Check your email for a link to reset your password. If it doesn't appear within a few minutes, check your spam folder.</CardTitle>
-                            <Button color="primary" size="lg" block
-                                type="submit"
-                                onClick={this.redirectToSignIn}>
-                                Return to sign in
-                            </Button>
+                            <Link to={ROUTES.SIGN_IN} className="text-white" style={{ textDecoration: 'none' }}>
+                                <Button color="primary" size="lg" block>
+                                    Return to sign in
+                                </Button>
+                            </Link>
                             {error && <p>{error.message}</p>}
                         </Card>
                     </Col>
