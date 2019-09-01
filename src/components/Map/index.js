@@ -11,27 +11,6 @@ import {
 dotenv.config();
 
 class MapBase extends Component {
-  render() {
-    const config = {};
-
-    return (
-      <GoogleMap
-        defaultZoom={parseFloat(process.env.REACT_APP_UWA_ZOOM)}
-        defaultCenter={{
-          lat: parseFloat(process.env.REACT_APP_UWA_LAT),
-          lng: parseFloat(process.env.REACT_APP_UWA_LNG)
-        }}
-      >
-        {this.props.isMarkerShown && (
-          <Marker
-            position={{ lat: -34.397, lng: 150.644 }}
-            onClick={this.props.onMarkerClick}
-          />
-        )}
-      </GoogleMap>
-    );
-  }
-}
 
 /**
  * loadingElement: react element when loading google maps
@@ -50,6 +29,34 @@ const Map = compose(
   }),
   withScriptjs,
   withGoogleMap
-)(MapBase);
+)(props => (
+  <GoogleMap
+    defaultZoom={parseFloat(process.env.REACT_APP_UWA_ZOOM)}
+    defaultCenter={{
+      lat: parseFloat(process.env.REACT_APP_UWA_LAT),
+      lng: parseFloat(process.env.REACT_APP_UWA_LNG)
+    }}
+    defaultOptions={{ styles: retroStyles }}
+  >
+    {props.isMarkerShown && (
+      <div>
+        <Marker
+          position={{
+            lat: props.currentLocation.lat,
+            lng: props.currentLocation.lng
+          }}
+          onClick={props.onMarkerClick}
+        />
+        <Marker
+          position={{
+            lat: parseFloat(process.env.REACT_APP_UWA_LAT),
+            lng: parseFloat(process.env.REACT_APP_UWA_LNG)
+          }}
+          onClick={props.onMarkerClick}
+        />
+      </div>
+    )}
+  </GoogleMap>
+));
 
 export default Map;
