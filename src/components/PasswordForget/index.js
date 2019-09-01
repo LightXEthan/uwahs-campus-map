@@ -1,4 +1,5 @@
-import React, {Component} from "react";
+import React, { Component, Fragment } from "react";
+import { Card, CardTitle, Container, Row, Button, Form, FormGroup, Label, Input, Col } from 'reactstrap';
 import { Link } from "react-router-dom";
 
 import { withFirebase } from "../Firebase";
@@ -6,8 +7,17 @@ import * as ROUTES from "../../constants/routes";
 
 const PasswordForget = () => (
     <div>
-        <h1>PasswordForget Page</h1>
-        <PasswordForgetForm />
+        <Container>
+            <Row>
+                <Col sm="12" md={{ size: 6, offset: 3 }}>
+                    <h3  className="text-center">Reset your password</h3>
+                </Col>
+            </Row>
+            <br/>
+            <Row>
+                <PasswordForgetForm />
+            </Row>
+        </Container>
     </div>
 );
 
@@ -45,20 +55,32 @@ class PasswordForgetFormBase extends Component {
         const isInvalid = email === '';
 
         return (
-            <form onSubmit={this.onSubmit}>
-                <input
-                    name="email"
-                    value={this.state.email}
-                    onChange={this.onChange}
-                    type="text"
-                    placeholder="Email Address"
-                />
-                <button disabled={isInvalid} type="submit">
-                    Reset My Password
-                </button>
-
-                {error && <p>{error.message}</p>}
-            </form>
+            <Fragment>
+                <Col sm="12" md={{ size: 4, offset: 4 }}>
+                    <Card body>
+                        <CardTitle>Enter your email address and we will send you a link to reset your password.</CardTitle>
+                        <Form onSubmit={this.onSubmit}>
+                            <FormGroup>
+                                <Input
+                                    id="email"
+                                    name="email"
+                                    value={email}
+                                    onChange={this.onChange}
+                                    type="email"
+                                    placeholder="Email Address"
+                                />
+                            </FormGroup>
+                            
+                            <Button color="primary" size="lg" block
+                                disabled={isInvalid} 
+                                type="submit">
+                                Send password reset email
+                            </Button>
+                            {error && <p>{error.message}</p>}
+                        </Form>
+                    </Card>
+                </Col>
+            </Fragment>
         );
     }
 }
