@@ -22,7 +22,6 @@ class POIForm extends Component {
   };
 
   onSubmit = e => {
-    console.log("here");
     const { name, longitude, latitude } = this.state;
 
     const data = {
