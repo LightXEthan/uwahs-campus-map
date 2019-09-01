@@ -35,9 +35,9 @@ class MapBase extends Component {
 
 /**
  * loadingElement: react element when loading google maps
- * containerElement: react element for container... set to window height - height of header
+ * containerElement: container... set to window height - height of header
  * TODO: doesn't affect mobile view...
- * mapElement: react element for...
+ * mapElement: react element for contained in containerElement... set to 100 to fill containerElement
  */
 const Map = compose(
   withProps({
@@ -46,9 +46,7 @@ const Map = compose(
     containerElement: (
       <div style={{ height: `${window.innerHeight - 56}px`, width: `100%` }} />
     ),
-    mapElement: (
-      <div style={{ height: `${window.innerHeight - 56}px`, width: `100%` }} />
-    )
+    mapElement: <div style={{ height: `100%`, width: `100%` }} />
   }),
   withScriptjs,
   withGoogleMap
