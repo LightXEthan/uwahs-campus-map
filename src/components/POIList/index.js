@@ -45,7 +45,7 @@ class POIList extends Component {
         ) : poilist.length > 0 ? (
           <ul>
             {poilist.map(poi => (
-              <li>
+              <li key={poi.name}>
                 name: {poi.name},
                 latitude: {poi.location.latitude},
                 longitude: {poi.location.longitude}
