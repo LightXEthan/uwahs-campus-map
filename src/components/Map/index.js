@@ -10,7 +10,7 @@ import {
 
 dotenv.config();
 
-class MapBase extends Component {
+const retroStyles = require("./retroStyle.json");
 
 /**
  * loadingElement: react element when loading google maps
