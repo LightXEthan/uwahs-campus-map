@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Fragment } from "react";
 import { compose, withProps } from "recompose";
 import dotenv from "dotenv";
 import {
@@ -39,7 +39,7 @@ const Map = compose(
     defaultOptions={{ styles: retroStyles }}
   >
     {props.isMarkerShown && (
-      <div>
+      <Fragment>
         <Marker
           position={{
             lat: props.currentLocation.lat,
@@ -47,14 +47,16 @@ const Map = compose(
           }}
           onClick={props.onMarkerClick}
         />
-        <Marker
-          position={{
-            lat: parseFloat(process.env.REACT_APP_UWA_LAT),
-            lng: parseFloat(process.env.REACT_APP_UWA_LNG)
-          }}
-          onClick={props.onMarkerClick}
-        />
-      </div>
+        {props.POIList.map(marker => (
+          <Marker
+            position={{
+              lat: marker.location.latitude,
+              lng: marker.location.longitude
+            }}
+            onClick={props.onMarkerClick}
+          />
+        ))}
+      </Fragment>
     )}
   </GoogleMap>
 ));
