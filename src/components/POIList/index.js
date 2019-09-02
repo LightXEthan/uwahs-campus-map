@@ -1,7 +1,8 @@
 import React, { Component, Fragment } from "react";
-import { ListGroup, ListGroupItem } from "reactstrap";
+import { ListGroup, ListGroupItem, Col, Button } from "reactstrap";
 import { withFirebase } from "../Firebase";
 
+import POIEditForm from "../POIEditForm";
 class POIList extends Component {
   constructor(props) {
     super(props);
@@ -46,10 +47,12 @@ class POIList extends Component {
         ) : poilist.length > 0 ? (
           <ListGroup flush>
             {poilist.map(poi => (
-              <ListGroupItem key={poi.name} tag="button" action>
-                name: {poi.name},
-                latitude: {poi.location.latitude},
-                longitude: {poi.location.longitude}
+              <ListGroupItem key={poi.name} action>
+                  name: {poi.name},
+                  latitude: {poi.location.latitude},
+                  longitude: {poi.location.longitude}
+                  <POIEditForm/>
+            
               </ListGroupItem>
             ))}
           </ListGroup>
