@@ -3,6 +3,8 @@ import React, { Component, Fragment } from "react";
 import Map from "../Map";
 import { withFirebase } from "../Firebase";
 
+import { Container, Row, Col } from "reactstrap";
+
 class MapPage extends Component {
   constructor(props) {
     super(props);
@@ -102,12 +104,21 @@ class MapPage extends Component {
 
     return (
       <Fragment>
-        <Map
-          isMarkerShown={isMarkerShown}
-          onMarkerClick={this.handleMarkerClick}
-          currentLocation={currentLatLng}
-          POIList={POIList}
-        />
+        <Container style={{ padding: "0", margin: "0", maxWidth: "100vw" }}>
+          <Row style={{ margin: "0" }}>
+            <Col sm="12" md="9" style={{ padding: "0" }}>
+              <Map
+                isMarkerShown={isMarkerShown}
+                onMarkerClick={this.handleMarkerClick}
+                currentLocation={currentLatLng}
+                POIList={POIList}
+              />
+            </Col>
+            <Col className="d-none d-sm-block" md="3">
+              <h1>hello</h1>
+            </Col>
+          </Row>
+        </Container>
       </Fragment>
     );
   }
