@@ -1,4 +1,5 @@
 import React, { Component, Fragment } from "react";
+import { ListGroup, ListGroupItem } from "reactstrap";
 import { withFirebase } from "../Firebase";
 
 class POIList extends Component {
@@ -43,15 +44,15 @@ class POIList extends Component {
         {loading ? (
           <h1>Loading</h1>
         ) : poilist.length > 0 ? (
-          <ul>
+          <ListGroup flush>
             {poilist.map(poi => (
-              <li key={poi.name}>
+              <ListGroupItem key={poi.name} tag="button" action>
                 name: {poi.name},
                 latitude: {poi.location.latitude},
                 longitude: {poi.location.longitude}
-              </li>
+              </ListGroupItem>
             ))}
-          </ul>
+          </ListGroup>
         ) : (
           <h1>No Points of Interests found in database</h1>
         )}
