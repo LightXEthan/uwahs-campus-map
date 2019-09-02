@@ -1,6 +1,7 @@
 import React, { Component, Fragment } from "react";
 
 import Map from "../Map";
+import { withFirebase } from "../Firebase";
 
 class MapPage extends Component {
   constructor(props) {
@@ -11,12 +12,29 @@ class MapPage extends Component {
       currentLatLng: {
         lat: 0,
         lng: 0
-      }
+      },
+      POIList: []
     };
   }
 
   componentDidMount() {
     this.delayedShowMarker();
+
+    this.listener = this.props.firebase.pois().onSnapshot(
+      snapshot => {
+        let POIList = [];
+
+        snapshot.forEach(doc => POIList.push(doc.data()));
+
+        this.setState({
+          POIList,
+          loading: false
+        });
+      },
+      error => {
+        // TODO: set error state and display error as alert
+      }
+    );
   }
 
   componentDidUpdate() {
@@ -64,6 +82,10 @@ class MapPage extends Component {
     }
   }
 
+  componentWillUnmount() {
+    this.listener();
+  }
+
   delayedShowMarker = () => {
     setTimeout(() => {
       this.setState({ isMarkerShown: true });
@@ -76,16 +98,19 @@ class MapPage extends Component {
   };
 
   render() {
+    const { isMarkerShown, currentLatLng, POIList } = this.state;
+
     return (
       <Fragment>
         <Map
-          isMarkerShown={this.state.isMarkerShown}
+          isMarkerShown={isMarkerShown}
           onMarkerClick={this.handleMarkerClick}
-          currentLocation={this.state.currentLatLng}
+          currentLocation={currentLatLng}
+          POIList={POIList}
         />
       </Fragment>
     );
   }
 }
 
-export default MapPage;
+export default withFirebase(MapPage);
