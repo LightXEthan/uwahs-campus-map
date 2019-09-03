@@ -1,6 +1,7 @@
 import React, { Component, Fragment } from "react";
 
 import Map from "../Map";
+import MapPOIList from "../MapPOIList";
 import { withFirebase } from "../Firebase";
 
 import { Container, Row, Col } from "reactstrap";
@@ -114,8 +115,8 @@ class MapPage extends Component {
                 POIList={POIList}
               />
             </Col>
-            <Col className="d-none d-sm-block" md="3">
-              <h1>hello</h1>
+            <Col className="d-none d-sm-block" md="3" style={{ padding: "0" }}>
+              <MapPOIList POIList={POIList} />
             </Col>
           </Row>
         </Container>
