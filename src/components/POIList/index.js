@@ -51,8 +51,7 @@ class POIList extends Component {
                   name: {poi.name},
                   latitude: {poi.location.latitude},
                   longitude: {poi.location.longitude}
-                  <POIEditForm/>
-            
+                  <POIEditForm poi={poi}/>
               </ListGroupItem>
             ))}
           </ListGroup>

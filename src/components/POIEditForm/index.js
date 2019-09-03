@@ -16,13 +16,15 @@ class POIEditForm extends Component {
     constructor(props){
         super(props);
 
-        this.state = { ...INITIAL_STATE };
-
-        this.toggleModal = this.toggleModal.bind(this);
-        this.onChange = this.onChange.bind(this);
+        this.state = {
+            name: this.props.poi.name,
+            latitude: this.props.poi.location.latitude,
+            longitude: this.props.poi.location.longitude,
+            isModalOpen: false
+        }
     }
 
-    toggleModal() {
+    toggleModal = () => {
         this.setState({
             isModalOpen: !this.state.isModalOpen
         });
@@ -32,7 +34,7 @@ class POIEditForm extends Component {
         this.setState({ [event.target.name]: event.target.value });
     };
 
-    onSubmit = e => {
+    onSubmit = event => {
         const { name, longitude, latitude } = this.state;
     
         const data = {
@@ -42,8 +44,9 @@ class POIEditForm extends Component {
         };
     
         this.props.firebase.poi(name).set(data, { merge: true });
+        this.toggleModal();
     
-        e.preventDefault();
+        event.preventDefault();
     };
 
     render() {
@@ -61,7 +64,7 @@ class POIEditForm extends Component {
                     {/* toggle - so that an 'x' appears in the header and we can dismiss the form */}
                     <ModalHeader toggle={this.toggleModal}>Edit place of interest</ModalHeader>
                     <ModalBody>
-                        <Form>
+                        <Form onSubmit={this.onSubmit}>
                             <FormGroup>
                                 <Label htmlFor="name" xs={12}>Name</Label>
                                 <Col>
@@ -107,7 +110,7 @@ class POIEditForm extends Component {
                             <FormGroup>
                                 <Col xs={{size: 12}}>
                                     <Button type="submit" color="primary">
-                                        Submit
+                                        Save
                                     </Button>
                                 </Col>
                             </FormGroup>
