@@ -4,13 +4,6 @@ import { Button, Modal, ModalHeader, ModalBody, Label, Col, Form, FormGroup, Inp
 import { withFirebase } from "../Firebase";
 import firebase from 'firebase/app'
 
-const INITIAL_STATE = {
-    name: '',
-    latitude: '',
-    longitude: '',
-    isModalOpen: false
-}
-
 class POIEditForm extends Component {
 
     constructor(props){
