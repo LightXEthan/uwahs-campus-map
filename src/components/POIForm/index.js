@@ -2,6 +2,7 @@ import React, { Component, Fragment } from "react";
 
 import { withFirebase } from "../Firebase";
 import firebase from 'firebase/app'
+import "firebase/firebase-storage";
 
 import { Button, Form, FormGroup, Label, Input } from "reactstrap";
 
@@ -13,7 +14,8 @@ class POIForm extends Component {
       name: "",
       longitude: 0,
       latitude: 0,
-      timestamp: 0
+      timestamp: 0,
+      imageStatus: "loading"
     };
   }
 
@@ -38,8 +40,34 @@ class POIForm extends Component {
   render() {
     const { name, longitude, latitude } = this.state;
 
+    var storageRef = this.props.firebase.storage;
+
+    var imageRef;
+    storageRef.child("images/pig.png").getDownloadURL().then((url) => {
+      console.log("Image has got: ", url);
+      imageRef = url;
+    });
+    console.log("Image has got: ", imageRef);
+    // The plan is to use the below code so the url can be changed, this is mainly for testing purposes
+    /*
+    <img src={imageRef}
+        height="200"
+        width="200"
+        alt="pig"></img>
+    */
+
     return (
+      
       <Form onSubmit={this.onSubmit}>
+        <img src="https://firebasestorage.googleapis.com/v0/b/map-app-test-8d1f6.appspot.com/o/images%2Fpig.png?alt=media&token=6dd4d11d-750c-4010-a10e-d8f8f0f9fe32"
+        height="200"
+        width="200"
+        alt="pig"></img>
+        
+        <audio controls>
+          <source src="https://firebasestorage.googleapis.com/v0/b/map-app-test-8d1f6.appspot.com/o/audioclip-1564057356-96047.mp4?alt=media&token=e41aeebb-fad5-4362-87ea-04659bd51af0"
+        type="audio/mpeg"/>
+        </audio> 
         <FormGroup>
           <Label for="name">Name</Label>
           <Input
