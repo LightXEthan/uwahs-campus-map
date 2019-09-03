@@ -23,7 +23,7 @@ class Firebase {
 
     this.db = app.firestore();
 
-    this.storage = app.storage().ref();
+    this.storage = app.storage();
   }
 
   // Points of interest firestore database
