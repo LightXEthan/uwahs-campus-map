@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from "react";
 
-import { ListGroup, ListGroupItem } from "reactstrap";
+import { ListGroup, ListGroupItem, Button } from "reactstrap";
 
 class MapPOIList extends Component {
   constructor(props) {
@@ -12,14 +12,25 @@ class MapPOIList extends Component {
   }
 
   render() {
-    const { POIList } = this.props;
+    const { POIList, onListItemClick } = this.props;
     const { selected } = this.state;
 
     return (
       <Fragment>
-        <ListGroup>
+        <ListGroup
+          style={{ overflow: "auto", height: `${window.innerHeight - 56}px` }}
+        >
           {POIList.map(poiitem => (
-            <ListGroupItem>{poiitem.name}</ListGroupItem>
+            <ListGroupItem>
+              <Button
+                color="link"
+                onClick={() => {
+                  onListItemClick(poiitem.location);
+                }}
+              >
+                {poiitem.name}
+              </Button>
+            </ListGroupItem>
           ))}
         </ListGroup>
       </Fragment>

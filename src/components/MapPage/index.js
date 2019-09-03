@@ -16,7 +16,12 @@ class MapPage extends Component {
         lat: 0,
         lng: 0
       },
-      POIList: []
+      POIList: [],
+      mapCenter: {
+        lat: parseFloat(process.env.REACT_APP_UWA_LAT),
+        lng: parseFloat(process.env.REACT_APP_UWA_LNG)
+      },
+      mapZoom: 16
     };
   }
 
@@ -100,8 +105,20 @@ class MapPage extends Component {
     this.delayedShowMarker();
   };
 
+  handlePOIListItemClick = loc => {
+    this.setState((state, props) => ({
+      mapCenter: { lat: loc.latitude, lng: loc.longitude }
+    }));
+  };
+
   render() {
-    const { isMarkerShown, currentLatLng, POIList } = this.state;
+    const {
+      isMarkerShown,
+      currentLatLng,
+      POIList,
+      mapCenter,
+      mapZoom
+    } = this.state;
 
     return (
       <Fragment>
@@ -112,11 +129,16 @@ class MapPage extends Component {
                 isMarkerShown={isMarkerShown}
                 onMarkerClick={this.handleMarkerClick}
                 currentLocation={currentLatLng}
+                mapCenter={mapCenter}
+                zoom={mapZoom}
                 POIList={POIList}
               />
             </Col>
             <Col className="d-none d-sm-block" md="3" style={{ padding: "0" }}>
-              <MapPOIList POIList={POIList} />
+              <MapPOIList
+                POIList={POIList}
+                onListItemClick={this.handlePOIListItemClick}
+              />
             </Col>
           </Row>
         </Container>
