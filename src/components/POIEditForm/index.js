@@ -36,7 +36,8 @@ class POIEditForm extends Component {
           timestamp: firebase.firestore.Timestamp.now()
         };
     
-        this.props.firebase.poi(name).set(data, { merge: true });
+        //this.props.firebase.poi(name).set(data, { merge: true });
+        this.props.firebase.poiUpdate(this.props.poi._id).set(data, { merge: true });
         this.toggleModal();
     
         event.preventDefault();

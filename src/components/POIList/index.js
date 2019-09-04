@@ -1,5 +1,5 @@
 import React, { Component, Fragment } from "react";
-import { ListGroup, ListGroupItem, Col, Button } from "reactstrap";
+import { ListGroup, ListGroupItem, Col, Button, Span } from "reactstrap";
 import { withFirebase } from "../Firebase";
 
 import POIEditForm from "../POIEditForm";
@@ -20,7 +20,12 @@ class POIList extends Component {
       snapshot => {
         let poilist = [];
 
-        snapshot.forEach(doc => poilist.push(doc.data()));
+        snapshot.forEach(doc => {
+          const data = doc.data();
+          const _id = doc.id;
+          let poiDoc = {_id, ...data};
+          poilist.push(poiDoc);
+        });
 
         this.setState({
           poilist,
@@ -47,7 +52,9 @@ class POIList extends Component {
         ) : poilist.length > 0 ? (
           <ListGroup flush>
             {poilist.map(poi => (
-              <ListGroupItem key={poi.name} action>
+              // add the below to ListGroupItem to align edit pencil to the right
+              //className="d-flex justify-content-between align-items-center"
+              <ListGroupItem key={poi._id} action>
                   name: {poi.name},
                   latitude: {poi.location.latitude},
                   longitude: {poi.location.longitude}
