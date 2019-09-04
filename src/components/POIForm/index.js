@@ -15,8 +15,10 @@ class POIForm extends Component {
       longitude: 0,
       latitude: 0,
       fileupload: null,
-      image: "",
-      loading: true
+      imageList: [],
+      audioList: [],
+      loading: true,
+      image: ""
     };
   }
 
@@ -24,16 +26,17 @@ class POIForm extends Component {
     this.setState({ loading: true });
 
     var storageRef = this.props.firebase.storage.ref();
-    this.listener = storageRef.child("images/pig.png").getDownloadURL().then(
-    (url) => {
-      this.setState({
-        image: url,
-        loading: false
-      });
-      console.log("Image has got: ", url);
+    var file = "images/pig.png";
+    this.listener = storageRef.child(file).getDownloadURL().then(
+      (url) => {
+        this.setState({
+          image: url,
+          loading: false 
+        });
+        console.log("Image has got: ", url);
     },
-    error => {
-      console.log(error);
+      error => {
+        console.log(error);
     });
   }
 
@@ -49,28 +52,21 @@ class POIForm extends Component {
     this.setState({
       fileupload: e.target.files[0],
       loaded: 0,
-    })
+    });
   };
 
   onSubmit = e => {
-    const { name, longitude, latitude, fileupload } = this.state;
+    const { name, longitude, latitude, fileupload, imageList } = this.state;
 
-    console.log("File found: ", fileupload);
-    var storageRef = this.props.firebase.storage.ref('images/' + fileupload.name);
-    
-    // Argument for put errors todo:fix
-    storageRef.put(fileupload).then(snapshot => {
-      console.log('Uploaded file success!');
-    }, error => {
-      console.log(error);
-    });
+    var filetype = 'images/'
+    var storageRef = this.props.firebase.storage.ref(filetype + fileupload.name);
 
     // data to be written to firebase
     /* name: name of the location
      * location: [lat, long]
      * timestamp: date added
-     * images: [list of images ref]
-     * audio: [list of audio ref]
+     * imageList: [list of images ref]
+     * audioList: [list of audio ref]
      */ 
     const data = {
       name: name,
@@ -80,6 +76,23 @@ class POIForm extends Component {
 
     // data is written to firebase
     this.props.firebase.poi(name).set(data, { merge: true });
+    
+    // uploads file to firebase
+    storageRef.put(fileupload).then(() => {
+      console.log('Uploaded file success!');
+      // gets the url from the uploaded file
+      storageRef.getDownloadURL().then(
+        (url) => {
+          imageList.push(url);
+          console.log("File uploaded: ", url);
+          this.props.firebase.poi(name).set({imageList: imageList}, { merge: true });
+        },
+        error => {
+          console.log(error);
+      });
+    }, error => {
+      console.log(error);
+    });
 
     e.preventDefault();
   };
@@ -138,7 +151,7 @@ class POIForm extends Component {
             type="file"
             name="fileupload"
             id="fileupload"
-            onChange={this.onChange}
+            onChange={this.onChangeFile}
           />
         </FormGroup>
         <Button>Add Point of Interest</Button>
