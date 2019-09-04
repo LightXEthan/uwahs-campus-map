@@ -30,14 +30,7 @@ class POIForm extends Component {
       timestamp: firebase.firestore.Timestamp.now()
     };
 
-    //this.props.firebase.poi(name).set(data, { merge: true });
     this.props.firebase.poi().set(data, { merge: true });
-
-    console.log(name);
-    console.log(parseFloat(latitude));
-    console.log(parseFloat(longitude));
-
-
     e.preventDefault();
   };
 
