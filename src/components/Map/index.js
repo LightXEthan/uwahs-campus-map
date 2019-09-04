@@ -2,6 +2,7 @@ import React, { Fragment } from "react";
 import { compose, withProps } from "recompose";
 import dotenv from "dotenv";
 import { Spinner } from 'reactstrap';
+import userMarker from './blue-dot.png';
 import {
   withScriptjs,
   withGoogleMap,
@@ -63,9 +64,10 @@ const Map = compose(
     {props.isMarkerShown && (
       <Fragment>
         <Marker
+          icon= {userMarker}
           position={{
             lat: props.currentLocation.lat,
-            lng: props.currentLocation.lng
+            lng: props.currentLocation.lng,                      
           }}
           onClick={props.onMarkerClick}
         />
