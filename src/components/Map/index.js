@@ -15,14 +15,22 @@ const retroStyles = require("./retroStyle.json");
 
 
 
-const spinnerStyle = {
-  position: 'relative',
+const outterStyle = {
   position:'fixed',
   left:'50%',
   top:'50%',
   transform: 'translate(-50%, -50%)',
-  width : '10rem',
-  height : '10rem'
+  width : '13vw',
+  height : '13vw'
+}
+
+const innerStyle = {
+  position:'fixed',
+  left:'50%',
+  top:'50%',
+  transform: 'translate(-50%, -50%)',
+  width : '10vw',
+  height : '10vw'
 }
 
 
@@ -35,7 +43,7 @@ const spinnerStyle = {
 const Map = compose(
   withProps({
     googleMapURL: `https://maps.googleapis.com/maps/api/js?key=${process.env.REACT_APP_GOOGLE_API_KEY}&libraries=geometry,drawing,places`,
-    loadingElement:  <Spinner color='success' size='l' style={spinnerStyle}/> ,
+    loadingElement: <Fragment> <Spinner color='success' style={outterStyle}/> <Spinner color='warning' style={innerStyle} /> </Fragment> ,
     containerElement: (
       <div style={{ height: `${window.innerHeight - 56}px`, width: `100%` }} />
     ),
