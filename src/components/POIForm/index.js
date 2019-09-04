@@ -51,15 +51,25 @@ class POIForm extends Component {
   onChangeFile = e => {
     this.setState({
       fileupload: e.target.files[0],
-      loaded: 0,
+      filetype: e.target.files[0].type
     });
   };
 
   onSubmit = e => {
-    const { name, longitude, latitude, fileupload, imageList } = this.state;
+    const { name, longitude, latitude, fileupload, imageList, filetype } = this.state;
 
-    var filetype = 'images/'
-    var storageRef = this.props.firebase.storage.ref(filetype + fileupload.name);
+    // detects the type of file to organise into file in firebase storage
+    var folder = ''
+    if (filetype.includes('image')) {
+      folder = 'images/'
+    }
+    else if (filetype.includes('audio')) {
+      folder = 'audios/'
+    }
+    else {
+      console.error("File uploaded not compatible type: " + filetype);
+    }
+    var storageRef = this.props.firebase.storage.ref(folder + fileupload.name);
 
     // data to be written to firebase
     /* name: name of the location
