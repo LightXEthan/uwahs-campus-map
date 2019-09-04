@@ -1,6 +1,7 @@
 import React, { Fragment } from "react";
 import { compose, withProps } from "recompose";
 import dotenv from "dotenv";
+import { Spinner } from 'reactstrap';
 import {
   withScriptjs,
   withGoogleMap,
@@ -12,6 +13,19 @@ dotenv.config();
 
 const retroStyles = require("./retroStyle.json");
 
+
+
+const spinnerStyle = {
+  position: 'relative',
+  position:'fixed',
+  left:'50%',
+  top:'50%',
+  transform: 'translate(-50%, -50%)',
+  width : '10rem',
+  height : '10rem'
+}
+
+
 /**
  * loadingElement: react element when loading google maps
  * containerElement: container... set to window height - height of header
@@ -21,7 +35,7 @@ const retroStyles = require("./retroStyle.json");
 const Map = compose(
   withProps({
     googleMapURL: `https://maps.googleapis.com/maps/api/js?key=${process.env.REACT_APP_GOOGLE_API_KEY}&libraries=geometry,drawing,places`,
-    loadingElement: <h1>loading...</h1>,
+    loadingElement:  <Spinner color='success' size='l' style={spinnerStyle}/> ,
     containerElement: (
       <div style={{ height: `${window.innerHeight - 56}px`, width: `100%` }} />
     ),
