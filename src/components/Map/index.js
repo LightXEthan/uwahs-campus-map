@@ -12,12 +12,6 @@ dotenv.config();
 
 const retroStyles = require("./retroStyle.json");
 
-/**
- * loadingElement: react element when loading google maps
- * containerElement: container... set to window height - height of header
- * TODO: doesn't affect mobile view...
- * mapElement: react element for contained in containerElement... set to 100 to fill containerElement
- */
 const Map = compose(
   withProps({
     googleMapURL: `https://maps.googleapis.com/maps/api/js?key=${process.env.REACT_APP_GOOGLE_API_KEY}&libraries=geometry,drawing,places`,
@@ -36,6 +30,10 @@ const Map = compose(
       lat: parseFloat(process.env.REACT_APP_UWA_LAT),
       lng: parseFloat(process.env.REACT_APP_UWA_LNG)
     }}
+    center={{
+      lat: props.mapCenter.lat,
+      lng: props.mapCenter.lng
+    }}
     defaultOptions={{ styles: retroStyles }}
   >
     {props.isMarkerShown && (
@@ -47,11 +45,11 @@ const Map = compose(
           }}
           onClick={props.onMarkerClick}
         />
-        {props.POIList.map(marker => (
+        {props.POIList.map(poi => (
           <Marker
             position={{
-              lat: marker.location.latitude,
-              lng: marker.location.longitude
+              lat: poi.location.latitude,
+              lng: poi.location.longitude
             }}
             onClick={props.onMarkerClick}
           />
