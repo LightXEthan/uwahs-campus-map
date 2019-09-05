@@ -15,6 +15,7 @@ class POIForm extends Component {
       longitude: 0,
       latitude: 0,
       fileupload: null,
+      filetype: null,
       imageList: [],
       audioList: []
     };
@@ -25,10 +26,12 @@ class POIForm extends Component {
   };
 
   onChangeFile = e => {
-    this.setState({
-      fileupload: e.target.files[0],
-      filetype: e.target.files[0].type
-    });
+    if (e.exists) {
+      this.setState({
+        fileupload: e.target.files[0],
+        filetype: e.target.files[0].type
+      });
+    }
   };
 
   onSubmit = e => {
@@ -56,15 +59,15 @@ class POIForm extends Component {
     } else {
       // detects the type of file to organise into file in firebase storage
       var folder = '';
-        var type = '';
-        if (filetype.includes('image')) {
-          folder = 'images/';
-          type = 'image';
-        }
-        else if (filetype.includes('audio')) {
-          folder = 'audios/';
-          type = 'audio';
-        }
+      var type = '';
+      if (filetype.includes('image')) {
+        folder = 'images/';
+        type = 'image';
+      }
+      else if (filetype.includes('audio')) {
+        folder = 'audios/';
+        type = 'audio';
+      }
       else {
         console.error("File uploaded not compatible type: " + filetype);
       }
@@ -80,8 +83,8 @@ class POIForm extends Component {
               data["imageList"] = imageList;
             }
             else if (type === 'audio') {
-                audioList.push(url);
-                data["audioList"] = audioList;
+              audioList.push(url);
+              data["audioList"] = audioList;
             }
             this.props.firebase.poi().set(data, { merge: true });
           },
