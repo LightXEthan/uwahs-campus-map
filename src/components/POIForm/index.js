@@ -33,20 +33,7 @@ class POIForm extends Component {
 
   onSubmit = e => {
     const { name, longitude, latitude, fileupload, imageList, filetype } = this.state;
-
-    // detects the type of file to organise into file in firebase storage
-    var folder = ''
-    if (filetype.includes('image')) {
-      folder = 'images/'
-    }
-    else if (filetype.includes('audio')) {
-      folder = 'audios/'
-    }
-    else {
-      console.error("File uploaded not compatible type: " + filetype);
-    }
-    var storageRef = this.props.firebase.storage.ref(folder + fileupload.name);
-
+    
     // data to be written to firebase
     /* name: name of the location
      * location: [lat, long]
@@ -54,32 +41,49 @@ class POIForm extends Component {
      * imageList: [list of images ref]
      * audioList: [list of audio ref]
      */ 
-    const data = {
+    var data = {
       name: name,
       location: new firebase.firestore.GeoPoint(parseFloat(latitude), parseFloat(longitude)),
       timestamp: firebase.firestore.Timestamp.now()
     };
 
-    // data is written to firebase
-    this.props.firebase.poi(name).set(data, { merge: true });
-    
-    // uploads file to firebase
-    storageRef.put(fileupload).then(() => {
-      console.log('Uploaded file success!');
-      // gets the url from the uploaded file
-      storageRef.getDownloadURL().then(
-        (url) => {
-          imageList.push(url);
-          console.log("File uploaded: ", url);
-          this.props.firebase.poi(name).set({imageList: imageList}, { merge: true });
-        },
-        error => {
-          console.log(error);
-      });
-    }, error => {
-      console.log(error);
-    });
+    if (fileupload === null) {
+      // data is written to firebase
+      this.props.firebase.poi().set(data, { merge: true });
 
+    } else {
+      // detects the type of file to organise into file in firebase storage
+      var folder = ''
+      if (filetype.includes('image')) {
+        folder = 'images/'
+      }
+      else if (filetype.includes('audio')) {
+        folder = 'audios/'
+      }
+      else {
+        console.error("File uploaded not compatible type: " + filetype);
+      }
+      var storageRef = this.props.firebase.storage.ref(folder + fileupload.name);
+
+      // uploads file to firebase
+      storageRef.put(fileupload).then(() => {
+        console.log('Uploaded file success!');
+        // gets the url from the uploaded file
+        storageRef.getDownloadURL().then(
+          (url) => {
+            imageList.push(url);
+            console.log("File uploaded: ", url);
+            data["imageList"] = imageList;
+            this.props.firebase.poi().set(data, { merge: true });
+          },
+          error => {
+            console.log(error);
+        });
+      }, error => {
+        console.log(error);
+      });
+    }
+    
     e.preventDefault();
   };
 
