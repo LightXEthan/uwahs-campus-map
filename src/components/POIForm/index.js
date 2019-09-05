@@ -34,8 +34,8 @@ class POIForm extends Component {
   onSubmit = e => {
     const { name, longitude, latitude, fileupload, imageList, filetype } = this.state;
     
-    // data to be written to firebase
-    /* name: name of the location
+    /* data to be written to firebase
+     * name: name of the location
      * location: [lat, long]
      * timestamp: date added
      * imageList: [list of images ref]
@@ -65,14 +65,12 @@ class POIForm extends Component {
       }
       var storageRef = this.props.firebase.storage.ref(folder + fileupload.name);
 
-      // uploads file to firebase
+      // uploads file to firebase storage
       storageRef.put(fileupload).then(() => {
-        console.log('Uploaded file success!');
         // gets the url from the uploaded file
         storageRef.getDownloadURL().then(
           (url) => {
             imageList.push(url);
-            console.log("File uploaded: ", url);
             data["imageList"] = imageList;
             this.props.firebase.poi().set(data, { merge: true });
           },
@@ -124,6 +122,7 @@ class POIForm extends Component {
             max="180"
             step="any"
           />
+          <Label for="fileupload">Upload a file. (Image/Audio)</Label>
           <Input
             type="file"
             name="fileupload"
