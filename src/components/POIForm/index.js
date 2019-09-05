@@ -16,32 +16,8 @@ class POIForm extends Component {
       latitude: 0,
       fileupload: null,
       imageList: [],
-      audioList: [],
-      loading: true,
-      image: ""
+      audioList: []
     };
-  }
-
-  componentDidMount() {
-    this.setState({ loading: true });
-
-    var storageRef = this.props.firebase.storage.ref();
-    var file = "images/pig.png";
-    this.listener = storageRef.child(file).getDownloadURL().then(
-      (url) => {
-        this.setState({
-          image: url,
-          loading: false 
-        });
-        console.log("Image has got: ", url);
-    },
-      error => {
-        console.log(error);
-    });
-  }
-
-  componentWillUnmount() {
-    this.listener();
   }
 
   onChange = e => {
@@ -108,23 +84,10 @@ class POIForm extends Component {
   };
 
   render() {
-    const { name, longitude, latitude, loading, image  } = this.state;
+    const { name, longitude, latitude  } = this.state;
 
     return (
-      
       <Form onSubmit={this.onSubmit}>
-        {loading ? (
-          <p>Loading...</p>
-        ) : (<img src={image}
-        height="200"
-        width="200"
-        alt="pig"></img>
-        )}
-        
-        <audio controls>
-          <source src="https://firebasestorage.googleapis.com/v0/b/map-app-test-8d1f6.appspot.com/o/audioclip-1564057356-96047.mp4?alt=media&token=e41aeebb-fad5-4362-87ea-04659bd51af0"
-        type="audio/mpeg"/>
-        </audio> 
         <FormGroup>
           <Label for="name">Name</Label>
           <Input
