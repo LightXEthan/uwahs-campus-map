@@ -72,8 +72,14 @@ class POIEditForm extends Component {
               // gets the url from the uploaded file
                 storageRef.getDownloadURL().then(
                     (url) => {
-                        imageList.push(url);
-                        data["imageList"] = imageList;
+                        if (type === 'image') {
+                            imageList.push(url);
+                            data["imageList"] = imageList;
+                        }
+                        else if (type === 'audio') {
+                            audioList.push(url);
+                            data["audioList"] = audioList;
+                        }
                         this.props.firebase.poiUpdate(this.props.poi._id).set(data, { merge: true });
                     },
                     error => {

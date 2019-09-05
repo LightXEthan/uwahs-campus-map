@@ -32,7 +32,7 @@ class POIForm extends Component {
   };
 
   onSubmit = e => {
-    const { name, longitude, latitude, fileupload, imageList, filetype } = this.state;
+    const { name, longitude, latitude, fileupload, imageList, audioList, filetype } = this.state;
     
     /* data to be written to firebase
      * name: name of the location
@@ -44,7 +44,9 @@ class POIForm extends Component {
     var data = {
       name: name,
       location: new firebase.firestore.GeoPoint(parseFloat(latitude), parseFloat(longitude)),
-      timestamp: firebase.firestore.Timestamp.now()
+      timestamp: firebase.firestore.Timestamp.now(),
+      imageList: [],
+      audioList: []
     };
 
     if (fileupload === null) {
@@ -53,13 +55,16 @@ class POIForm extends Component {
 
     } else {
       // detects the type of file to organise into file in firebase storage
-      var folder = ''
-      if (filetype.includes('image')) {
-        folder = 'images/'
-      }
-      else if (filetype.includes('audio')) {
-        folder = 'audios/'
-      }
+      var folder = '';
+        var type = '';
+        if (filetype.includes('image')) {
+          folder = 'images/';
+          type = 'image';
+        }
+        else if (filetype.includes('audio')) {
+          folder = 'audios/';
+          type = 'audio';
+        }
       else {
         console.error("File uploaded not compatible type: " + filetype);
       }
@@ -70,8 +75,14 @@ class POIForm extends Component {
         // gets the url from the uploaded file
         storageRef.getDownloadURL().then(
           (url) => {
-            imageList.push(url);
-            data["imageList"] = imageList;
+            if (type === 'image') {
+              imageList.push(url);
+              data["imageList"] = imageList;
+            }
+            else if (type === 'audio') {
+                audioList.push(url);
+                data["audioList"] = audioList;
+            }
             this.props.firebase.poi().set(data, { merge: true });
           },
           error => {
