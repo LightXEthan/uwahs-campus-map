@@ -31,11 +31,19 @@ class POIEditForm extends Component {
     };
 
     onChangeFile = e => {
-        this.setState({
+        if (e.target.files.length === 0) {
+          this.setState({
+            fileupload: null,
+            filetype: null
+          });
+        }
+        else {
+          this.setState({
             fileupload: e.target.files[0],
             filetype: e.target.files[0].type
-        });
-    };
+          });
+        }
+      };
 
     onSubmit = event => {
         const { name, longitude, latitude, fileupload, imageList, audioList, filetype } = this.state;
@@ -49,11 +57,11 @@ class POIEditForm extends Component {
         if (fileupload === null) {
             // data is written to firebase
             this.props.firebase.poiUpdate(this.props.poi._id).set(data, { merge: true });
-      
+            this.toggleModal();
           } else {
             // detects the type of file to organise into file in firebase storage
-            var folder = '';
-            var type = '';
+            var folder = null;
+            var type = null;
             if (filetype.includes('image')) {
                 folder = 'images/';
                 type = 'image';
@@ -63,35 +71,39 @@ class POIEditForm extends Component {
                 type = 'audio';
             }
             else {
-                console.error("File uploaded not compatible type: " + filetype);
+                console.error("File uploaded is an incompatible file type: " + filetype);
+                alert("Error: incompatible file type.");
             }
-            var storageRef = this.props.firebase.storage.ref(folder + fileupload.name);
-      
-            // uploads file to firebase
-            storageRef.put(fileupload).then(() => {
-              // gets the url from the uploaded file
-                storageRef.getDownloadURL().then(
-                    (url) => {
-                        if (type === 'image') {
-                            imageList.push(url);
-                            data["imageList"] = imageList;
-                        }
-                        else if (type === 'audio') {
-                            audioList.push(url);
-                            data["audioList"] = audioList;
-                        }
-                        this.props.firebase.poiUpdate(this.props.poi._id).set(data, { merge: true });
-                    },
-                    error => {
+
+            if (folder !== null) {
+                var storageRef = this.props.firebase.storage.ref(folder + fileupload.name);
+        
+                // uploads file to firebase
+                storageRef.put(fileupload).then(() => {
+                // gets the url from the uploaded file
+                    storageRef.getDownloadURL().then(
+                        (url) => {
+                            if (type === 'image') {
+                                imageList.push(url);
+                                data["imageList"] = imageList;
+                            }
+                            else if (type === 'audio') {
+                                audioList.push(url);
+                                data["audioList"] = audioList;
+                            }
+                            this.props.firebase.poiUpdate(this.props.poi._id).set(data, { merge: true });
+                            this.toggleModal();
+                        },
+                        error => {
+                        console.log(error);
+                        alert("Error with getting file from firestore.");
+                    });
+                }, error => {
                     console.log(error);
+                    alert("Error with uploading file to firebase storage.");
                 });
-            }, error => {
-                console.log(error);
-            });
+            }
         }
-    
-        this.props.firebase.poiUpdate(this.props.poi._id).set(data, { merge: true });
-        this.toggleModal();
     
         event.preventDefault();
     };
