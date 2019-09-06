@@ -13,6 +13,9 @@ class POIEditForm extends Component {
             name: this.props.poi.name,
             latitude: this.props.poi.location.latitude,
             longitude: this.props.poi.location.longitude,
+            fileupload: null,
+            imageList: this.props.poi.imageList,
+            audioList: this.props.poi.AudioList,
             isModalOpen: false
         }
     }
@@ -27,14 +30,65 @@ class POIEditForm extends Component {
         this.setState({ [event.target.name]: event.target.value });
     };
 
+    onChangeFile = e => {
+        this.setState({
+            fileupload: e.target.files[0],
+            filetype: e.target.files[0].type
+        });
+    };
+
     onSubmit = event => {
-        const { name, longitude, latitude } = this.state;
+        const { name, longitude, latitude, fileupload, imageList, audioList, filetype } = this.state;
     
         const data = {
           name: name,
           location: new firebase.firestore.GeoPoint(parseFloat(latitude), parseFloat(longitude)),
           timestamp: firebase.firestore.Timestamp.now()
         };
+
+        if (fileupload === null) {
+            // data is written to firebase
+            this.props.firebase.poi().set(data, { merge: true });
+      
+          } else {
+            // detects the type of file to organise into file in firebase storage
+            var folder = '';
+            var type = '';
+            if (filetype.includes('image')) {
+                folder = 'images/';
+                type = 'image';
+            }
+            else if (filetype.includes('audio')) {
+                folder = 'audios/';
+                type = 'audio';
+            }
+            else {
+                console.error("File uploaded not compatible type: " + filetype);
+            }
+            var storageRef = this.props.firebase.storage.ref(folder + fileupload.name);
+      
+            // uploads file to firebase
+            storageRef.put(fileupload).then(() => {
+              // gets the url from the uploaded file
+                storageRef.getDownloadURL().then(
+                    (url) => {
+                        if (type === 'image') {
+                            imageList.push(url);
+                            data["imageList"] = imageList;
+                        }
+                        else if (type === 'audio') {
+                            audioList.push(url);
+                            data["audioList"] = audioList;
+                        }
+                        this.props.firebase.poiUpdate(this.props.poi._id).set(data, { merge: true });
+                    },
+                    error => {
+                    console.log(error);
+                });
+            }, error => {
+                console.log(error);
+            });
+        }
     
         this.props.firebase.poiUpdate(this.props.poi._id).set(data, { merge: true });
         this.toggleModal();
@@ -97,6 +151,17 @@ class POIEditForm extends Component {
                                         min="-180"
                                         max="180"
                                         step="any"
+                                    />
+                                </Col>
+                            </FormGroup>
+                            <FormGroup>
+                                <Label htmlFor="fileupload" xs={12}>Upload a file. (Image/Audio)</Label>
+                                <Col>
+                                    <Input
+                                        type="file"
+                                        name="fileupload"
+                                        id="fileupload"
+                                        onChange={this.onChangeFile}
                                     />
                                 </Col>
                             </FormGroup>
