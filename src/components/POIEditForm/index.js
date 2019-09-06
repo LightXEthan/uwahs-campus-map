@@ -48,7 +48,7 @@ class POIEditForm extends Component {
 
         if (fileupload === null) {
             // data is written to firebase
-            this.props.firebase.poi().set(data, { merge: true });
+            this.props.firebase.poiUpdate(this.props.poi._id).set(data, { merge: true });
       
           } else {
             // detects the type of file to organise into file in firebase storage
