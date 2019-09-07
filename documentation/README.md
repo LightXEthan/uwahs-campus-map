@@ -9,6 +9,7 @@ Collection: 'poi'
     - Timestamp: date added
     - imageList: array of download url of images
     - audioList: array of download url of audios
+    
 *Another data structure can be found in the documentation file that allows name,description,other to the image/audio*
 
 **Documentation file:**
