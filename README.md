@@ -1,6 +1,8 @@
 
 # UWAHS Campus Map
 
+[![Build Status](https://dev.azure.com/UWA-map-app/UWAHS%20Map%20App/_apis/build/status/LightXEthan.uwahs-campus-map?branchName=master)](https://dev.azure.com/UWA-map-app/UWAHS%20Map%20App/_build/latest?definitionId=1&branchName=master)
+
 A web application for the UWA Historical Society. The app will use a map of the UWA Crawley Campus to orientate new students and utilise excerpts from the [UWAHS Oral Collection](https://www.web.uwa.edu.au/uwahs/oral-histories) in the History Mode.
 
 ## Meetings
