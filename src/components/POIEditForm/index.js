@@ -1,5 +1,9 @@
 import React, { Component, Fragment } from 'react';
+
 import { Button, Modal, ModalHeader, ModalBody, Label, Col, Form, FormGroup, Input } from 'reactstrap';
+
+import Img from 'react-image';
+import ReactAudioPlayer from 'react-audio-player';
 
 import { withFirebase } from "../Firebase";
 import firebase from 'firebase/app'
@@ -15,7 +19,7 @@ class POIEditForm extends Component {
             longitude: this.props.poi.location.longitude,
             fileupload: null,
             imageList: this.props.poi.imageList,
-            audioList: this.props.poi.AudioList,
+            audioList: this.props.poi.audioList,
             isModalOpen: false
         }
     }
@@ -111,7 +115,7 @@ class POIEditForm extends Component {
     render() {
 
         const {name, latitude, longitude} = this.state;
-
+        
         return (
             <Fragment>
                 <Button outline color="none" onClick={this.toggleModal}>
@@ -185,6 +189,9 @@ class POIEditForm extends Component {
                                 </Col>
                             </FormGroup>
                         </Form>
+
+                        <Img src={this.state.imageList}/>
+                        <ReactAudioPlayer src={this.state.audioList} controls/>
                     </ModalBody>
                 </Modal>  
             </Fragment>        
