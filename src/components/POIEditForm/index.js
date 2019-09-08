@@ -112,6 +112,45 @@ class POIEditForm extends Component {
         event.preventDefault();
     };
 
+    loadImage() {
+        let images = [];
+        let len = this.state.imageList.length;
+
+        for (let i = 0; i < len; i++) {
+            let image = this.state.imageList[i];
+            let namelen = image.length;
+            let key = image.substring(namelen - 36, namelen);
+
+            images.push(
+                <Img 
+                    src={this.state.imageList[i]}
+                    key={key}
+                />
+            )
+        }
+        return images;
+    }
+
+    loadAudio() {
+        let audios = [];
+        let len = this.state.audioList.length;
+
+        for (let i = 0; i < len; i++) {
+            let audio = this.state.audioList[i];
+            let namelen = audio.length;
+            let key = audio.substring(namelen - 36, namelen);
+
+            audios.push(
+                <ReactAudioPlayer 
+                    src={audio}
+                    controls
+                    key={key}
+                />
+            )
+        }
+        return audios;
+    }
+
     render() {
 
         const {name, latitude, longitude} = this.state;
@@ -190,8 +229,8 @@ class POIEditForm extends Component {
                             </FormGroup>
                         </Form>
 
-                        <Img src={this.state.imageList}/>
-                        <ReactAudioPlayer src={this.state.audioList} controls/>
+                        {this.loadImage()}
+                        {this.loadAudio()}
                     </ModalBody>
                 </Modal>  
             </Fragment>        
