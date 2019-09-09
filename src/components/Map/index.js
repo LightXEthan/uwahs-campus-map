@@ -1,8 +1,9 @@
 import React, { Fragment } from "react";
 import { compose, withProps } from "recompose";
 import dotenv from "dotenv";
-import { Spinner } from 'reactstrap';
-import userMarker from './blue-dot.png';
+import { Spinner  } from 'reactstrap';
+import userMarker from './locateMarker.png';
+import compassMarker from './locateMarkerPoint.png';
 import {
   withScriptjs,
   withGoogleMap,
@@ -13,8 +14,6 @@ import {
 dotenv.config();
 
 const retroStyles = require("./retroStyle.json");
-
-
 
 const outterStyle = {
   position:'fixed',
@@ -33,6 +32,7 @@ const innerStyle = {
   width : '10vw',
   height : '10vw'
 }
+
 
 
 /**
@@ -61,16 +61,10 @@ const Map = compose(
     }}
     defaultOptions={{ styles: retroStyles }}
   >
+
+
     {props.isMarkerShown && (
       <Fragment>
-        <Marker
-          icon= {userMarker}
-          position={{
-            lat: props.currentLocation.lat,
-            lng: props.currentLocation.lng,                      
-          }}
-          onClick={props.onMarkerClick}
-        />
         {props.POIList.map(marker => (
           <Marker
             position={{
@@ -82,6 +76,16 @@ const Map = compose(
         ))}
       </Fragment>
     )}
+
+    <Marker       //Seperate userLocation from PoI markers.
+          icon= {userMarker}
+          position={{
+            lat: props.currentLocation.lat,
+            lng: props.currentLocation.lng,                      
+          }}
+          onClick={props.onMarkerClick}
+        />
+
   </GoogleMap>
 ));
 
