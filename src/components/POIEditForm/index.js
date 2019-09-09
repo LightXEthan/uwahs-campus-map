@@ -125,6 +125,8 @@ class POIEditForm extends Component {
                 <Img 
                     src={this.state.imageList[i]}
                     key={key}
+                    height="100%"
+                    width="100%"
                 />
             )
         }
@@ -221,7 +223,7 @@ class POIEditForm extends Component {
                                 </Col>
                             </FormGroup>
                             <FormGroup>
-                                <Col xs={{size: 12}}>
+                                <Col xs={12}>
                                     <Button type="submit" color="primary">
                                         Save
                                     </Button>
