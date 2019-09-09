@@ -22,6 +22,11 @@ const NavigationAuth = () => (
               About
             </NavLink>
           </NavItem>
+          <NavItem>
+            <NavLink tag={RRNavLink} exact to={ROUTES.ADMIN}>
+              Admin
+            </NavLink>
+          </NavItem>
         </Nav>
         <Nav className="ml-auto" navbar>
           <NavItem>
