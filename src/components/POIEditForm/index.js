@@ -1,5 +1,9 @@
 import React, { Component, Fragment } from 'react';
+
 import { Button, Modal, ModalHeader, ModalBody, Label, Col, Form, FormGroup, Input } from 'reactstrap';
+
+import Img from 'react-image';
+import ReactAudioPlayer from 'react-audio-player';
 
 import { withFirebase } from "../Firebase";
 import firebase from 'firebase/app'
@@ -15,7 +19,7 @@ class POIEditForm extends Component {
             longitude: this.props.poi.location.longitude,
             fileupload: null,
             imageList: this.props.poi.imageList,
-            audioList: this.props.poi.AudioList,
+            audioList: this.props.poi.audioList,
             isModalOpen: false
         }
     }
@@ -108,10 +112,51 @@ class POIEditForm extends Component {
         event.preventDefault();
     };
 
+    loadImage() {
+        let images = [];
+        let len = this.state.imageList.length;
+
+        for (let i = 0; i < len; i++) {
+            let image = this.state.imageList[i];
+            let namelen = image.length;
+            let key = image.substring(namelen - 36, namelen);
+
+            images.push(
+                <Img 
+                    src={this.state.imageList[i]}
+                    key={key}
+                    height="100%"
+                    width="100%"
+                />
+            )
+        }
+        return images;
+    }
+
+    loadAudio() {
+        let audios = [];
+        let len = this.state.audioList.length;
+
+        for (let i = 0; i < len; i++) {
+            let audio = this.state.audioList[i];
+            let namelen = audio.length;
+            let key = audio.substring(namelen - 36, namelen);
+
+            audios.push(
+                <ReactAudioPlayer 
+                    src={audio}
+                    controls
+                    key={key}
+                />
+            )
+        }
+        return audios;
+    }
+
     render() {
 
         const {name, latitude, longitude} = this.state;
-
+        
         return (
             <Fragment>
                 <Button outline color="none" onClick={this.toggleModal}>
@@ -178,13 +223,16 @@ class POIEditForm extends Component {
                                 </Col>
                             </FormGroup>
                             <FormGroup>
-                                <Col xs={{size: 12}}>
+                                <Col xs={12}>
                                     <Button type="submit" color="primary">
                                         Save
                                     </Button>
                                 </Col>
                             </FormGroup>
                         </Form>
+
+                        {this.loadImage()}
+                        {this.loadAudio()}
                     </ModalBody>
                 </Modal>  
             </Fragment>        
