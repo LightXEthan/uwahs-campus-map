@@ -9,6 +9,7 @@ const INITIAL_STATE = {
   name: "",
   longitude: 0,
   latitude: 0,
+  description: "",
   fileupload: null,
   filetype: null,
   imageList: [],
@@ -47,7 +48,7 @@ class POIForm extends Component {
   };
 
   onSubmit = e => {
-    const { name, longitude, latitude, fileupload, imageList, audioList, filetype } = this.state;
+    const { name, longitude, latitude, description, fileupload, imageList, audioList, filetype } = this.state;
     
     /* data to be written to firebase
      * name: name of the location
@@ -58,6 +59,7 @@ class POIForm extends Component {
      */ 
     var data = {
       name: name,
+      description: description,
       location: new firebase.firestore.GeoPoint(parseFloat(latitude), parseFloat(longitude)),
       timestamp: firebase.firestore.Timestamp.now(),
       imageList: [],
@@ -127,7 +129,7 @@ class POIForm extends Component {
   };
 
   render() {
-    const { name, longitude, latitude  } = this.state;
+    const { name, longitude, latitude, description } = this.state;
     const isInvalid = name === '';
 
     return (
@@ -179,6 +181,19 @@ class POIForm extends Component {
                                     min="-180"
                                     max="180"
                                     step="any"
+                                />
+                            </Col>
+                        </FormGroup>
+                        <FormGroup>
+                            <Label htmlFor="description" xs={12}>Description</Label>
+                            <Col>
+                                <Input
+                                    type="textarea"
+                                    name="description"
+                                    id="description"
+                                    value={description}
+                                    onChange={this.onChange}
+                                    rows="6"
                                 />
                             </Col>
                         </FormGroup>
