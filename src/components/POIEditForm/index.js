@@ -18,6 +18,7 @@ class POIEditForm extends Component {
             latitude: this.props.poi.location.latitude,
             longitude: this.props.poi.location.longitude,
             fileupload: null,
+            filetype: null,
             imageList: this.props.poi.imageList,
             audioList: this.props.poi.audioList,
             isModalOpen: false
@@ -96,6 +97,10 @@ class POIEditForm extends Component {
                                 data["audioList"] = audioList;
                             }
                             this.props.firebase.poiUpdate(this.props.poi._id).set(data, { merge: true });
+                            this.setState({
+                                fileupload: null,
+                                filetype: null
+                            });
                             this.toggleModal();
                         },
                         error => {
