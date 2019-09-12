@@ -128,6 +128,7 @@ class POIForm extends Component {
 
   render() {
     const { name, longitude, latitude  } = this.state;
+    const isInvalid = name === '';
 
     return (
         <Fragment>
@@ -194,7 +195,7 @@ class POIForm extends Component {
                         </FormGroup>
                         <FormGroup className="text-right">
                             <Col xs={12}>
-                                <Button type="submit" color="primary">
+                                <Button type="submit" color="primary" disabled={isInvalid}>
                                     Save
                                 </Button>
                             </Col>
