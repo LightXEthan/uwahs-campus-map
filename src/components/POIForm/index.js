@@ -208,12 +208,17 @@ class POIForm extends Component {
                                 />
                             </Col>
                         </FormGroup>
-                        <FormGroup className="text-right">
-                            <Col xs={12}>
+                        <FormGroup className="d-flex">
+                            <div className="mr-auto p-2">
+                                <Button onClick={this.toggleModal}>
+                                    Cancel
+                                </Button>
+                            </div>
+                            <div className="p-2">
                                 <Button type="submit" color="primary" disabled={isInvalid}>
                                     Save
                                 </Button>
-                            </Col>
+                            </div>
                         </FormGroup>
                     </Form>
                 </ModalBody>
