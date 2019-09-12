@@ -47,11 +47,14 @@ const Map = compose(
         />
         {props.POIList.map(poi => (
           <Marker
+            key={poi._id}
             position={{
               lat: poi.location.latitude,
               lng: poi.location.longitude
             }}
-            onClick={props.onMarkerClick}
+            onClick={() => {
+              props.onMarkerClick(poi);
+            }}
           />
         ))}
       </Fragment>

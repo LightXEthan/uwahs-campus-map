@@ -11,8 +11,10 @@
     "react-dom": "^16.9.0",
     "react-google-maps": "^9.4.5",
     "react-image": "^2.2.0",
+    "react-responsive-carousel": "^3.1.50",
     "react-router-dom": "^5.0.1",
     "react-scripts": "3.1.1",
+    "react-touch-carousel": "^0.9.3",
     "reactstrap": "^8.0.1",
     "recompose": "^0.30.0"
   },
