@@ -22,6 +22,7 @@ class POIList extends Component {
       snapshot => {
         let poilist = [];
 
+        // Gets the data from each poi
         snapshot.forEach(doc => {
           const data = doc.data();
           const _id = doc.id;
