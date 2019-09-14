@@ -27,6 +27,7 @@ const INITIAL_STATE = {
     email: '',
     password: '',
     error: null,
+    invalidInfo: false
 }
 
 class SignInFormBase extends Component {
@@ -47,6 +48,7 @@ class SignInFormBase extends Component {
             })
             .catch(error => {
                 this.setState({ error });
+                this.setState({ invalidInfo : true });
             });
 
             event.preventDefault();
@@ -54,6 +56,7 @@ class SignInFormBase extends Component {
 
     onChange = event => {
         this.setState({ [event.target.name]: event.target.value });
+        this.setState( { invalidInfo : false });
     };
 
     onForgot = event => {
@@ -61,7 +64,7 @@ class SignInFormBase extends Component {
     };
 
     render() {
-        const {email, password, error } = this.state;
+        const {email, password, error, invalidInfo } = this.state;
         const isInvalid = password === '' || email === '';
 
         return (
@@ -99,7 +102,7 @@ class SignInFormBase extends Component {
                                 colour="primary">
                                 Sign In
                             </Button>
-                            {error && <p>{error.message}</p>}
+                            {error && invalidInfo && <p>{error.message}</p>}
                         </Form>
                     </Card>
                 </Col>
