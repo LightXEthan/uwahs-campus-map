@@ -109,26 +109,21 @@ class MapPage extends Component {
     }, 3000);
   };
 
-  handleMarkerClick = poi => {
+  handleDeselect = () => {
     this.setState((state, props) => ({
-      selectedPOI: poi,
+      selectedPOI: null,
       modal: !state.modal
     }));
   };
 
-  handlePOIListItemClick = poi => {
+  handleSelectPOI = poi => {
     this.setState((state, props) => ({
       mapCenter: {
         lat: poi.location.latitude,
         lng: poi.location.longitude
       },
-      selectedPOI: poi
-    }));
-  };
-
-  handleDeselect = () => {
-    this.setState((state, props) => ({
-      selectedPOI: null
+      selectedPOI: poi,
+      modal: !state.modal
     }));
   };
 
@@ -139,7 +134,8 @@ class MapPage extends Component {
       POIList,
       mapCenter,
       mapZoom,
-      selectedPOI
+      selectedPOI,
+      modal
     } = this.state;
 
     return (
@@ -148,38 +144,39 @@ class MapPage extends Component {
         <Container style={{ padding: "0", margin: "0", maxWidth: "100vw" }}>
           <Row style={{ margin: "0" }}>
             <Col
-              style={{ maxWidth: `${window.innerWidth - 380}px`, padding: 0 }}
+              style={{
+                maxWidth: `${
+                  window.innerWidth > 760
+                    ? window.innerWidth - 380
+                    : window.innerWidth
+                }px`,
+                padding: 0
+              }}
             >
-              {selectedPOI == null ||
-              (selectedPOI && window.innerWidth >= 760) ? (
-                <Map
-                  isMarkerShown={isMarkerShown}
-                  onMarkerClick={this.handleMarkerClick}
-                  currentLocation={currentLatLng}
-                  mapCenter={mapCenter}
-                  zoom={mapZoom}
-                  POIList={POIList}
-                />
-              ) : (
-                <MapPOIInfo poi={selectedPOI} onBack={this.handleDeselect} />
-              )}
+              <Map
+                isMarkerShown={isMarkerShown}
+                onMarkerClick={this.handleSelectPOI}
+                currentLocation={currentLatLng}
+                mapCenter={mapCenter}
+                zoom={mapZoom}
+                POIList={POIList}
+              />
             </Col>
             <Col className="sidebar">
-              {selectedPOI == null || window.innerWidth < 760 ? (
-                <MapPOIList
-                  POIList={POIList}
-                  onListItemClick={this.handlePOIListItemClick}
-                />
-              ) : (
-                <MapPOIInfo
-                  className="infoSide"
-                  poi={selectedPOI}
-                  onBack={this.handleDeselect}
-                />
-              )}
+              <MapPOIList
+                POIList={POIList}
+                onListItemClick={this.handleSelectPOI}
+              />
             </Col>
           </Row>
         </Container>
+        {selectedPOI && (
+          <MapPOIInfo
+            modal={modal}
+            poi={selectedPOI}
+            toggle={this.handleDeselect}
+          />
+        )}
       </Fragment>
     );
   }
