@@ -22,6 +22,11 @@ class PasswordChangeForm extends Component {
         });
     };
 
+    checkPasswordMismatch = () => {
+        const { passwordOne, passwordTwo } = this.state;
+        return passwordOne !== '' && passwordTwo !== '' && passwordOne !== passwordTwo;
+    };
+
     onSubmit = event => {
         const { passwordOne } = this.state;
 
@@ -29,12 +34,12 @@ class PasswordChangeForm extends Component {
         .doPasswordUpdate(passwordOne)
         .then(() => {
             this.setState({ ...INITIAL_STATE });
+            this.toggleModal();
         })
         .catch(error => {
             this.setState({ error });
         });
-
-        this.toggleModal();
+ 
         event.preventDefault();  
     };
 
@@ -90,6 +95,7 @@ class PasswordChangeForm extends Component {
                             </FormGroup>
                             <FormGroup>
                                 <Col>
+                                    {this.checkPasswordMismatch() && <p>Your passwords do not match</p>}
                                     {error && <p>{error.message}</p>}
                                 </Col>
                             </FormGroup>
