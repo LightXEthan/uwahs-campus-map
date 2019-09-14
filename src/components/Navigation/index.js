@@ -2,6 +2,7 @@ import React, { Fragment } from "react";
 import { NavLink as RRNavLink } from "react-router-dom";
 
 import SignOutButton from "../SignOut";
+import PasswordChange from "../PasswordChange";
 import * as ROUTES from "../../constants/routes";
 import { AuthUserContext } from "../Session";
 
@@ -31,6 +32,11 @@ const NavigationAuth = () => (
             <NavLink tag={RRNavLink} exact to={ROUTES.ADMIN}>
               Admin
             </NavLink>
+          </NavItem>
+        </Nav>
+        <Nav className="ml-auto" navbar>
+          <NavItem>
+            <PasswordChange />
           </NavItem>
         </Nav>
         <Nav className="ml-auto" navbar>
