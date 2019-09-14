@@ -48,10 +48,9 @@ class PasswordChangeForm extends Component {
 
         return (
             <Fragment>
-                <Button outline color="none" onClick={this.toggleModal}>
-                    <i className="fa fa-plus-circle fa-3x"></i>
+                <Button onClick={this.toggleModal}>
                     Password Reset
-                </Button> 
+                </Button>
                 <Modal isOpen={this.state.isModalOpen} toggle={this.toggleModal}>
                     <ModalHeader toggle={this.toggleModal}>Change Password</ModalHeader>
                     <ModalBody>

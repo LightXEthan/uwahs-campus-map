@@ -38,8 +38,6 @@ const NavigationAuth = () => (
           <NavItem>
             <PasswordChange />
           </NavItem>
-        </Nav>
-        <Nav className="ml-auto" navbar>
           <NavItem>
             <SignOutButton />
           </NavItem>
