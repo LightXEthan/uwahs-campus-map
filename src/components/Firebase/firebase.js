@@ -29,7 +29,7 @@ class Firebase {
   // Points of interest firestore database
   poi = () => this.db.collection("poi").doc();
   pois = () => this.db.collection("poi");
-  poif = doc => this.db.collection("poi").doc(doc).collection("files");
+  poif = poiid => this.db.collection("poi").doc(poiid).collection("files");
   poiUpdate = poiid => this.db.collection("poi").doc(poiid);
 
   // *** Auth API ***
