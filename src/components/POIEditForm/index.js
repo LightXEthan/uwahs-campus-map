@@ -67,16 +67,9 @@ class POIEditForm extends Component {
         console.log("Trying to delete file: ", this.props.poi._id, this.state.fileShowing, this.state.imageList);
         
         // Delete file from firestore
-        var newImageList =[];
-        this.props.poi.imageList.forEach(image => {
-            if (this.state.fileShowing !== image) {
-                newImageList.push(image);
-            }
+        this.props.firebase.poiUpdate(this.props.poi._id).update({
+            imageList: firebase.firestore.FieldValue.arrayRemove(this.state.fileShowing)
         });
-        const updates = {
-            imageList: newImageList
-        }
-        this.props.firebase.poiUpdate(this.props.poi._id).update(updates);
 
         // Delete file from firebase storage
     }
@@ -87,7 +80,7 @@ class POIEditForm extends Component {
         const data = {
           name: name,
           location: new firebase.firestore.GeoPoint(parseFloat(latitude), parseFloat(longitude)),
-          last_modified: firebase.firestore.Timestamp.now()
+          last_modified: firebase.firestore.FieldValue.serverTimestamp()
         };
 
         if (fileupload === null) {
