@@ -18,12 +18,10 @@ class POIEditForm extends Component {
             latitude: this.props.poi.location.latitude,
             longitude: this.props.poi.location.longitude,
             fileupload: null,
-            filetype: null,
             imageList: this.props.poi.imageList,
             audioList: this.props.poi.audioList,
             isModalOpen: false,
             isImageOpen: false,
-            fileShowingid: null,
             fileShowing: null
         }
     }
@@ -93,7 +91,7 @@ class POIEditForm extends Component {
     }
 
     onSubmit = event => {
-        const { name, longitude, latitude, fileupload, imageList, audioList, filetype } = this.state;
+        const { name, longitude, latitude, fileupload, imageList, audioList } = this.state;
     
         const data = {
           name: name,
@@ -107,23 +105,20 @@ class POIEditForm extends Component {
             this.toggleModal();
           } else {
             // detects the type of file to organise into file in firebase storage
-            var folder = null;
             var type = null;
-            if (filetype.includes('image')) {
-                folder = 'images/';
+            if (fileupload.type.includes('image')) {
                 type = 'image';
             }
-            else if (filetype.includes('audio')) {
-                folder = 'audios/';
+            else if (fileupload.type.includes('audio')) {
                 type = 'audio';
             }
             else {
-                console.error("File uploaded is an incompatible file type: " + filetype);
+                console.error("File uploaded is an incompatible file type: " + fileupload.type);
                 alert("Error: incompatible file type.");
             }
 
-            if (folder !== null) {
-                var storageRef = this.props.firebase.storage.ref(folder + fileupload.name);
+            if (type !== null) {
+                var storageRef = this.props.firebase.storage.ref(type + 's/' + fileupload.name);
         
                 // uploads file to firebase
                 storageRef.put(fileupload).then(() => {
