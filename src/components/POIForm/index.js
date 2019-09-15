@@ -86,6 +86,8 @@ class POIForm extends Component {
         // Create a firebase storage reference to the uploading file. Types are put in folers
         var storageRef = this.props.firebase.storage.ref(type + 's/' + fileupload.name);
 
+        // Check if file exists already
+
         // uploads file to firebase storage
         storageRef.put(fileupload).then(() => {
           // gets the url from the uploaded file
