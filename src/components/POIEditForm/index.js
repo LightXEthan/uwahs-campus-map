@@ -87,7 +87,7 @@ class POIEditForm extends Component {
         const data = {
           name: name,
           location: new firebase.firestore.GeoPoint(parseFloat(latitude), parseFloat(longitude)),
-          timestamp: firebase.firestore.Timestamp.now()
+          last_modified: firebase.firestore.Timestamp.now()
         };
 
         if (fileupload === null) {

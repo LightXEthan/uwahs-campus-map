@@ -8,18 +8,21 @@ class POIList extends Component {
     super(props);
 
     this.state = {
-      loading: false,
-      poilist: []
+      loading: false,   // true when poi list is loading
+      sort: "name",     // Vaiable for sorting
+      poilist: []       // stores list of poi
     };
   }
 
   componentDidMount() {
     this.setState({ loading: true });
 
-    this.listener = this.props.firebase.pois().onSnapshot(
+    // Gets realtime list of poi
+    this.listener = this.props.firebase.pois().orderBy(this.state.sort).onSnapshot(
       snapshot => {
         let poilist = [];
 
+        // Gets the data from each poi
         snapshot.forEach(doc => {
           const data = doc.data();
           const _id = doc.id;

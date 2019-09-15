@@ -6,14 +6,14 @@ import firebase from 'firebase/app';
 import "firebase/firebase-storage";
 
 const INITIAL_STATE = {
-  name: "",
-  longitude: 0,
-  latitude: 0,
-  description: "",
-  fileupload: null,
-  filetype: null,
-  imageList: [],
-  audioList: []
+  name: "",           // Name of the poi
+  longitude: 0,       // Longitude
+  latitude: 0,        // Latitude
+  description: "",    // Description of the poi
+  fileupload: null,   // holds the file that is being uploaded
+  filetype: null,     // holds the file type
+  imageList: [],      // list of images download urls
+  audioList: []       // list of audio download urls
 }
 class POIForm extends Component {
   constructor(props) {
@@ -52,8 +52,10 @@ class POIForm extends Component {
     
     /* data to be written to firebase
      * name: name of the location
+     * description: decription of the location
      * location: [lat, long]
-     * timestamp: date added
+     * last_modified: date last modified
+     * date_created: date created
      * imageList: [list of images ref]
      * audioList: [list of audio ref]
      */ 
@@ -61,7 +63,8 @@ class POIForm extends Component {
       name: name,
       description: description,
       location: new firebase.firestore.GeoPoint(parseFloat(latitude), parseFloat(longitude)),
-      timestamp: firebase.firestore.Timestamp.now(),
+      last_modified: firebase.firestore.Timestamp.now(),
+      date_created: firebase.firestore.Timestamp.now(),
       imageList: [],
       audioList: []
     };
