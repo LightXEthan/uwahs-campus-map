@@ -71,6 +71,16 @@ class POIEditForm extends Component {
             imageList: firebase.firestore.FieldValue.arrayRemove(this.state.fileShowing)
         });
 
+        // Delete the files metadata in the files collection
+        this.props.firebase.poif(this.props.poi._id).get().then(snapshot => {
+            snapshot.forEach(doc => {
+                // Finds the doc in files collection by comparing the urls
+                if (doc.data().url === this.state.fileShowing) {
+                    this.props.firebase.poif(this.props.poi._id).doc(doc.id).delete();
+                }
+            });
+        });
+
         // Delete file from firebase storage
     }
 
@@ -120,7 +130,19 @@ class POIEditForm extends Component {
                                 audioList.push(url);
                                 data["audioList"] = audioList;
                             }
+
+                            // Updates the poi with the new data
                             this.props.firebase.poiUpdate(this.props.poi._id).set(data, { merge: true });
+
+                            // Adds the file metadata to the files collection
+                            this.props.firebase.poif(this.props.poi._id).add({
+                                name: null,
+                                description: null,
+                                filepath: storageRef.fullPath,
+                                url: url
+                            });
+
+                            // Resets the file states
                             this.setState({
                                 fileupload: null,
                                 filetype: null
