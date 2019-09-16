@@ -2,6 +2,8 @@ import React, { Component, Fragment } from "react";
 
 import Map from "../Map";
 import MapPOIList from "../MapPOIList";
+import MapPOIInfo from "../MapPOIInfo";
+
 import { withFirebase } from "../Firebase";
 
 import { Container, Row, Col } from "reactstrap";
@@ -21,7 +23,9 @@ class MapPage extends Component {
         lat: parseFloat(process.env.REACT_APP_UWA_LAT),
         lng: parseFloat(process.env.REACT_APP_UWA_LNG)
       },
-      mapZoom: 16
+      mapZoom: 16,
+      selectedPOI: null,
+      modal: false
     };
   }
 
@@ -32,7 +36,12 @@ class MapPage extends Component {
       snapshot => {
         let POIList = [];
 
-        snapshot.forEach(doc => POIList.push(doc.data()));
+        snapshot.forEach(doc => {
+          const _id = doc.id;
+          const data = doc.data();
+          const poi = { _id, ...data };
+          POIList.push(poi);
+        });
 
         this.setState({
           POIList,
@@ -100,14 +109,21 @@ class MapPage extends Component {
     }, 3000);
   };
 
-  handleMarkerClick = () => {
-    this.setState({ isMarkerShown: false });
-    this.delayedShowMarker();
+  handleDeselect = () => {
+    this.setState((state, props) => ({
+      selectedPOI: null,
+      modal: !state.modal
+    }));
   };
 
-  handlePOIListItemClick = loc => {
+  handleSelectPOI = poi => {
     this.setState((state, props) => ({
-      mapCenter: { lat: loc.latitude, lng: loc.longitude }
+      mapCenter: {
+        lat: poi.location.latitude,
+        lng: poi.location.longitude
+      },
+      selectedPOI: poi,
+      modal: !state.modal
     }));
   };
 
@@ -117,34 +133,67 @@ class MapPage extends Component {
       currentLatLng,
       POIList,
       mapCenter,
-      mapZoom
+      mapZoom,
+      selectedPOI,
+      modal
     } = this.state;
 
     return (
       <Fragment>
+        {style}
         <Container style={{ padding: "0", margin: "0", maxWidth: "100vw" }}>
           <Row style={{ margin: "0" }}>
-            <Col sm="12" md="9" style={{ padding: "0" }}>
+            <Col
+              style={{
+                maxWidth: `${
+                  window.innerWidth > 760
+                    ? window.innerWidth - 380
+                    : window.innerWidth
+                }px`,
+                padding: 0
+              }}
+            >
               <Map
                 isMarkerShown={isMarkerShown}
-                onMarkerClick={this.handleMarkerClick}
+                onMarkerClick={this.handleSelectPOI}
                 currentLocation={currentLatLng}
                 mapCenter={mapCenter}
                 zoom={mapZoom}
                 POIList={POIList}
               />
             </Col>
-            <Col className="d-none d-sm-block" md="3" style={{ padding: "0" }}>
+            <Col className="sidebar">
               <MapPOIList
                 POIList={POIList}
-                onListItemClick={this.handlePOIListItemClick}
+                onListItemClick={this.handleSelectPOI}
               />
             </Col>
           </Row>
         </Container>
+        {selectedPOI && (
+          <MapPOIInfo
+            modal={modal}
+            poi={selectedPOI}
+            toggle={this.handleDeselect}
+          />
+        )}
       </Fragment>
     );
   }
 }
+
+const style = (
+  <style>{`
+    .sidebar, .infoSide {
+      padding: 0;
+      flex: 0 0 380px;
+    }
+    @media (max-width: 760px) {
+      .sidebar {
+        display: none;
+      }
+    }
+  `}</style>
+);
 
 export default withFirebase(MapPage);
