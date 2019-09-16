@@ -17,6 +17,7 @@ Collection: 'poi'
             - Description: "A description"
             - url: 'download url'
             - filepath: 'filepath in firebase storage'
+            - filetype: 'image'
     
 *More data structures can be found in the documentation file that allows name,description,other to the image/audio*
 
