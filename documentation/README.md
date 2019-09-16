@@ -11,6 +11,13 @@ Collection: 'poi'
     - date_created: date created
     - imageList: array of download url of images
     - audioList: array of download url of audios
+    - **Collection: 'files'**
+        - Document: random id
+            - Name: "Kookaburra"
+            - Description: "A description"
+            - url: 'download url'
+            - filepath: 'filepath in firebase storage'
+            - filetype: 'image'
     
 *More data structures can be found in the documentation file that allows name,description,other to the image/audio*
 

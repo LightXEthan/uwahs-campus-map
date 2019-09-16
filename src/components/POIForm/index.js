@@ -10,10 +10,7 @@ const INITIAL_STATE = {
   longitude: 0,       // Longitude
   latitude: 0,        // Latitude
   description: "",    // Description of the poi
-  fileupload: null,   // holds the file that is being uploaded
-  filetype: null,     // holds the file type
-  imageList: [],      // list of images download urls
-  audioList: []       // list of audio download urls
+  fileupload: null   // holds the file that is being uploaded
 }
 class POIForm extends Component {
   constructor(props) {
@@ -34,21 +31,15 @@ class POIForm extends Component {
 
   onChangeFile = e => {
     if (e.target.files.length === 0) {
-      this.setState({
-        fileupload: null,
-        filetype: null
-      });
+      this.setState({ fileupload: null });
     }
     else {
-      this.setState({
-        fileupload: e.target.files[0],
-        filetype: e.target.files[0].type
-      });
+      this.setState({ fileupload: e.target.files[0] });
     }
   };
 
   onSubmit = e => {
-    const { name, longitude, latitude, description, fileupload, imageList, audioList, filetype } = this.state;
+    const { name, longitude, latitude, description, fileupload } = this.state;
     
     /* data to be written to firebase
      * name: name of the location
@@ -63,38 +54,39 @@ class POIForm extends Component {
       name: name,
       description: description,
       location: new firebase.firestore.GeoPoint(parseFloat(latitude), parseFloat(longitude)),
-      last_modified: firebase.firestore.Timestamp.now(),
-      date_created: firebase.firestore.Timestamp.now(),
+      last_modified: firebase.firestore.FieldValue.serverTimestamp(),
+      date_created: firebase.firestore.FieldValue.serverTimestamp(),
       imageList: [],
       audioList: []
     };
 
     if (fileupload === null) {
       // data is written to firebase
-      this.props.firebase.poi().set(data, { merge: true })
+      this.props.firebase.pois().add(data)
       .then(() => {
         this.setState({ ...INITIAL_STATE });
       })
+
     } else {
       // detects the type of file to organise into file in firebase storage
-      var folder = null;
       var type = null;
-      if (filetype.includes('image')) {
-        folder = 'images/';
+      if (fileupload.type.includes('image')) {
         type = 'image';
       }
-      else if (filetype.includes('audio')) {
-        folder = 'audios/';
+      else if (fileupload.type.includes('audio')) {
         type = 'audio';
       }
       else {
-        console.error("File uploaded is an incompatible file type: " + filetype);
+        console.error("File uploaded is an incompatible file type: " + fileupload.type);
         alert("Error: incompatible file type.");
       }
 
-      if (folder !== null) {
+      if (type !== null) {
 
-        var storageRef = this.props.firebase.storage.ref(folder + fileupload.name);
+        // Create a firebase storage reference to the uploading file. Types are put in folers
+        var storageRef = this.props.firebase.storage.ref(type + 's/' + fileupload.name);
+
+        // Check if file exists already
 
         // uploads file to firebase storage
         storageRef.put(fileupload).then(() => {
@@ -102,22 +94,30 @@ class POIForm extends Component {
           storageRef.getDownloadURL().then(
             (url) => {
               if (type === 'image') {
-                imageList.push(url);
-                data["imageList"] = imageList;
+                data["imageList"] = [url];
               }
               else if (type === 'audio') {
-                audioList.push(url);
-                data["audioList"] = audioList;
+                data["audioList"] = [url];
               }
               // Adds the download link and data to firestore
-              this.props.firebase.poi().set(data, { merge: true });
+              this.props.firebase.pois().add(data).then(docRef => {
+
+                // Adds the file metadata to the files collection
+                this.props.firebase.poif(docRef.id).add({
+                  name: null,
+                  description: null,
+                  filepath: storageRef.fullPath,
+                  filetype: type,
+                  url: url
+                });
+                
+              }).then(() => {
+                this.setState({ ...INITIAL_STATE });
+              });
             },
             error => {
               console.log(error);
               alert("Error with getting file from firestore.");
-          })
-          .then(() => {
-            this.setState({ ...INITIAL_STATE });
           })
         }
         , error => {
