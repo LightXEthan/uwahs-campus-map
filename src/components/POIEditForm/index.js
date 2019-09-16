@@ -47,16 +47,10 @@ class POIEditForm extends Component {
 
     onChangeFile = e => {
         if (e.target.files.length === 0) {
-          this.setState({
-            fileupload: null,
-            filetype: null
-          });
+            this.setState({ fileupload: null });
         }
         else {
-            this.setState({
-                fileupload: e.target.files[0],
-                filetype: e.target.files[0].type
-            });
+            this.setState({ fileupload: e.target.files[0] });
         }
     };
 
@@ -159,10 +153,7 @@ class POIEditForm extends Component {
                             });
 
                             // Resets the file states
-                            this.setState({
-                                fileupload: null,
-                                filetype: null
-                            });
+                            this.setState({ fileupload: null });
                             this.toggleModal();
                         },
                         error => {
