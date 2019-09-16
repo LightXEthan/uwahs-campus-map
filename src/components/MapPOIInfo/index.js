@@ -34,7 +34,11 @@ const MapPOIInfo = props => {
                 {poi.imageList.length === 0
                   ? "There is no images for this point at the moment."
                   : poi.imageList.map(image => (
-                      <img src={image} alt="UWA History" />
+                      <img
+                        src={image}
+                        key={image.split("token=")[1]}
+                        alt="UWA History"
+                      />
                     ))}
               </Slider>
             </Col>
