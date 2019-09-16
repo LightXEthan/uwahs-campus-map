@@ -107,6 +107,7 @@ class POIForm extends Component {
                   name: null,
                   description: null,
                   filepath: storageRef.fullPath,
+                  filetype: type,
                   url: url
                 });
                 
