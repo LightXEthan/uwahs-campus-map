@@ -5,6 +5,8 @@ import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 
+import ReactAudioPlayer from "react-audio-player";
+
 const carouselSettings = {
   accessibility: true,
   arrows: false,
@@ -40,15 +42,24 @@ const MapPOIInfo = props => {
           <hr style={{ marginTop: "1.8rem" }} />
           <Row noGutters>
             <Col>
+              <h4>Oral Histories of {poi.name}</h4>
+
               {poi.audioList.length === 0
                 ? "There is no audio files for this point at the moment."
-                : "list of audio"}
+                : poi.audioList.map(audio => (
+                    <ReactAudioPlayer
+                      className="audioplayer"
+                      src={audio}
+                      key={audio.split("token=")[1]}
+                      controls
+                    />
+                  ))}
             </Col>
           </Row>
-          <hr />
+          <hr style={{ marginTop: "0.5rem" }} />
           <Row noGutters>
             <Col>
-              <h4>{poi.name}</h4>
+              <h4>About {poi.name}</h4>
               {poi.description === "" || poi.description === undefined //TODO: for dev only
                 ? "There is no description for this point at the moment."
                 : poi.description}
@@ -62,6 +73,9 @@ const MapPOIInfo = props => {
 
 const style = (
   <style>{`
+  ::-webkit-scrollbar {
+    width: 0px;
+  }
   .slick-slide {
     max-height: 400px;
   }
@@ -78,7 +92,7 @@ const style = (
     align-items: center;
   }
   .carouselRow {
-    background-color: lightgrey;
+    background-color: #fafafa;
   }
   // .carouselImage {
   //   max-width: 100%;
@@ -87,9 +101,12 @@ const style = (
   //   margin-right: auto;
   //   vertical-align: middle
   // }
-  ::-webkit-scrollbar {
-    width: 0px;
+  .audioplayer {
+    display: block;
+    width: 100%;
+    margin-bottom: 0.5rem;
   }
+  
   `}</style>
 );
 
