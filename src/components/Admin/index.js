@@ -13,7 +13,7 @@ const Admin = () => (
         </Col>
       </Row>
       <Row>
-        <Col sm="12">
+        <Col sm="12" className="text-right">
           <POIForm />
         </Col>
       </Row>

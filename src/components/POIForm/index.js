@@ -1,25 +1,29 @@
 import React, { Component, Fragment } from "react";
+import { Button, Modal, ModalHeader, ModalBody, Label, Col, Form, FormGroup, Input } from 'reactstrap';
 
 import { withFirebase } from "../Firebase";
 import firebase from 'firebase/app';
 import "firebase/firebase-storage";
 
-import { Button, Form, FormGroup, Label, Input } from "reactstrap";
-
+const INITIAL_STATE = {
+  name: "",           // Name of the poi
+  longitude: 0,       // Longitude
+  latitude: 0,        // Latitude
+  description: "",    // Description of the poi
+  fileupload: null   // holds the file that is being uploaded
+}
 class POIForm extends Component {
   constructor(props) {
     super(props);
 
-    this.state = {
-      name: "",
-      longitude: 0,
-      latitude: 0,
-      fileupload: null,
-      filetype: null,
-      imageList: [],
-      audioList: []
-    };
+    this.state = { ...INITIAL_STATE};
   }
+
+  toggleModal = () => {
+    this.setState({
+        isModalOpen: !this.state.isModalOpen
+    });
+  };
 
   onChange = e => {
     this.setState({ [e.target.name]: e.target.value });
@@ -27,61 +31,62 @@ class POIForm extends Component {
 
   onChangeFile = e => {
     if (e.target.files.length === 0) {
-      this.setState({
-        fileupload: null,
-        filetype: null
-      });
+      this.setState({ fileupload: null });
     }
     else {
-      this.setState({
-        fileupload: e.target.files[0],
-        filetype: e.target.files[0].type
-      });
+      this.setState({ fileupload: e.target.files[0] });
     }
   };
 
   onSubmit = e => {
-    const { name, longitude, latitude, fileupload, imageList, audioList, filetype } = this.state;
+    const { name, longitude, latitude, description, fileupload } = this.state;
     
     /* data to be written to firebase
      * name: name of the location
+     * description: decription of the location
      * location: [lat, long]
-     * timestamp: date added
+     * last_modified: date last modified
+     * date_created: date created
      * imageList: [list of images ref]
      * audioList: [list of audio ref]
      */ 
     var data = {
       name: name,
+      description: description,
       location: new firebase.firestore.GeoPoint(parseFloat(latitude), parseFloat(longitude)),
-      timestamp: firebase.firestore.Timestamp.now(),
+      last_modified: firebase.firestore.FieldValue.serverTimestamp(),
+      date_created: firebase.firestore.FieldValue.serverTimestamp(),
       imageList: [],
       audioList: []
     };
 
     if (fileupload === null) {
       // data is written to firebase
-      this.props.firebase.poi().set(data, { merge: true });
+      this.props.firebase.pois().add(data)
+      .then(() => {
+        this.setState({ ...INITIAL_STATE });
+      })
 
     } else {
       // detects the type of file to organise into file in firebase storage
-      var folder = null;
       var type = null;
-      if (filetype.includes('image')) {
-        folder = 'images/';
+      if (fileupload.type.includes('image')) {
         type = 'image';
       }
-      else if (filetype.includes('audio')) {
-        folder = 'audios/';
+      else if (fileupload.type.includes('audio')) {
         type = 'audio';
       }
       else {
-        console.error("File uploaded is an incompatible file type: " + filetype);
+        console.error("File uploaded is an incompatible file type: " + fileupload.type);
         alert("Error: incompatible file type.");
       }
 
-      if (folder !== null) {
+      if (type !== null) {
 
-        var storageRef = this.props.firebase.storage.ref(folder + fileupload.name);
+        // Create a firebase storage reference to the uploading file. Types are put in folers
+        var storageRef = this.props.firebase.storage.ref(type + 's/' + fileupload.name);
+
+        // Check if file exists already
 
         // uploads file to firebase storage
         storageRef.put(fileupload).then(() => {
@@ -89,77 +94,139 @@ class POIForm extends Component {
           storageRef.getDownloadURL().then(
             (url) => {
               if (type === 'image') {
-                imageList.push(url);
-                data["imageList"] = imageList;
+                data["imageList"] = [url];
               }
               else if (type === 'audio') {
-                audioList.push(url);
-                data["audioList"] = audioList;
+                data["audioList"] = [url];
               }
               // Adds the download link and data to firestore
-              this.props.firebase.poi().set(data, { merge: true });
+              this.props.firebase.pois().add(data).then(docRef => {
+
+                // Adds the file metadata to the files collection
+                this.props.firebase.poif(docRef.id).add({
+                  name: null,
+                  description: null,
+                  filepath: storageRef.fullPath,
+                  filetype: type,
+                  url: url
+                });
+                
+              }).then(() => {
+                this.setState({ ...INITIAL_STATE });
+              });
             },
             error => {
               console.log(error);
               alert("Error with getting file from firestore.");
-          });
-        }, error => {
+          })
+        }
+        , error => {
           console.log(error);
           alert("Error with uploading file to firebase storage.");
         });
       }
     }
-    
+
+    this.toggleModal();
     e.preventDefault();
   };
 
   render() {
-    const { name, longitude, latitude  } = this.state;
+    const { name, longitude, latitude, description } = this.state;
+    const isInvalid = name === '';
 
     return (
-      <Form onSubmit={this.onSubmit}>
-        <FormGroup>
-          <Label for="name">Name</Label>
-          <Input
-            type="text"
-            name="name"
-            id="name"
-            placeholder="POI Name"
-            value={name}
-            onChange={this.onChange}
-          />
-          <Label for="latitude">Latitude</Label>
-          <Input
-            type="number"
-            name="latitude"
-            id="latitude"
-            value={latitude}
-            onChange={this.onChange}
-            min="-90"
-            max="90"
-            step="any"
-          />
-          <Label for="longitude">Longitude</Label>
-          <Input
-            type="number"
-            name="longitude"
-            id="longitude"
-            value={longitude}
-            onChange={this.onChange}
-            min="-180"
-            max="180"
-            step="any"
-          />
-          <Label for="fileupload">Upload a file. (Image/Audio)</Label>
-          <Input
-            type="file"
-            name="fileupload"
-            id="fileupload"
-            onChange={this.onChangeFile}
-          />
-        </FormGroup>
-        <Button>Add Point of Interest</Button>
-      </Form>
+        <Fragment>
+            <Button outline color="none" onClick={this.toggleModal}>
+                <i className="fa fa-plus-circle fa-3x"></i>
+            </Button> 
+            <Modal isOpen={this.state.isModalOpen} toggle={this.toggleModal}>
+                <ModalHeader toggle={this.toggleModal}>Add point of interest</ModalHeader>
+                <ModalBody>
+                    <Form onSubmit={this.onSubmit}>
+                        <FormGroup>
+                            <Label htmlFor="name" xs={12}>Name</Label>
+                            <Col>
+                                <Input
+                                    id="name"
+                                    name="name"
+                                    value={name}
+                                    onChange={this.onChange}
+                                    type="text"
+                                    placeholder="point of interest"
+                                />
+                            </Col>
+                        </FormGroup>
+                        <FormGroup>
+                            <Label htmlFor="latitude" xs={12}>Latitude</Label>
+                            <Col>
+                                <Input
+                                    type="number"
+                                    name="latitude"
+                                    id="latitude"
+                                    value={latitude}
+                                    onChange={this.onChange}
+                                    min="-90"
+                                    max="90"
+                                    step="any"
+                                />
+                            </Col>
+                        </FormGroup>
+                        <FormGroup>
+                            <Label htmlFor="longitude" xs={12}>Longitude</Label>
+                            <Col>
+                                <Input
+                                    type="number"
+                                    name="longitude"
+                                    id="longitude"
+                                    value={longitude}
+                                    onChange={this.onChange}
+                                    min="-180"
+                                    max="180"
+                                    step="any"
+                                />
+                            </Col>
+                        </FormGroup>
+                        <FormGroup>
+                            <Label htmlFor="description" xs={12}>Description</Label>
+                            <Col>
+                                <Input
+                                    type="textarea"
+                                    name="description"
+                                    id="description"
+                                    value={description}
+                                    onChange={this.onChange}
+                                    rows="6"
+                                />
+                            </Col>
+                        </FormGroup>
+                        <FormGroup>
+                            <Label htmlFor="fileupload" xs={12}>Upload a file. (Image/Audio)</Label>
+                            <Col>
+                                <Input
+                                    type="file"
+                                    name="fileupload"
+                                    id="fileupload"
+                                    onChange={this.onChangeFile}
+                                />
+                            </Col>
+                        </FormGroup>
+                        <FormGroup className="d-flex">
+                            <div className="mr-auto p-2">
+                                <Button onClick={this.toggleModal}>
+                                    Cancel
+                                </Button>
+                            </div>
+                            <div className="p-2">
+                                <Button type="submit" color="primary" disabled={isInvalid}>
+                                    Save
+                                </Button>
+                            </div>
+                        </FormGroup>
+                    </Form>
+                </ModalBody>
+            </Modal>  
+        </Fragment>        
     );
   }
 }

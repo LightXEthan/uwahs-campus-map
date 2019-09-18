@@ -1,13 +1,19 @@
-import React, { Component, Fragment } from "react";
+import React, { Fragment } from "react";
 import { NavLink as RRNavLink } from "react-router-dom";
 
-import SignOutButton from '../SignOut';
+import SignOutButton from "../SignOut";
+import PasswordChange from "../PasswordChange";
 import * as ROUTES from "../../constants/routes";
+import { AuthUserContext } from "../Session";
 
 import { Navbar, NavbarBrand, Nav, NavItem, NavLink } from "reactstrap";
 
-const Navigation = ({ authUser }) => (
-  <div>{authUser ? <NavigationAuth /> : <NavigationNonAuth />}</div>
+const Navigation = () => (
+  <div>
+    <AuthUserContext.Consumer>
+      {authUser => authUser ? <NavigationAuth /> : <NavigationNonAuth />}
+    </AuthUserContext.Consumer>
+  </div>
 );
 
 const NavigationAuth = () => (
@@ -29,6 +35,9 @@ const NavigationAuth = () => (
           </NavItem>
         </Nav>
         <Nav className="ml-auto" navbar>
+          <NavItem>
+            <PasswordChange />
+          </NavItem>
           <NavItem>
             <SignOutButton />
           </NavItem>
