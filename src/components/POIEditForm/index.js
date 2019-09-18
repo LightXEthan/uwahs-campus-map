@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from 'react';
 
-import { Button, Modal, ModalHeader, ModalBody, Label, Col, Form, FormGroup, Input } from 'reactstrap';
+import { Button, Modal, ModalHeader, ModalBody, Label, Col, Row, Form, FormGroup, Input } from 'reactstrap';
 
 import Img from 'react-image';
 import ReactAudioPlayer from 'react-audio-player';
@@ -20,7 +20,8 @@ class POIEditForm extends Component {
             fileupload: null,
             imageList: this.props.poi.imageList,
             audioList: this.props.poi.audioList,
-            isModalOpen: false
+            isModalOpen: false,
+            isAreYouSureOpen: false
         }
     }
 
@@ -29,6 +30,12 @@ class POIEditForm extends Component {
             isModalOpen: !this.state.isModalOpen
         });
     };
+
+    toggleNestedModal = () => {
+        this.setState({
+            isAreYouSureOpen: !this.state.isAreYouSureOpen
+        });
+    }
 
     onChange = event => {
         this.setState({ [event.target.name]: event.target.value });
@@ -48,6 +55,16 @@ class POIEditForm extends Component {
           });
         }
       };
+
+    onDelete = event => {
+        this.toggleNestedModal();
+    }
+
+    onNestedDelete = event => {
+        this.props.firebase.poiDelete(this.props.poi._id);
+        this.toggleNestedModal();
+        this.toggleModal();
+    }
 
     onSubmit = event => {
         const { name, longitude, latitude, fileupload, imageList, audioList, filetype } = this.state;
@@ -168,7 +185,7 @@ class POIEditForm extends Component {
                     {/* toggle - so that an 'x' appears in the header and we can dismiss the form */}
                     <ModalHeader toggle={this.toggleModal}>Edit place of interest</ModalHeader>
                     <ModalBody>
-                        <Form onSubmit={this.onSubmit}>
+                        <Form>
                             <FormGroup>
                                 <Label htmlFor="name" xs={12}>Name</Label>
                                 <Col>
@@ -223,16 +240,41 @@ class POIEditForm extends Component {
                                 </Col>
                             </FormGroup>
                             <FormGroup>
-                                <Col xs={12}>
-                                    <Button type="submit" color="primary">
-                                        Save
-                                    </Button>
-                                </Col>
+                                <Row noGutters="true">
+                                    <Col xs={1}>
+                                        <Button type="button" color="danger" onClick={this.onDelete}>
+                                            Delete
+                                        </Button>
+                                    </Col>
+                                    <Col xs={9}></Col>
+                                    <Col xs={2}>
+                                        <Button type="button" color="primary" onClick={this.onSubmit}>
+                                            Save
+                                        </Button>
+                                    </Col>
+                                </Row>   
                             </FormGroup>
                         </Form>
-
                         {this.loadImage()}
                         {this.loadAudio()}
+                        <Modal isOpen={this.state.isAreYouSureOpen} toggle={this.toggleNestedModal}>
+                            <ModalHeader>Are you sure you want to delete {this.state.name}?</ModalHeader>
+                            <ModalBody>
+                                <Row noGutters="true">
+                                    <Col xs={2}>
+                                        <Button type="button" color="danger" onClick={this.onNestedDelete}>
+                                            Yes, Delete
+                                        </Button>
+                                    </Col>
+                                    <Col xs={7}></Col>
+                                    <Col xs={3}>
+                                        <Button type="button" color="success" onClick={this.toggleNestedModal}>
+                                            No, Back Out
+                                        </Button>
+                                    </Col>
+                                </Row>
+                            </ModalBody>
+                        </Modal>
                     </ModalBody>
                 </Modal>  
             </Fragment>        
