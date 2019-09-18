@@ -21,12 +21,9 @@ class POIEditForm extends Component {
             imageList: this.props.poi.imageList,
             audioList: this.props.poi.audioList,
             isModalOpen: false,
-<<<<<<< HEAD
-            isAreYouSureOpen: false
-=======
+            isAreYouSureOpen: false,
             isFileOpen: false,
             fileShowing: null
->>>>>>> master
         }
     }
 
@@ -106,11 +103,11 @@ class POIEditForm extends Component {
         this.setState({ isFileOpen: !this.state.isFileOpen });
     }
 
-    onDelete = event => {
+    onDelete = () => {
         this.toggleNestedModal();
     }
 
-    onNestedDelete = event => {
+    onNestedDelete = () => {
         this.props.firebase.poiDelete(this.props.poi._id);
         this.toggleNestedModal();
         this.toggleModal();
