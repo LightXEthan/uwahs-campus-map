@@ -27,6 +27,9 @@ class POIEditForm extends Component {
         }
     }
 
+    //sets the state variable of the EditForm Modal (the modal being what you actually see)
+    //to its opposite. The => syntax is used for simplicity and to eliminate the need for 
+    //binding function to allow this. calls. 
     toggleModal = () => {
         this.setState({
             isModalOpen: !this.state.isModalOpen
@@ -41,7 +44,7 @@ class POIEditForm extends Component {
             fileShowing: file
         });
     };
-
+    //toggles the "Are you sure you want to delete" modal. 
     toggleNestedModal = () => {
         this.setState({
             isAreYouSureOpen: !this.state.isAreYouSureOpen
@@ -103,11 +106,8 @@ class POIEditForm extends Component {
         this.setState({ isFileOpen: !this.state.isFileOpen });
     }
 
-    onDelete = () => {
-        this.toggleNestedModal();
-    }
-
-    onNestedDelete = () => {
+    //calls the database delete function for the specified poi and then hides the modals. 
+    onPOIDelete = () => {
         this.props.firebase.poiDelete(this.props.poi._id);
         this.toggleNestedModal();
         this.toggleModal();
@@ -229,7 +229,8 @@ class POIEditForm extends Component {
                     {/* toggle - so that an 'x' appears in the header and we can dismiss the form */}
                     <ModalHeader toggle={this.toggleModal}>Edit place of interest</ModalHeader>
                     <ModalBody>
-                        <Form>
+                        <Form onSubmit={this.onSubmit}>
+                            {/* describes the fields on the EditForm Modal*/}
                             <FormGroup>
                                 <Label htmlFor="name" xs={12}>Name</Label>
                                 <Col>
@@ -284,15 +285,16 @@ class POIEditForm extends Component {
                                 </Col>
                             </FormGroup>
                             <FormGroup>
+                                {/* Describes the positioning of the buttons at the bottom of the form*/}
                                 <Row noGutters="true">
                                     <Col xs={1}>
-                                        <Button type="button" color="danger" onClick={this.onDelete}>
+                                        <Button type="button" color="danger" onClick={this.toggleNestedModal}>
                                             Delete
                                         </Button>
                                     </Col>
                                     <Col xs={9}></Col>
                                     <Col xs={2}>
-                                        <Button type="button" color="primary" onClick={this.onSubmit}>
+                                        <Button type="submit" color="primary" onClick={this.onSubmit}>
                                             Save
                                         </Button>
                                     </Col>
@@ -301,12 +303,13 @@ class POIEditForm extends Component {
                         </Form>
                         {this.loadImage()}
                         {this.loadAudio()}
+                        {/* Describes the "Are you sure" Modal and the buttons and text should be placed*/}
                         <Modal isOpen={this.state.isAreYouSureOpen} toggle={this.toggleNestedModal}>
                             <ModalHeader>Are you sure you want to delete {this.state.name}?</ModalHeader>
                             <ModalBody>
                                 <Row noGutters="true">
                                     <Col xs={2}>
-                                        <Button type="button" color="danger" onClick={this.onNestedDelete}>
+                                        <Button type="button" color="danger" onClick={this.onPOIDelete}>
                                             Yes, Delete
                                         </Button>
                                     </Col>
