@@ -1,10 +1,8 @@
 import React, { Component } from "react";
 import { Button } from "reactstrap";
-import { withRouter } from "react-router-dom";
 import { compose } from "recompose";
 
 import { withFirebase } from '../Firebase';
-import * as ROUTES from "../../constants/routes";
 
 class  SignOutButton extends Component {
     constructor(props){
@@ -13,13 +11,6 @@ class  SignOutButton extends Component {
 
     handleSignOut = event => {    
         this.props.firebase.doSignOut()
-        .then(() => {
-            this.props.history.push(ROUTES.SIGN_IN);
-        })
-        .catch(error => {
-            this.setState({ error });
-        });
-        event.preventDefault();
     };
 
     render() {
@@ -32,7 +23,6 @@ class  SignOutButton extends Component {
 }
 
 const SignOut = compose(
-    withRouter,
     withFirebase,
 )(SignOutButton);
 
