@@ -270,7 +270,19 @@ class POIEditForm extends Component {
                                     />
                                 </Col>
                             </FormGroup>
-
+                            <FormGroup>
+                                <Label htmlFor="description" xs={12}>Description</Label>
+                                <Col>
+                                    <Input
+                                        type="textarea"
+                                        name="description"
+                                        id="description"
+                                        value={description}
+                                        onChange={this.onChange}
+                                        rows="6"
+                                    />
+                                </Col>
+                            </FormGroup>
                             <FormGroup>
                                 <Col>
                                     <Nav tabs>
@@ -305,19 +317,6 @@ class POIEditForm extends Component {
                                             </Row>
                                         </TabPane>
                                     </TabContent>
-                                </Col>
-                            </FormGroup>
-                            <FormGroup>
-                                <Label htmlFor="description" xs={12}>Description</Label>
-                                <Col>
-                                    <Input
-                                        type="textarea"
-                                        name="description"
-                                        id="description"
-                                        value={description}
-                                        onChange={this.onChange}
-                                        rows="6"
-                                    />
                                 </Col>
                             </FormGroup>
                             <FormGroup>
