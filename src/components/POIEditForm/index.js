@@ -18,6 +18,7 @@ class POIEditForm extends Component {
             name: this.props.poi.name,
             latitude: this.props.poi.location.latitude,
             longitude: this.props.poi.location.longitude,
+            description: this.props.poi.description,
             fileupload: null,
             imageList: this.props.poi.imageList,
             audioList: this.props.poi.audioList,
@@ -107,11 +108,12 @@ class POIEditForm extends Component {
     }
 
     onSubmit = event => {
-        const { name, longitude, latitude, fileupload, imageList, audioList } = this.state;
+        const { name, longitude, latitude, description, fileupload, imageList, audioList } = this.state;
     
         const data = {
           name: name,
           location: new firebase.firestore.GeoPoint(parseFloat(latitude), parseFloat(longitude)),
+          description: description,
           last_modified: firebase.firestore.FieldValue.serverTimestamp()
         };
 
@@ -212,7 +214,7 @@ class POIEditForm extends Component {
 
     render() {
 
-        const {name, latitude, longitude} = this.state;
+        const {name, latitude, longitude, description} = this.state;
         
         return (
             <Fragment>
@@ -303,6 +305,19 @@ class POIEditForm extends Component {
                                             </Row>
                                         </TabPane>
                                     </TabContent>
+                                </Col>
+                            </FormGroup>
+                            <FormGroup>
+                                <Label htmlFor="description" xs={12}>Description</Label>
+                                <Col>
+                                    <Input
+                                        type="textarea"
+                                        name="description"
+                                        id="description"
+                                        value={description}
+                                        onChange={this.onChange}
+                                        rows="6"
+                                    />
                                 </Col>
                             </FormGroup>
                             <FormGroup>
