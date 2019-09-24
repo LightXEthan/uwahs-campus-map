@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from 'react';
 
-import { Button, Modal, ModalHeader, ModalBody, Label, Col, Form, FormGroup, Input, TabContent, TabPane, Nav, NavItem, NavLink, Card, CardTitle, CardImg, Row } from 'reactstrap';
+import { Button, Modal, ModalHeader, ModalBody, Label, Col, Form, FormGroup, Input, TabContent, TabPane, Nav, NavItem, NavLink, Card, CardTitle, CardImg, Row, Progress } from 'reactstrap';
 import classnames from 'classnames';
 
 import ReactAudioPlayer from 'react-audio-player';
@@ -24,7 +24,8 @@ class POIEditForm extends Component {
             isModalOpen: false,
             isFileOpen: false,
             fileShowing: null,
-            activeTab: '1'
+            activeTab: '1',
+            uploadProgress: 0
         }
     }
 
@@ -107,7 +108,7 @@ class POIEditForm extends Component {
     }
 
     onSubmit = event => {
-        const { name, longitude, latitude, description, fileupload, imageList, audioList } = this.state;
+        const { name, longitude, latitude, description, fileupload, imageList, audioList, uploadProgress } = this.state;
     
         const data = {
           name: name,
@@ -143,7 +144,7 @@ class POIEditForm extends Component {
                 // monitor progress of file upload
                 uploadTask.on('state_changed', (snapshot) => {
                         var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-                        console.log('Upload is ' + progress + '% done');
+                        this.setState({ uploadProgress: progress }); 
                     },
                     error => {
                         console.log(error);
@@ -172,7 +173,7 @@ class POIEditForm extends Component {
                         });
 
                         // Resets the file states
-                        this.setState({ fileupload: null });
+                        this.setState({ fileupload: null, uploadProgress: 0 });
                         this.toggleModal();
                     },
                     error => {
@@ -180,76 +181,6 @@ class POIEditForm extends Component {
                         alert("Error with getting file from firestore.");
                     })
                 });
-
-                // get the download URL
-                /*storageRef.getDownloadURL().then((url) => {
-                    if (type === 'image') {
-                        imageList.push(url);
-                        data["imageList"] = imageList;
-                    }
-                    else if (type === 'audio') {
-                        audioList.push(url);
-                        data["audioList"] = audioList;
-                    }
-                    // Updates the poi with the new data
-                    this.props.firebase.poiUpdate(this.props.poi._id).set(data, { merge: true });
-
-                    // Adds the file metadata to the files collection
-                    this.props.firebase.poif(this.props.poi._id).add({
-                        name: null,
-                        description: null,
-                        filepath: storageRef.fullPath,
-                        filetype: type,
-                        url: url
-                    });
-
-                    // Resets the file states
-                    this.setState({ fileupload: null });
-                    this.toggleModal();
-                },
-                error => {
-                    console.log(error);
-                    alert("Error with getting file from firestore.");
-                });*/
-
-                // uploads file to firebase
-                /*storageRef.put(fileupload).then(() => {
-                // gets the url from the uploaded file
-                    storageRef.getDownloadURL().then(
-                        (url) => {
-                            if (type === 'image') {
-                                imageList.push(url);
-                                data["imageList"] = imageList;
-                            }
-                            else if (type === 'audio') {
-                                audioList.push(url);
-                                data["audioList"] = audioList;
-                            }
-
-                            // Updates the poi with the new data
-                            this.props.firebase.poiUpdate(this.props.poi._id).set(data, { merge: true });
-
-                            // Adds the file metadata to the files collection
-                            this.props.firebase.poif(this.props.poi._id).add({
-                                name: null,
-                                description: null,
-                                filepath: storageRef.fullPath,
-                                filetype: type,
-                                url: url
-                            });
-
-                            // Resets the file states
-                            this.setState({ fileupload: null });
-                            this.toggleModal();
-                        },
-                        error => {
-                        console.log(error);
-                        alert("Error with getting file from firestore.");
-                    });
-                }, error => {
-                    console.log(error);
-                    alert("Error with uploading file to firebase storage.");
-                });*/
             }
         }
     
@@ -288,7 +219,7 @@ class POIEditForm extends Component {
 
     render() {
 
-        const {name, latitude, longitude, description} = this.state;
+        const {name, latitude, longitude, description, uploadProgress} = this.state;
         
         return (
             <Fragment>
@@ -403,6 +334,11 @@ class POIEditForm extends Component {
                                         id="fileupload"
                                         onChange={this.onChangeFile}
                                     />
+                                </Col>
+                            </FormGroup>
+                            <FormGroup>
+                                <Col xs={6}>
+                                    <Progress value={uploadProgress} />
                                 </Col>
                             </FormGroup>
                             <FormGroup>
