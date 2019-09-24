@@ -1,9 +1,19 @@
-import React from "react";
+import React, {Component, Fragment} from "react";
+import ReactMarkdown from 'react-markdown';
 
-class Documentation extends React.Component {
+const text = `
+
+## Documentation
+\n
+The documentation of this project can be found in our [GitHub wiki: here!](https://github.com/LightXEthan/uwahs-campus-map/wiki)
+`;
+
+class Documentation extends Component {
   render() {
     return (
-      <h1>I have a blue name.</h1>
+      <Fragment>
+        <ReactMarkdown source={text} />
+      </Fragment>
     )
   }
 }
