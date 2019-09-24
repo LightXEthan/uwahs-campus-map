@@ -3,7 +3,6 @@ import { compose, withProps } from "recompose";
 import dotenv from "dotenv";
 import { Spinner  } from 'reactstrap';
 import userMarker from './locateMarker.png';
-import compassMarker from './locateMarkerPoint.png';
 import {
   withScriptjs,
   withGoogleMap,
@@ -83,7 +82,6 @@ const Map = compose(
             lat: props.currentLocation.lat,
             lng: props.currentLocation.lng,                      
           }}
-          onClick={props.onMarkerClick}
         />
 
   </GoogleMap>
