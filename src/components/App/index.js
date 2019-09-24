@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import React, { Fragment} from "react";
 import { BrowserRouter as Router, Route } from "react-router-dom";
 
 import MapPage from "../MapPage";
@@ -7,9 +7,8 @@ import Navigation from "../Navigation";
 import SignInPage from "../SignIn";
 import AdminPage from "../Admin";
 import PasswordForgetPage from "../PasswordForget";
-
-import { withFirebase } from "../Firebase";
 import * as ROUTES from "../../constants/routes";
+import { withAuthentication } from "../Session";
 
 const App = () => (
   <Router>
@@ -24,5 +23,4 @@ const App = () => (
   </Router>
 );
 
-// export default withFirebase(App);
-export default App;
+export default withAuthentication(App);

@@ -2,6 +2,7 @@ import React from "react";
 import app from "firebase/app";
 import "firebase/auth";
 import "firebase/firestore";
+import "firebase/firebase-storage";
 
 require("dotenv").config();
 
@@ -21,12 +22,15 @@ class Firebase {
     this.auth = app.auth();
 
     this.db = app.firestore();
+
+    this.storage = app.storage();
   }
 
   // Points of interest firestore database
-  poi = poiid => this.db.doc(`poi/${poiid}`);
-
+  poi = () => this.db.collection("poi").doc();
   pois = () => this.db.collection("poi");
+  poif = poiid => this.db.collection("poi").doc(poiid).collection("files");
+  poiUpdate = poiid => this.db.collection("poi").doc(poiid);
 
   // *** Auth API ***
 
