@@ -43,7 +43,6 @@ const Map = compose(
             lat: props.currentLocation.lat,
             lng: props.currentLocation.lng
           }}
-          onClick={props.onMarkerClick}
         />
         {props.POIList.map(poi => (
           <Marker
