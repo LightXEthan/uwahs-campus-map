@@ -137,8 +137,83 @@ class POIEditForm extends Component {
             if (type !== null) {
                 var storageRef = this.props.firebase.storage.ref(type + 's/' + fileupload.name);
         
+                // upload file
+                var uploadTask = storageRef.put(fileupload);
+
+                // monitor progress of file upload
+                uploadTask.on('state_changed', (snapshot) => {
+                        var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                        console.log('Upload is ' + progress + '% done');
+                    },
+                    error => {
+                        console.log(error);
+                        alert("Error with uploading file to firebase storage.");
+                    },
+                    () => {
+                        storageRef.getDownloadURL().then((url) => {
+                        if (type === 'image') {
+                            imageList.push(url);
+                            data["imageList"] = imageList;
+                        }
+                        else if (type === 'audio') {
+                            audioList.push(url);
+                            data["audioList"] = audioList;
+                        }
+                        // Updates the poi with the new data
+                        this.props.firebase.poiUpdate(this.props.poi._id).set(data, { merge: true });
+
+                        // Adds the file metadata to the files collection
+                        this.props.firebase.poif(this.props.poi._id).add({
+                            name: null,
+                            description: null,
+                            filepath: storageRef.fullPath,
+                            filetype: type,
+                            url: url
+                        });
+
+                        // Resets the file states
+                        this.setState({ fileupload: null });
+                        this.toggleModal();
+                    },
+                    error => {
+                        console.log(error);
+                        alert("Error with getting file from firestore.");
+                    })
+                });
+
+                // get the download URL
+                /*storageRef.getDownloadURL().then((url) => {
+                    if (type === 'image') {
+                        imageList.push(url);
+                        data["imageList"] = imageList;
+                    }
+                    else if (type === 'audio') {
+                        audioList.push(url);
+                        data["audioList"] = audioList;
+                    }
+                    // Updates the poi with the new data
+                    this.props.firebase.poiUpdate(this.props.poi._id).set(data, { merge: true });
+
+                    // Adds the file metadata to the files collection
+                    this.props.firebase.poif(this.props.poi._id).add({
+                        name: null,
+                        description: null,
+                        filepath: storageRef.fullPath,
+                        filetype: type,
+                        url: url
+                    });
+
+                    // Resets the file states
+                    this.setState({ fileupload: null });
+                    this.toggleModal();
+                },
+                error => {
+                    console.log(error);
+                    alert("Error with getting file from firestore.");
+                });*/
+
                 // uploads file to firebase
-                storageRef.put(fileupload).then(() => {
+                /*storageRef.put(fileupload).then(() => {
                 // gets the url from the uploaded file
                     storageRef.getDownloadURL().then(
                         (url) => {
@@ -174,7 +249,7 @@ class POIEditForm extends Component {
                 }, error => {
                     console.log(error);
                     alert("Error with uploading file to firebase storage.");
-                });
+                });*/
             }
         }
     
