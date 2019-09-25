@@ -25,6 +25,7 @@ class POIEditForm extends Component {
             isFileOpen: false,
             fileShowing: null,
             activeTab: '1',
+            showProgressBar: false,
             uploadProgress: 0
         }
     }
@@ -108,7 +109,7 @@ class POIEditForm extends Component {
     }
 
     onSubmit = event => {
-        const { name, longitude, latitude, description, fileupload, imageList, audioList, uploadProgress } = this.state;
+        const { name, longitude, latitude, description, fileupload, imageList, audioList} = this.state;
     
         const data = {
           name: name,
@@ -122,6 +123,8 @@ class POIEditForm extends Component {
             this.props.firebase.poiUpdate(this.props.poi._id).set(data, { merge: true });
             this.toggleModal();
           } else {
+
+            this.setState({ showProgressBar: true });
             // detects the type of file to organise into file in firebase storage
             var type = null;
             if (fileupload.type.includes('image')) {
@@ -173,7 +176,7 @@ class POIEditForm extends Component {
                         });
 
                         // Resets the file states
-                        this.setState({ fileupload: null, uploadProgress: 0 });
+                        this.setState({ fileupload: null, uploadProgress: 0, showProgressBar: false });
                         this.toggleModal();
                     },
                     error => {
@@ -219,7 +222,7 @@ class POIEditForm extends Component {
 
     render() {
 
-        const {name, latitude, longitude, description, uploadProgress} = this.state;
+        const {name, latitude, longitude, description, uploadProgress, showProgressBar} = this.state;
         
         return (
             <Fragment>
@@ -338,7 +341,7 @@ class POIEditForm extends Component {
                             </FormGroup>
                             <FormGroup>
                                 <Col xs={6}>
-                                    <Progress value={uploadProgress} />
+                                    {showProgressBar && <Progress value={uploadProgress} />}
                                 </Col>
                             </FormGroup>
                             <FormGroup>

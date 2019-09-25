@@ -11,6 +11,7 @@ const INITIAL_STATE = {
   latitude: 0,        // Latitude
   description: "",    // Description of the poi
   fileupload: null,   // holds the file that is being uploaded
+  showProgressBar: false, // display file upload progress bar
   uploadProgress: 0    // file upload progress
 }
 class POIForm extends Component {
@@ -70,6 +71,8 @@ class POIForm extends Component {
       this.toggleModal();
 
     } else {
+      this.setState({ showProgressBar: true });
+
       // detects the type of file to organise into file in firebase storage
       var type = null;
       if (fileupload.type.includes('image')) {
@@ -135,7 +138,7 @@ class POIForm extends Component {
   };
 
   render() {
-    const { name, longitude, latitude, description, uploadProgress } = this.state;
+    const { name, longitude, latitude, description, uploadProgress, showProgressBar } = this.state;
     const isInvalid = name === '';
 
     return (
@@ -216,7 +219,7 @@ class POIForm extends Component {
                         </FormGroup>
                         <FormGroup>
                                 <Col xs={6}>
-                                    <Progress value={uploadProgress} />
+                                  {showProgressBar && <Progress value={uploadProgress} />}
                                 </Col>
                         </FormGroup>
                         <FormGroup className="d-flex">
