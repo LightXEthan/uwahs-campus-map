@@ -70,7 +70,7 @@ const Map = compose(
               lat: marker.location.latitude,
               lng: marker.location.longitude
             }}
-            onClick={props.onMarkerClick}
+            onClick={() => {props.onMarkerClick(marker);}}
           />
         ))}
       </Fragment>
