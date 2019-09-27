@@ -26,12 +26,17 @@ class Firebase {
     this.storage = app.storage();
   }
 
-  // Points of interest firestore database
+  // *** Points of interest Firestore database references ***
+  // Collection reference
   pois = () => this.db.collection("poi");
+
+  // File metadata reference, input document id
   poif = poiid => this.db.collection("poi").doc(poiid).collection("files");
+
+  // Updating poi reference, input document id
   poiUpdate = poiid => this.db.collection("poi").doc(poiid);
 
-  // *** Auth API ***
+  // *** Auth API from Firebase Authentication ***
 
   doSignInWithEmailAndPassword = (email, password) =>
     this.auth.signInWithEmailAndPassword(email, password);

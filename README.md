@@ -46,3 +46,23 @@ Find the meeting agendas and minutes at the [wiki](https://github.com/LightXEtha
 - [React Router Documentation](https://reacttraining.com/react-router/web/)
 - [Firebase Documentation](https://firebase.google.com/docs)
 - [Google Maps Documentation](https://developers.google.com/maps/documentation/javascript/tutorial)
+
+## Firestore data structure
+Collection: 'poi'
+- Document: random id
+    - Name: "Barry J Marshall"
+    - Description: "Commonly known as the science library."
+    - Location: [31.9830624 S, 115.8162723 E]
+    - last_modified: date last modified
+    - date_created: date created
+    - imageList: array of download url of images
+    - audioList: array of download url of audios
+    - **Collection: 'files'**
+        - Document: random id
+            - Name: "Kookaburra"
+            - Description: "A description"
+            - url: 'download url'
+            - filepath: 'filepath in firebase storage'
+            - filetype: 'image'
+    
+*Descriptions and reasoning for using this data strcutre can be found in the [development docs](https://docs.google.com/document/d/1KBm7-WoN9Ej_YCd167hBMFTxSYeOZo-kPdkqS3dOfWc/edit?usp=sharing).* 
