@@ -1,5 +1,5 @@
 import React, { Component, Fragment } from "react";
-import { Button, Modal, ModalHeader, ModalBody, Label, Col, Form, FormGroup, Input } from 'reactstrap';
+import { Button, Modal, ModalHeader, ModalBody, Label, Col, Form, FormGroup, Input, Progress } from 'reactstrap';
 
 import { withFirebase } from "../Firebase";
 import firebase from 'firebase/app';
@@ -10,7 +10,9 @@ const INITIAL_STATE = {
   longitude: 0,       // Longitude
   latitude: 0,        // Latitude
   description: "",    // Description of the poi
-  fileupload: null   // holds the file that is being uploaded
+  fileupload: null,   // holds the file that is being uploaded
+  showProgressBar: false, // display file upload progress bar
+  uploadProgress: 0    // file upload progress
 }
 class POIForm extends Component {
   constructor(props) {
@@ -66,9 +68,12 @@ class POIForm extends Component {
       this.props.firebase.pois().add(data)
       .then(() => {
         this.setState({ ...INITIAL_STATE });
-      })
+      });
+      this.toggleModal();
 
     } else {
+      this.setState({ showProgressBar: true });
+
       // detects the type of file to organise into file in firebase storage
       var type = null;
       if (fileupload.type.includes('image')) {
@@ -87,16 +92,20 @@ class POIForm extends Component {
         // Create a firebase storage reference to the uploading file. Types are put in folers
         var storageRef = this.props.firebase.storage.ref(type + 's/' + fileupload.name);
 
-        var nimages = 0 + data.imageArray.length;
-        console.log(nimages);
+        // upload file
+        var uploadTask = storageRef.put(fileupload);
 
-        // Check if file exists already
-
-        // uploads file to firebase storage
-        storageRef.put(fileupload).then(() => {
-          // gets the url from the uploaded file
-          storageRef.getDownloadURL().then(
-            (url) => {
+        // monitor progress of file upload
+        uploadTask.on('state_changed', (snapshot) => {
+          var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+          this.setState({ uploadProgress: progress }); 
+          },
+          error => {
+              console.log(error);
+              alert("Error with uploading file to firebase storage.");
+          },
+          () => {
+            storageRef.getDownloadURL().then((url) => {
               if (type === 'image') {
                 data["imageList"] = [url]; // RemoveFirestore3
               }
@@ -130,28 +139,22 @@ class POIForm extends Component {
                   }
                 });
 
-              }).then(() => {
                 this.setState({ ...INITIAL_STATE });
-              });
+                this.toggleModal();
+              })
             },
             error => {
-              console.log(error);
-              alert("Error with getting file from firestore.");
+            console.log(error);
+            alert("Error with getting file from firestore.");
           })
-        }
-        , error => {
-          console.log(error);
-          alert("Error with uploading file to firebase storage.");
-        });
-      }
-    }
-
-    this.toggleModal();
+      });
+    }}
+    
     e.preventDefault();
   };
 
   render() {
-    const { name, longitude, latitude, description } = this.state;
+    const { name, longitude, latitude, description, uploadProgress, showProgressBar } = this.state;
     const isInvalid = name === '';
 
     return (
@@ -229,6 +232,11 @@ class POIForm extends Component {
                                     onChange={this.onChangeFile}
                                 />
                             </Col>
+                        </FormGroup>
+                        <FormGroup>
+                                <Col xs={6}>
+                                  {showProgressBar && <Progress value={uploadProgress} />}
+                                </Col>
                         </FormGroup>
                         <FormGroup className="d-flex">
                             <div className="mr-auto p-2">
