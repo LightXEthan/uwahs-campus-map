@@ -374,26 +374,6 @@ class POIEditForm extends Component {
                 </Col>
               </FormGroup>
               <FormGroup>
-                {/* Describes the positioning of the buttons at the bottom of the form*/}
-                <Col>
-                  <Button
-                    type="button"
-                    color="danger"
-                    onClick={this.toggleNestedModal}
-                  >
-                    Delete
-                  </Button>
-                  <Button
-                    type="submit"
-                    color="primary"
-                    onClick={this.onSubmit}
-                    style={{ position: "absolute", right: "16px" }}
-                  >
-                    Save
-                  </Button>
-                </Col>
-              </FormGroup>
-              <FormGroup>
                 <Col>
                   <Nav tabs>
                     <NavItem>
@@ -452,8 +432,21 @@ class POIEditForm extends Component {
                 </Col>
               </FormGroup>
               <FormGroup>
-                <Col xs={12}>
-                  <Button type="submit" color="primary">
+                {/* Describes the positioning of the buttons at the bottom of the form*/}
+                <Col>
+                  <Button
+                    type="button"
+                    color="danger"
+                    onClick={this.toggleNestedModal}
+                  >
+                    Delete
+                  </Button>
+                  <Button
+                    type="submit"
+                    color="primary"
+                    onClick={this.onSubmit}
+                    style={{ position: "absolute", right: "16px" }}
+                  >
                     Save
                   </Button>
                 </Col>
