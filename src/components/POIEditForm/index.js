@@ -375,7 +375,7 @@ class POIEditForm extends Component {
               </FormGroup>
               <FormGroup>
                 {/* Describes the positioning of the buttons at the bottom of the form*/}
-                <Row noGutters="true">
+                <Row noGutters>
                   <Button
                     type="button"
                     color="danger"
@@ -467,7 +467,7 @@ class POIEditForm extends Component {
                 Are you sure you want to delete {this.state.name}?
               </ModalHeader>
               <ModalBody>
-                <Row noGutters="true">
+                <Row noGutters>
                   <Col xs={2}>
                     <Button
                       type="button"
