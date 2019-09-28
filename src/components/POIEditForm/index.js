@@ -18,7 +18,8 @@ import {
   Card,
   CardTitle,
   CardImg,
-  Row
+  Row,
+  Progress
 } from "reactstrap";
 import classnames from "classnames";
 
@@ -42,7 +43,9 @@ class POIEditForm extends Component {
       isModalOpen: false,
       isFileOpen: false,
       fileShowing: null,
-      activeTab: "1"
+      activeTab: "1",
+      showProgressBar: false,
+      uploadProgress: 0
     };
   }
 
@@ -53,18 +56,17 @@ class POIEditForm extends Component {
       });
     }
   };
-  //sets the state variable of the EditForm Modal (the modal being what you actually see)
-  //to its opposite. The => syntax is used for simplicity and to eliminate the need for
-  //binding function to allow this. calls.
+
+  // Toggles the state variable of the EditForm Modal to its opposite
   toggleModal = () => {
     this.setState({
       isModalOpen: !this.state.isModalOpen
     });
   };
 
+  // When an image is selected, the modal is open to confirm deleting the file
+  // The file selected is saved in the state, null is passed when canceling (toggle off delete modal)
   toggleFile(file) {
-    // When an image is selected, the modal is open to confirm deleting the file
-    // The file selected is saved in the state, null is passed when canceling (toggle off delete modal)
     this.setState({
       isFileOpen: !this.state.isFileOpen,
       fileShowing: file
@@ -147,7 +149,8 @@ class POIEditForm extends Component {
     this.setState({ isFileOpen: !this.state.isFileOpen });
   };
 
-  //calls the database delete function for the specified poi and then hides the modals.
+
+  // Calls the database delete function for the specified poi and then hides the modals.
   onPOIDelete = () => {
     this.props.firebase.poiDelete(this.props.poi._id);
     this.toggleNestedModal();
@@ -177,11 +180,13 @@ class POIEditForm extends Component {
 
     if (fileupload === null) {
       // data is written to firebase
-      this.props.firebase
-        .poiUpdate(this.props.poi._id)
-        .set(data, { merge: true });
+      this.props.firebase.poiUpdate(this.props.poi._id).set(data, { merge: true });
       this.toggleModal();
     } else {
+
+      // starts the progress bar
+      this.setState({ showProgressBar: true });
+
       // detects the type of file to organise into file in firebase storage
       var type = null;
       if (fileupload.type.includes("image")) {
@@ -200,51 +205,51 @@ class POIEditForm extends Component {
           type + "s/" + fileupload.name
         );
 
-        // uploads file to firebase
-        storageRef.put(fileupload).then(
-          () => {
-            // gets the url from the uploaded file
-            storageRef.getDownloadURL().then(
-              url => {
-                if (type === "image") {
-                  imageList.push(url);
-                  data["imageList"] = imageList;
-                } else if (type === "audio") {
-                  audioList.push(url);
-                  data["audioList"] = audioList;
-                }
+        // upload file
+        var uploadTask = storageRef.put(fileupload);
 
-                // Updates the poi with the new data
-                this.props.firebase
-                  .poiUpdate(this.props.poi._id)
-                  .set(data, { merge: true });
-
-                // Adds the file metadata to the files collection
-                this.props.firebase.poif(this.props.poi._id).add({
-                  name: null,
-                  description: null,
-                  filepath: storageRef.fullPath,
-                  filetype: type,
-                  url: url
-                });
-
-                // Resets the file states
-                this.setState({ fileupload: null });
-                this.toggleModal();
-              },
-              error => {
-                console.log(error);
-                alert("Error with getting file from firestore.");
-              }
-            );
-          },
+        // monitor progress of file upload
+        uploadTask.on('state_changed', (snapshot) => {
+          var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+          this.setState({ uploadProgress: progress });
+        },
           error => {
             console.log(error);
             alert("Error with uploading file to firebase storage.");
-          }
-        );
+          },
+          () => {
+            storageRef.getDownloadURL().then((url) => {
+              if (type === 'image') {
+                imageList.push(url);
+                data["imageList"] = imageList;
+              }
+              else if (type === 'audio') {
+                audioList.push(url);
+                data["audioList"] = audioList;
+              }
+              // Updates the poi with the new data
+              this.props.firebase.poiUpdate(this.props.poi._id).set(data, { merge: true });
+
+              // Adds the file metadata to the files collection
+              this.props.firebase.poif(this.props.poi._id).add({
+                name: null,
+                description: null,
+                filepath: storageRef.fullPath,
+                filetype: type,
+                url: url
+              });
+
+              // Resets the file states
+              this.setState({ fileupload: null, uploadProgress: 0, showProgressBar: false });
+            },
+              error => {
+                console.log(error);
+                alert("Error with getting file from firestore.");
+              })
+          });
       }
     }
+
     event.preventDefault();
   };
 
@@ -284,7 +289,7 @@ class POIEditForm extends Component {
   }
 
   render() {
-    const { name, latitude, longitude, description } = this.state;
+    const {name, latitude, longitude, description, uploadProgress, showProgressBar} = this.state;
 
     return (
       <Fragment>
@@ -439,6 +444,11 @@ class POIEditForm extends Component {
                     id="fileupload"
                     onChange={this.onChangeFile}
                   />
+                </Col>
+              </FormGroup>
+              <FormGroup>
+                <Col xs={6}>
+                  {showProgressBar && <Progress value={uploadProgress} />}
                 </Col>
               </FormGroup>
               <FormGroup>
