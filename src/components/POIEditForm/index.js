@@ -375,7 +375,7 @@ class POIEditForm extends Component {
               </FormGroup>
               <FormGroup>
                 {/* Describes the positioning of the buttons at the bottom of the form*/}
-                <Row noGutters>
+                <Col>
                   <Button
                     type="button"
                     color="danger"
@@ -391,7 +391,7 @@ class POIEditForm extends Component {
                   >
                     Save
                   </Button>
-                </Row>
+                </Col>
               </FormGroup>
               <FormGroup>
                 <Col>
