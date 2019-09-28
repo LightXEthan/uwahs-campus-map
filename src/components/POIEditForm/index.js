@@ -93,11 +93,11 @@ class POIEditForm extends Component {
     }
   };
 
-    getFileName = () => {
-      if (this.state.isFileOpen) {
+  getFileName = () => {
+    if (this.state.isFileOpen) {
 
-      }
-    };
+    }
+  };
 
   deleteFile = () => {
     var filepath = null; // Used to delete the file from firebase storage
@@ -254,7 +254,7 @@ class POIEditForm extends Component {
               className="card-img-top"
               src={image.url}
               alt="Image name here"
-              /*onClick={() => this.toggleFile(image)}*/ 
+              /*onClick={() => this.toggleFile(image)}*/
             />
             <CardTitle>{image.name}</CardTitle>
           </Card>
@@ -278,7 +278,7 @@ class POIEditForm extends Component {
   }
 
   render() {
-    const {name, latitude, longitude, description, uploadProgress, showProgressBar} = this.state;
+    const { name, latitude, longitude, description, uploadProgress, showProgressBar } = this.state;
 
     return (
       <Fragment>

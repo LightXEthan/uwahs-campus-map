@@ -18,12 +18,12 @@ class POIForm extends Component {
   constructor(props) {
     super(props);
 
-    this.state = { ...INITIAL_STATE};
+    this.state = { ...INITIAL_STATE };
   }
 
   toggleModal = () => {
     this.setState({
-        isModalOpen: !this.state.isModalOpen
+      isModalOpen: !this.state.isModalOpen
     });
   };
 
@@ -42,7 +42,7 @@ class POIForm extends Component {
 
   onSubmit = e => {
     const { name, longitude, latitude, description, fileupload } = this.state;
-    
+
     /* data to be written to firebase
      * name: name of the location
      * description: decription of the location
@@ -51,7 +51,7 @@ class POIForm extends Component {
      * date_created: date created
      * imageList: [list of images ref]
      * audioList: [list of audio ref]
-     */ 
+     */
     var data = {
       name: name,
       description: description,
@@ -66,9 +66,9 @@ class POIForm extends Component {
     if (fileupload === null) {
       // data is written to firebase
       this.props.firebase.pois().add(data)
-      .then(() => {
-        this.setState({ ...INITIAL_STATE });
-      });
+        .then(() => {
+          this.setState({ ...INITIAL_STATE });
+        });
       this.toggleModal();
 
     } else {
@@ -98,11 +98,11 @@ class POIForm extends Component {
         // monitor progress of file upload
         uploadTask.on('state_changed', (snapshot) => {
           var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-          this.setState({ uploadProgress: progress }); 
-          },
+          this.setState({ uploadProgress: progress });
+        },
           error => {
-              console.log(error);
-              alert("Error with uploading file to firebase storage.");
+            console.log(error);
+            alert("Error with uploading file to firebase storage.");
           },
           () => {
             storageRef.getDownloadURL().then((url) => {
@@ -143,13 +143,14 @@ class POIForm extends Component {
                 this.toggleModal();
               })
             },
-            error => {
-            console.log(error);
-            alert("Error with getting file from firestore.");
-          })
-      });
-    }}
-    
+              error => {
+                console.log(error);
+                alert("Error with getting file from firestore.");
+              })
+          });
+      }
+    }
+
     e.preventDefault();
   };
 
@@ -158,102 +159,102 @@ class POIForm extends Component {
     const isInvalid = name === '';
 
     return (
-        <Fragment>
-            <Button outline color="none" onClick={this.toggleModal}>
-                <i className="fa fa-plus-circle fa-3x"></i>
-            </Button> 
-            <Modal isOpen={this.state.isModalOpen} toggle={this.toggleModal}>
-                <ModalHeader toggle={this.toggleModal}>Add point of interest</ModalHeader>
-                <ModalBody>
-                    <Form onSubmit={this.onSubmit}>
-                        <FormGroup>
-                            <Label htmlFor="name" xs={12}>Name</Label>
-                            <Col>
-                                <Input
-                                    id="name"
-                                    name="name"
-                                    value={name}
-                                    onChange={this.onChange}
-                                    type="text"
-                                    placeholder="point of interest"
-                                />
-                            </Col>
-                        </FormGroup>
-                        <FormGroup>
-                            <Label htmlFor="latitude" xs={12}>Latitude</Label>
-                            <Col>
-                                <Input
-                                    type="number"
-                                    name="latitude"
-                                    id="latitude"
-                                    value={latitude}
-                                    onChange={this.onChange}
-                                    min="-90"
-                                    max="90"
-                                    step="any"
-                                />
-                            </Col>
-                        </FormGroup>
-                        <FormGroup>
-                            <Label htmlFor="longitude" xs={12}>Longitude</Label>
-                            <Col>
-                                <Input
-                                    type="number"
-                                    name="longitude"
-                                    id="longitude"
-                                    value={longitude}
-                                    onChange={this.onChange}
-                                    min="-180"
-                                    max="180"
-                                    step="any"
-                                />
-                            </Col>
-                        </FormGroup>
-                        <FormGroup>
-                            <Label htmlFor="description" xs={12}>Description</Label>
-                            <Col>
-                                <Input
-                                    type="textarea"
-                                    name="description"
-                                    id="description"
-                                    value={description}
-                                    onChange={this.onChange}
-                                    rows="6"
-                                />
-                            </Col>
-                        </FormGroup>
-                        <FormGroup>
-                            <Label htmlFor="fileupload" xs={12}>Upload a file. (Image/Audio)</Label>
-                            <Col>
-                                <Input
-                                    type="file"
-                                    name="fileupload"
-                                    id="fileupload"
-                                    onChange={this.onChangeFile}
-                                />
-                            </Col>
-                        </FormGroup>
-                        <FormGroup>
-                                <Col xs={6}>
-                                  {showProgressBar && <Progress value={uploadProgress} />}
-                                </Col>
-                        </FormGroup>
-                        <FormGroup className="d-flex">
-                            <div className="mr-auto p-2">
-                                <Button onClick={this.toggleModal}>
-                                    Cancel
+      <Fragment>
+        <Button outline color="none" onClick={this.toggleModal}>
+          <i className="fa fa-plus-circle fa-3x"></i>
+        </Button>
+        <Modal isOpen={this.state.isModalOpen} toggle={this.toggleModal}>
+          <ModalHeader toggle={this.toggleModal}>Add point of interest</ModalHeader>
+          <ModalBody>
+            <Form onSubmit={this.onSubmit}>
+              <FormGroup>
+                <Label htmlFor="name" xs={12}>Name</Label>
+                <Col>
+                  <Input
+                    id="name"
+                    name="name"
+                    value={name}
+                    onChange={this.onChange}
+                    type="text"
+                    placeholder="point of interest"
+                  />
+                </Col>
+              </FormGroup>
+              <FormGroup>
+                <Label htmlFor="latitude" xs={12}>Latitude</Label>
+                <Col>
+                  <Input
+                    type="number"
+                    name="latitude"
+                    id="latitude"
+                    value={latitude}
+                    onChange={this.onChange}
+                    min="-90"
+                    max="90"
+                    step="any"
+                  />
+                </Col>
+              </FormGroup>
+              <FormGroup>
+                <Label htmlFor="longitude" xs={12}>Longitude</Label>
+                <Col>
+                  <Input
+                    type="number"
+                    name="longitude"
+                    id="longitude"
+                    value={longitude}
+                    onChange={this.onChange}
+                    min="-180"
+                    max="180"
+                    step="any"
+                  />
+                </Col>
+              </FormGroup>
+              <FormGroup>
+                <Label htmlFor="description" xs={12}>Description</Label>
+                <Col>
+                  <Input
+                    type="textarea"
+                    name="description"
+                    id="description"
+                    value={description}
+                    onChange={this.onChange}
+                    rows="6"
+                  />
+                </Col>
+              </FormGroup>
+              <FormGroup>
+                <Label htmlFor="fileupload" xs={12}>Upload a file. (Image/Audio)</Label>
+                <Col>
+                  <Input
+                    type="file"
+                    name="fileupload"
+                    id="fileupload"
+                    onChange={this.onChangeFile}
+                  />
+                </Col>
+              </FormGroup>
+              <FormGroup>
+                <Col xs={6}>
+                  {showProgressBar && <Progress value={uploadProgress} />}
+                </Col>
+              </FormGroup>
+              <FormGroup className="d-flex">
+                <div className="mr-auto p-2">
+                  <Button onClick={this.toggleModal}>
+                    Cancel
                                 </Button>
-                            </div>
-                            <div className="p-2">
-                                <Button type="submit" color="primary" disabled={isInvalid}>
-                                    Save
+                </div>
+                <div className="p-2">
+                  <Button type="submit" color="primary" disabled={isInvalid}>
+                    Save
                                 </Button>
-                            </div>
-                        </FormGroup>
-                    </Form>
-                </ModalBody>
-            </Modal>  
-        </Fragment>        
+                </div>
+              </FormGroup>
+            </Form>
+          </ModalBody>
+        </Modal>
+      </Fragment>
     );
   }
 }
