@@ -57,7 +57,8 @@ class POIForm extends Component {
       last_modified: firebase.firestore.FieldValue.serverTimestamp(),
       date_created: firebase.firestore.FieldValue.serverTimestamp(),
       imageList: [],
-      audioList: []
+      audioList: [],
+      imageArray: []
     };
 
     if (fileupload === null) {
@@ -86,6 +87,9 @@ class POIForm extends Component {
         // Create a firebase storage reference to the uploading file. Types are put in folers
         var storageRef = this.props.firebase.storage.ref(type + 's/' + fileupload.name);
 
+        var nimages = 0 + data.imageArray.length;
+        console.log(nimages);
+
         // Check if file exists already
 
         // uploads file to firebase storage
@@ -94,7 +98,7 @@ class POIForm extends Component {
           storageRef.getDownloadURL().then(
             (url) => {
               if (type === 'image') {
-                data["imageList"] = [url];
+                data["imageList"] = [url]; // RemoveFirestore3
               }
               else if (type === 'audio') {
                 data["audioList"] = [url];
@@ -109,8 +113,23 @@ class POIForm extends Component {
                   filepath: storageRef.fullPath,
                   filetype: type,
                   url: url
+                }).then(metaRef => {
+
+                  if (type === 'image') {
+                    // Adds a new image using a map to the image array
+                    this.props.firebase.poiUpdate(docRef.id).update({
+                      imageArray: firebase.firestore.FieldValue.arrayUnion({
+                        name: null,
+                        url: url,
+                        metaID: metaRef.id
+                      })
+                    });
+                  }
+                  else if (type === 'audio') {
+                    // TODOFirestore3, add audio
+                  }
                 });
-                
+
               }).then(() => {
                 this.setState({ ...INITIAL_STATE });
               });
