@@ -31,14 +31,16 @@ const MapPOIInfo = props => {
           <Row noGutters className="carouselRow">
             <Col>
               <Slider {...carouselSettings}>
-                {poi.imageList.length === 0
+                {poi.imageArray.length === 0
                   ? "There is no images for this point at the moment."
-                  : poi.imageList.map(image => (
-                      <img
-                        src={image}
-                        key={image.split("token=")[1]}
-                        alt="UWA History"
-                      />
+                  : poi.imageArray.map(image => (
+                      <div>
+                        <img
+                          src={image.url}
+                          key={image.url.split("token=")[1]}
+                          alt="UWA History"
+                        />
+                      </div>
                     ))}
               </Slider>
             </Col>

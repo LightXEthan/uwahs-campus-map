@@ -131,7 +131,6 @@ class POIEditForm extends Component {
         if (filetype === 'image') {
           this.props.firebase.poiUpdate(this.props.poi._id).update({
             imageArray: firebase.firestore.FieldValue.arrayRemove(this.state.fileSelected)
-
           });
         }
         else if (filetype === 'audio') {
@@ -259,7 +258,6 @@ class POIEditForm extends Component {
                   this.props.firebase.poiUpdate(this.props.poi._id).update({
                     // Add to firestore
                     imageArray: firebase.firestore.FieldValue.arrayUnion(metadata)
-
                   });
                 }
                 else if (type === 'audio') {
