@@ -102,56 +102,56 @@ class POIEditForm extends Component {
 
   // Delete the image from imageArray and metafile
   deleteFile = () => {
-    var filepath = null; // Used to delete the file from firebase storage
-    var filetype = null; // Used to delete the specific file type
+    var metaID = this.state.fileSelected.metaID;
 
-    // Delete the files metadata in the files collection
+    // Delete the file from the file array, activeTab = 1 when image
+    if (this.state.activeTab === '1') {
+      // Removes the image on the modal
+      let index = this.state.imageArray.indexOf(this.state.fileSelected);
+      if (index > -1) {
+        this.state.imageArray.splice(index, 1);
+      }
 
-    this.props.firebase.poif(this.props.poi._id)
-      .doc(this.state.fileSelected.metaID).get().then(doc => {
-        
-      // get the metadata from the metadata document
-      var metadata = doc.data();
-
-      filepath = metadata.filepath;
-      filetype = metadata.filetype;
-
-      this.props.firebase.poif(this.props.poi._id)
-        .doc(this.state.fileSelected.metaID).delete().then(() => {
-          
-        // Delete file from firebase storage
-        //this.props.firebase.storage.ref(filepath).delete();
-
-        // Gets the position of the image in imageArray
-        var index = this.state.imageArray.indexOf(this.state.fileSelected);
-        if (index > -1) {
-          this.state.imageArray.splice(index, 1);
-        }
-
-        // Delete array entry in imageArray
-        if (filetype === 'image') {
-          this.props.firebase.poiUpdate(this.props.poi._id).update({
-            imageArray: firebase.firestore.FieldValue.arrayRemove(this.state.fileSelected)
-          });
-        }
-        else if (filetype === 'audio') {
-          this.props.firebase.poiUpdate(this.props.poi._id).update({
-            audioList: firebase.firestore.FieldValue.arrayRemove(this.state.fileSelected)
-          }).then(() => {
-            // Update the new audio list
-            this.setState({ audioList: this.props.poi.audioList });
-          });
-        }
-
-        // reset states and toggle delete confirmation model
-        this.setState({ fileSelected: null, isFileOpen: !this.state.isFileOpen });
+      // Removes the entry from firestore
+      this.props.firebase.poiUpdate(this.props.poi._id).update({
+        imageArray: firebase.firestore.FieldValue.arrayRemove(this.state.fileSelected)
       });
-    }).catch(error => {
-      console.error(
-        "Error while trying to delete file from Firestore. File selected: ", 
-        this.state.fileSelected, error
-      );
+      
+    }
+    else if (this.state.activeTab === '2') {
+      // Removes the audio on the modal, activeTab = 1 when audio
+      let index = this.state.audioArray.indexOf(this.state.fileSelected);
+      if (index > -1) {
+        this.state.audioArray.splice(index, 1);
+      }
+
+      // Removes the entry from firestore
+      this.props.firebase.poiUpdate(this.props.poi._id).update({
+        audioList: firebase.firestore.FieldValue.arrayRemove(this.state.fileSelected)
+      });
+    }
+
+    // Read the file
+    this.props.firebase.files().doc(metaID).get().then(docRef => {
+      let file = docRef.data();
+      let nref = file.nref;
+
+      if (nref <= 1) {
+        // Delete file from firebase storage
+        //this.props.firebase.storage.ref(file.filepath).delete();
+
+        // Delete the document
+        this.props.firebase.files().doc(metaID).delete();
+        
+      } else {
+        this.props.firebase.files().doc(metaID).update({
+          nref: firebase.firestore.FieldValue.increment(-1)
+        });
+      }
     });
+
+    // reset states and toggle delete confirmation model
+    this.setState({ fileSelected: null, isFileOpen: !this.state.isFileOpen });
   };
 
   // Calls the database delete function for the specified poi and then hides the modals.

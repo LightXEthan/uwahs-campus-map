@@ -107,49 +107,52 @@ class POIForm extends Component {
           },
           () => {
             storageRef.getDownloadURL().then((url) => {
+              
+              // Set metadata
+              var metadata = {
+                name: null,
+                description: null,
+                filepath: storageRef.fullPath,
+                filetype: type,
+                nref: 1,
+                url: url
+              }
+
+              // Create a doc for the metadata in files collection
+              this.props.firebase.files().add(metadata).then(fileRef => {
+                console.log(fileRef);
+
+                // Add file data for poi doc
+                var filedata = {
+                  name: null,
+                  url: url,
+                  metaID: fileRef.id
+                }
+
+                // Sets the data for file
+                if (type === 'image') {
+                  data["imageArray"] = [filedata];
+                }
+                else if (type === 'audio') {
+                  data["audioArray"] = [filedata];
+                }
+
+                // Creates a new document with the data, adds the download link of file and data in firestore
+                this.props.firebase.pois().add(data).then(docRef => {
+                  // Reset the states and closes modal
+                  this.setState({ ...INITIAL_STATE });
+                  this.toggleModal();
+                });
+              });
+
+              // RemoveFirestore3
               if (type === 'image') {
-                data["imageList"] = [url]; // RemoveFirestore3
+                data["imageList"] = [url]; 
               }
               else if (type === 'audio') {
                 data["audioList"] = [url];
               }
-              // Adds the download link and data to firestore
-              this.props.firebase.pois().add(data).then(docRef => {
-
-                // Adds the file metadata to the files collection
-                this.props.firebase.poif(docRef.id).add({
-                  name: null,
-                  description: null,
-                  filepath: storageRef.fullPath,
-                  filetype: type,
-                  url: url
-                }).then(metaRef => {
-
-                  if (type === 'image') {
-                    // Adds a new image using a map to the image array
-                    this.props.firebase.poiUpdate(docRef.id).update({
-                      imageArray: firebase.firestore.FieldValue.arrayUnion({
-                        name: null,
-                        url: url,
-                        metaID: metaRef.id
-                      })
-                    });
-                  }
-                  else if (type === 'audio') {
-                    // Adds a new audio using a map to the audio array
-                    this.props.firebase.poiUpdate(docRef.id).update({
-                      audioArray: firebase.firestore.FieldValue.arrayUnion({
-                        name: null,
-                        url: url,
-                        metaID: metaRef.id
-                      })
-                    });
-                  }
-                });
-
-                this.setState({ ...INITIAL_STATE });
-                this.toggleModal();
-              })
+              // RemoveFirestore3
             },
               error => {
                 console.log(error);
