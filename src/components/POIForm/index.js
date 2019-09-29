@@ -60,7 +60,8 @@ class POIForm extends Component {
       date_created: firebase.firestore.FieldValue.serverTimestamp(),
       imageList: [],
       audioList: [],
-      imageArray: []
+      imageArray: [],
+      audioArray: []
     };
 
     if (fileupload === null) {
@@ -135,7 +136,14 @@ class POIForm extends Component {
                     });
                   }
                   else if (type === 'audio') {
-                    // TODOFirestore3, add audio
+                    // Adds a new audio using a map to the audio array
+                    this.props.firebase.poiUpdate(docRef.id).update({
+                      audioArray: firebase.firestore.FieldValue.arrayUnion({
+                        name: null,
+                        url: url,
+                        metaID: metaRef.id
+                      })
+                    });
                   }
                 });
 
@@ -243,12 +251,12 @@ class POIForm extends Component {
                 <div className="mr-auto p-2">
                   <Button onClick={this.toggleModal}>
                     Cancel
-                                </Button>
+                  </Button>
                 </div>
                 <div className="p-2">
                   <Button type="submit" color="primary" disabled={isInvalid}>
                     Save
-                                </Button>
+                  </Button>
                 </div>
               </FormGroup>
             </Form>
