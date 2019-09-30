@@ -256,7 +256,8 @@ class POIEditForm extends Component {
                       filepath: storageRef.fullPath,
                       filetype: type,
                       nref: 1,
-                      url: url
+                      url: url,
+                      date_added: firebase.firestore.FieldValue.serverTimestamp()
                     }
 
                     // Adds the file metadata to the files collection
