@@ -99,6 +99,30 @@ class POIEditForm extends Component {
     }
   };
 
+  // Updates the metadata file and remove it if there are no references
+  updateMetadata = metaID => {
+    // Read the file metadata
+    this.props.firebase.files().doc(metaID).get().then(docRef => {
+      if (docRef) {
+        let file = docRef.data();
+        let nref = file.nref;
+  
+        if (nref <= 1) {
+          // Delete file from firebase storage
+          this.props.firebase.storage.ref(file.filepath).delete();
+  
+          // Delete the document
+          this.props.firebase.files().doc(metaID).delete();
+          
+        } else {
+          this.props.firebase.files().doc(metaID).update({
+            nref: firebase.firestore.FieldValue.increment(-1)
+          });
+        }
+      }
+    });
+  }
+
   // Delete the image from imageArray and metafile
   deleteFile = () => {
     var metaID = this.state.fileSelected.metaID;
@@ -131,32 +155,30 @@ class POIEditForm extends Component {
     }
 
     // Read the file metadata
-    this.props.firebase.files().doc(metaID).get().then(docRef => {
-      if (!docRef.empty) {
-        let file = docRef.data();
-        let nref = file.nref;
-  
-        if (nref <= 1) {
-          // Delete file from firebase storage
-          this.props.firebase.storage.ref(file.filepath).delete();
-  
-          // Delete the document
-          this.props.firebase.files().doc(metaID).delete();
-          
-        } else {
-          this.props.firebase.files().doc(metaID).update({
-            nref: firebase.firestore.FieldValue.increment(-1)
-          });
-        }
-      }
-    });
+    this.updateMetadata(metaID);
 
     // reset states and toggle delete confirmation model
     this.setState({ fileSelected: null, isFileOpen: !this.state.isFileOpen });
   };
 
+  // Iterates through all files and deletes time
+  deleteAllFiles = () => {
+    this.state.imageArray.forEach(image => {
+      // Read the file metadata
+      this.updateMetadata(image.metaID);
+    });
+    this.state.audioArray.forEach(audio => {
+      // Read the file metadata
+      this.updateMetadata(audio.metaID);
+    });
+  }
+
   // Calls the database delete function for the specified poi and then hides the modals.
   onPOIDelete = () => {
+    // Delete all the files associated with this poi
+    this.deleteAllFiles();
+    
+    // Delete poi
     this.props.firebase.poiDelete(this.props.poi._id);
     this.toggleNestedModal();
     this.toggleModal();
