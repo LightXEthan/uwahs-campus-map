@@ -51,6 +51,7 @@ class POIEditForm extends Component {
     };
   }
 
+  // Toggles which files are being viewed (images, audio)
   toggleTab = tab => {
     if (this.state.activeTab !== tab) {
       this.setState({
@@ -66,16 +67,16 @@ class POIEditForm extends Component {
     });
   };
 
+  // When an image is selected, the modal is open to confirm deleting the file
+  // The file selected is saved in the state, null is passed when canceling (toggle off delete modal)
   toggleFile = file => {
-    // When an image is selected, the modal is open to confirm deleting the file
-    // The file selected is saved in the state, null is passed when canceling (toggle off delete modal)
     this.setState({
       isFileOpen: !this.state.isFileOpen,
       fileSelected: file
     });
   };
 
-  //toggles the "Are you sure you want to delete" modal.
+  // Toggles the "Are you sure you want to delete" modal.
   toggleNestedModal = () => {
     this.setState({
       isAreYouSureOpen: !this.state.isAreYouSureOpen
@@ -131,7 +132,7 @@ class POIEditForm extends Component {
       });
     }
 
-    // Read the file
+    // Read the file metadata
     this.props.firebase.files().doc(metaID).get().then(docRef => {
       let file = docRef.data();
       let nref = file.nref;
@@ -207,81 +208,95 @@ class POIEditForm extends Component {
       }
 
       if (type !== null) {
-        var storageRef = this.props.firebase.storage.ref(
-          type + "s/" + fileupload.name
-        );
+        // gets the storage reference for the file to be added
+        var filename = type + "s/" + fileupload.name;
+        var storageRef = this.props.firebase.storage.ref(filename);
 
-        // upload file
-        var uploadTask = storageRef.put(fileupload);
+        // checks if the file already exists
+        var fileRef = this.props.firebase.files();
+        fileRef.where("filepath", "==", filename)
+          .get()
+          .then(queryDoc => {
+            // If the query is empty, that means a document for the file does not exist
+            if (queryDoc.empty) {
 
-        // monitor progress of file upload
-        uploadTask.on('state_changed', (snapshot) => {
-          var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-          this.setState({ uploadProgress: progress });
-        },
-          error => {
-            console.log(error);
-            alert("Error with uploading file to firebase storage.");
-          },
-          () => {
-            storageRef.getDownloadURL().then((url) => {
-              if (type === 'image') {
-                imageList.push(url);
-                data["imageList"] = imageList;
-              }
-              else if (type === 'audio') {
-                audioList.push(url);
-                data["audioList"] = audioList;
-              }
-              // Updates the poi with the new data
-              this.props.firebase.poiUpdate(this.props.poi._id).set(data, { merge: true });
+              // upload file
+              var uploadTask = storageRef.put(fileupload);
 
-              // Adds the file metadata to the files collection
-              this.props.firebase.poif(this.props.poi._id).add({
-                name: null,
-                description: null,
-                filepath: storageRef.fullPath,
-                filetype: type,
-                url: url
-              }).then(metaRef => {
+              // monitor progress of file upload
+              uploadTask.on('state_changed', (snapshot) => {
+                var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                this.setState({ uploadProgress: progress });
+              },
+                error => {
+                  console.log(error);
+                  alert("Error with uploading file to firebase storage.");
+                },
+                () => {
+                  storageRef.getDownloadURL().then((url) => {
+                    if (type === 'image') {
+                      imageList.push(url);
+                      data["imageList"] = imageList;
+                    }
+                    else if (type === 'audio') {
+                      audioList.push(url);
+                      data["audioList"] = audioList;
+                    }
+                    // Updates the poi with the new data
+                    this.props.firebase.poiUpdate(this.props.poi._id).set(data, { merge: true });
 
-                var metadata = {
-                  name: null,
-                  url: url,
-                  metaID: metaRef.id
-                };
+                    // Adds the file metadata to the files collection
+                    this.props.firebase.poif(this.props.poi._id).add({
+                      name: null,
+                      description: null,
+                      filepath: storageRef.fullPath,
+                      filetype: type,
+                      url: url
+                    }).then(metaRef => {
 
-                if (type === 'image') {
-                  // Add to currently viewing edit form
-                  imageArray.push(metadata);
-                  // Adds a new image using a map to the image array
-                  this.props.firebase.poiUpdate(this.props.poi._id).update({
-                    // Add to firestore
-                    imageArray: firebase.firestore.FieldValue.arrayUnion(metadata)
-                  });
-                }
-                else if (type === 'audio') {
-                  // Add to currently viewing edit form
-                  audioArray.push(metadata);
-                  // Adds a new audio using a map to the image array
-                  this.props.firebase.poiUpdate(this.props.poi._id).update({
-                    // Add to firestore
-                    audioArray: firebase.firestore.FieldValue.arrayUnion(metadata)
-                  });
-                }
-              });
+                      var metadata = {
+                        name: null,
+                        url: url,
+                        metaID: metaRef.id
+                      };
 
-              // Resets the file states
-              this.setState({ fileupload: null, uploadProgress: 0, showProgressBar: false });
-            },
-              error => {
-                console.log(error);
-                alert("Error with getting file from firestore.");
-              })
+                      if (type === 'image') {
+                        // Add to currently viewing edit form
+                        imageArray.push(metadata);
+                        // Adds a new image using a map to the image array to firestore
+                        this.props.firebase.poiUpdate(this.props.poi._id).update({
+                          imageArray: firebase.firestore.FieldValue.arrayUnion(metadata)
+                        });
+                      }
+                      else if (type === 'audio') {
+                        // Add to currently viewing edit form
+                        audioArray.push(metadata);
+                        // Adds a new audio using a map to the image array to firestore
+                        this.props.firebase.poiUpdate(this.props.poi._id).update({
+                          audioArray: firebase.firestore.FieldValue.arrayUnion(metadata)
+                        });
+                      }
+                    });
+
+                    // Resets the file states
+                    this.setState({ fileupload: null, uploadProgress: 0, showProgressBar: false });
+                  },
+                    error => {
+                      console.log(error);
+                      alert("Error with getting file from firestore.");
+                    })
+                });
+
+
+            } else {
+              alert("That document already exists in firebase storage. Please rename the file if it is a different file.");
+              console.log("Document already exists: ", queryDoc);
+
+              this.setState({ showProgressBar: false });
+            }
           });
       }
     }
-
     event.preventDefault();
   };
 
