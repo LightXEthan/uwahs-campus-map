@@ -49,8 +49,8 @@ class POIForm extends Component {
      * location: [lat, long]
      * last_modified: date last modified
      * date_created: date created
-     * imageList: [list of images ref]
-     * audioList: [list of audio ref]
+     * imageArray: [list of images ref]
+     * audioArray: [list of audio ref]
      */
     var data = {
       name: name,
@@ -58,8 +58,6 @@ class POIForm extends Component {
       location: new firebase.firestore.GeoPoint(parseFloat(latitude), parseFloat(longitude)),
       last_modified: firebase.firestore.FieldValue.serverTimestamp(),
       date_created: firebase.firestore.FieldValue.serverTimestamp(),
-      imageList: [],
-      audioList: [],
       imageArray: [],
       audioArray: []
     };
@@ -143,15 +141,6 @@ class POIForm extends Component {
                   this.toggleModal();
                 });
               });
-
-              // RemoveFirestore3
-              if (type === 'image') {
-                data["imageList"] = [url]; 
-              }
-              else if (type === 'audio') {
-                data["audioList"] = [url];
-              }
-              // RemoveFirestore3
             },
               error => {
                 console.log(error);
