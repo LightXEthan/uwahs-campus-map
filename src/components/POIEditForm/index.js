@@ -132,20 +132,22 @@ class POIEditForm extends Component {
 
     // Read the file metadata
     this.props.firebase.files().doc(metaID).get().then(docRef => {
-      let file = docRef.data();
-      let nref = file.nref;
-
-      if (nref <= 1) {
-        // Delete file from firebase storage
-        this.props.firebase.storage.ref(file.filepath).delete();
-
-        // Delete the document
-        this.props.firebase.files().doc(metaID).delete();
-        
-      } else {
-        this.props.firebase.files().doc(metaID).update({
-          nref: firebase.firestore.FieldValue.increment(-1)
-        });
+      if (!docRef.empty) {
+        let file = docRef.data();
+        let nref = file.nref;
+  
+        if (nref <= 1) {
+          // Delete file from firebase storage
+          this.props.firebase.storage.ref(file.filepath).delete();
+  
+          // Delete the document
+          this.props.firebase.files().doc(metaID).delete();
+          
+        } else {
+          this.props.firebase.files().doc(metaID).update({
+            nref: firebase.firestore.FieldValue.increment(-1)
+          });
+        }
       }
     });
 
@@ -310,7 +312,6 @@ class POIEditForm extends Component {
                 nref: firebase.firestore.FieldValue.increment(1)
               });
 
-              this.setState({ uploadProgress: 100 });
               this.setState({ showProgressBar: false });
             }
           });
