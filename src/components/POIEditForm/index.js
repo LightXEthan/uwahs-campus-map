@@ -137,7 +137,7 @@ class POIEditForm extends Component {
 
       if (nref <= 1) {
         // Delete file from firebase storage
-        //this.props.firebase.storage.ref(file.filepath).delete();
+        this.props.firebase.storage.ref(file.filepath).delete();
 
         // Delete the document
         this.props.firebase.files().doc(metaID).delete();
