@@ -120,7 +120,6 @@ class POIForm extends Component {
 
               // Create a doc for the metadata in files collection
               this.props.firebase.files().add(metadata).then(fileRef => {
-                console.log(fileRef);
 
                 // Add file data for poi doc
                 var filedata = {

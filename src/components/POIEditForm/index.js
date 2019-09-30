@@ -162,6 +162,26 @@ class POIEditForm extends Component {
     this.toggleModal();
   };
 
+  // Add new file to the current viewing edit for and to firestore
+  addFile = (type, filedata) => {
+    if (type === 'image') {
+      // Add to currently viewing edit form
+      this.state.imageArray.push(filedata);
+      // Adds a new image using a map to the image array to firestore
+      this.props.firebase.poiUpdate(this.props.poi._id).update({
+        imageArray: firebase.firestore.FieldValue.arrayUnion(filedata)
+      });
+    }
+    else if (type === 'audio') {
+      // Add to currently viewing edit form
+      this.state.audioArray.push(filedata);
+      // Adds a new audio using a map to the image array to firestore
+      this.props.firebase.poiUpdate(this.props.poi._id).update({
+        audioArray: firebase.firestore.FieldValue.arrayUnion(filedata)
+      });
+    }
+  }
+
   onSubmit = event => {
     const {
       name,
@@ -234,6 +254,8 @@ class POIEditForm extends Component {
                 },
                 () => {
                   storageRef.getDownloadURL().then((url) => {
+
+                    // Remove firestore3
                     if (type === 'image') {
                       imageList.push(url);
                       data["imageList"] = imageList;
@@ -244,38 +266,30 @@ class POIEditForm extends Component {
                     }
                     // Updates the poi with the new data
                     this.props.firebase.poiUpdate(this.props.poi._id).set(data, { merge: true });
+                    // Remove firestore3
 
-                    // Adds the file metadata to the files collection
-                    this.props.firebase.poif(this.props.poi._id).add({
+                    // Set metadata
+                    var metadata = {
                       name: null,
                       description: null,
                       filepath: storageRef.fullPath,
                       filetype: type,
+                      nref: 1,
                       url: url
-                    }).then(metaRef => {
+                    }
 
-                      var metadata = {
+                    // Adds the file metadata to the files collection
+                    this.props.firebase.files().add(metadata).then(fileRef => {
+
+                      // Add file data for poi doc
+                      var filedata = {
                         name: null,
                         url: url,
-                        metaID: metaRef.id
-                      };
+                        metaID: fileRef.id
+                      }
 
-                      if (type === 'image') {
-                        // Add to currently viewing edit form
-                        imageArray.push(metadata);
-                        // Adds a new image using a map to the image array to firestore
-                        this.props.firebase.poiUpdate(this.props.poi._id).update({
-                          imageArray: firebase.firestore.FieldValue.arrayUnion(metadata)
-                        });
-                      }
-                      else if (type === 'audio') {
-                        // Add to currently viewing edit form
-                        audioArray.push(metadata);
-                        // Adds a new audio using a map to the image array to firestore
-                        this.props.firebase.poiUpdate(this.props.poi._id).update({
-                          audioArray: firebase.firestore.FieldValue.arrayUnion(metadata)
-                        });
-                      }
+                      // Add new file to the current viewing edit for and to firestore
+                      this.addFile(type, filedata);
                     });
 
                     // Resets the file states
@@ -289,9 +303,32 @@ class POIEditForm extends Component {
 
 
             } else {
-              alert("That document already exists in firebase storage. Please rename the file if it is a different file.");
+              alert(`That document already exists in firebase storage. Please ensure that the file you have uploaded matches the one see. If not, please rename the file before uploading.`);
               console.log("Document already exists: ", queryDoc);
 
+              var metaID, url;
+
+              // gets the metaid and url from the document, there should only be one
+              queryDoc.forEach(doc => {
+                metaID = doc.id;
+                url = doc.data().url;
+              });
+              
+              let filedata = {
+                name: null,
+                url: url,
+                metaID: metaID
+              };
+
+              // Add new file to the current viewing edit for and to firestore
+              this.addFile(type, filedata);
+
+              // Increase metadata number of references count by one
+              this.props.firebase.files().doc(metaID).update({
+                nref: firebase.firestore.FieldValue.increment(1)
+              });
+
+              this.setState({ uploadProgress: 100 });
               this.setState({ showProgressBar: false });
             }
           });
