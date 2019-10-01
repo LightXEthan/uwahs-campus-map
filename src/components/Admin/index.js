@@ -1,35 +1,72 @@
-import React, { Fragment } from "react";
-import { Container, Row, Col } from "reactstrap";
+import React, { Fragment, Component } from "react";
+import { Container, Row, Col, Input, InputGroup, InputGroupAddon, InputGroupText } from "reactstrap";
 
 import POIList from "../POIList";
 import POIForm from "../POIForm";
 import { AuthUserContext, withAuthorization } from '../Session';
 
-const Admin = () => (
-  <AuthUserContext.Consumer>
-    {authUser => (
-      <Fragment>
-        <Container>
-          <Row>
-            <Col sm="12">
-              <h1>Admin Page</h1>
-            </Col>
-          </Row>
-          <Row>
-            <Col sm="12" className="text-right">
-              <POIForm />
-            </Col>
-          </Row>
-          <Row>
-            <Col sm="12">
-              <POIList />
-            </Col>
-          </Row>
-        </Container>
-      </Fragment>
-    )}
-  </AuthUserContext.Consumer>
-);
+class  Admin extends Component {
+  constructor(props){
+      super(props);
+
+      this.state = {
+        search: ''
+      };
+  }
+
+  handleSignOut = event => {    
+      this.props.firebase.doSignOut()
+  };
+
+  updateSearch = event => {
+    this.setState({ search: event.target.value.substr(0,20) });
+  };
+
+  render() {
+    return (
+      <AuthUserContext.Consumer>
+        {authUser => (
+          <Fragment>
+            <Container>
+              <Row>
+                <Col sm="12">
+                  <h1>Admin Page</h1>
+                </Col>
+              </Row>
+              <Row>
+                <Col sm="12" className="text-right">
+                  <POIForm />
+                </Col>
+              </Row>
+              <Row>
+                <Col sm="6">
+                  <InputGroup>
+                    <InputGroupAddon addonType="prepend">
+                      <InputGroupText>Filter</InputGroupText>
+                    </InputGroupAddon>                
+                    <Input 
+                      type="text" 
+                      name="search" 
+                      id="search" 
+                      placeholder="Point of interest"
+                      value={this.state.search}
+                      onChange={this.updateSearch}
+                    />
+                  </InputGroup>                  
+                </Col>
+              </Row>
+              <Row>
+                <Col sm="12">
+                  <POIList searchTerm={this.state.search}/>
+                </Col>
+              </Row>
+            </Container>
+          </Fragment>
+        )}
+      </AuthUserContext.Consumer>
+    );       
+  }
+}
 
 const condition = authUser => !!authUser;
 
