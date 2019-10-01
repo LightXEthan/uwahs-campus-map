@@ -58,6 +58,8 @@ class POIForm extends Component {
       location: new firebase.firestore.GeoPoint(parseFloat(latitude), parseFloat(longitude)),
       last_modified: firebase.firestore.FieldValue.serverTimestamp(),
       date_created: firebase.firestore.FieldValue.serverTimestamp(),
+      imageList: [],	// Remove after pull request (upgrade-firestore-3)
+      audioList: [],  // Remove after pull request (upgrade-firestore-3)
       imageArray: [],
       audioArray: []
     };
