@@ -32,7 +32,7 @@ const MapPOIInfo = props => {
             <Col>
               <Slider {...carouselSettings}>
                 {poi.imageArray.length === 0
-                  ? "There is no images for this point at the moment."
+                  ? <div>There is no images for this point at the moment.</div>
                   : poi.imageArray.map(image => (
                       <div>
                         <img
