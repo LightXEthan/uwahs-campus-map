@@ -3,6 +3,7 @@ import { compose, withProps } from "recompose";
 import dotenv from "dotenv";
 import { Spinner } from "reactstrap";
 import userMarker from "./locateMarker.png";
+import northPoint from "./NorthPoint1.png";
 import {
   withScriptjs,
   withGoogleMap,
@@ -30,6 +31,14 @@ const innerStyle = {
   transform: "translate(-50%, -50%)",
   width: "10vw",
   height: "10vw"
+};
+
+const pointStyle = {
+  position: "fixed",
+  left: "75vw",
+  top: window.innerHeight - (window.innerHeight *0.90),
+  width: "80px",
+  height: "80px"
 };
 
 /**
@@ -86,6 +95,7 @@ const Map = compose(
         lng: props.currentLocation.lng
       }}
     />
+     <img src={northPoint} style= {pointStyle}/>
   </GoogleMap>
 ));
 

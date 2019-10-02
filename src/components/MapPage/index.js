@@ -54,6 +54,35 @@ class MapPage extends Component {
     );
   }
 
+  /*
+  magnometerMount(){
+        //Section regarding use of magnometer to display current direction.
+        navigator.permissions.query({ name: 'accelerometer' })
+        .then(result => {
+          if (result.state === 'denied') {
+            console.log('Permission to use accelerometer sensor is denied.');
+          return;
+          }
+          console.log('Permission to use accelerometer sensor is allowed.');
+          let magSensor = new Magnetometer({frequency: 60});
+    
+          magSensor.addEventListener('reading', e => {
+            console.log("Magnometer is currently working\n")
+            console.log("Magnetic field along the X-axis " + magSensor.x + "\n");
+            console.log("Magnetic field along the Y-axis " + magSensor.y + "\n");
+            console.log("Magnetic field along the Z-axis " + magSensor.z + "\n");
+          })
+          magSensor.addEventListener('error', event => {
+            console.log(event.error.name, event.error.message);
+          })
+          magSensor.start();  
+        };
+  }
+  */
+
+
+
+
   componentDidUpdate() {
     if (navigator.geolocation) {
       navigator.geolocation.watchPosition(
