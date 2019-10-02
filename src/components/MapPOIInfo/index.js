@@ -32,7 +32,7 @@ const MapPOIInfo = props => {
             <Col>
               <Slider {...carouselSettings}>
                 {poi.imageList.length === 0
-                  ? "There is no images for this point at the moment."
+                  ? <div>There is no images for this point at the moment.</div>
                   : poi.imageList.map(image => (
                       <img
                         src={image}
@@ -77,6 +77,21 @@ const MapPOIInfo = props => {
 
 const style = (
   <style>{`
+  @media (max-width: 760px) {
+    .modal {
+      height: auto;
+    }
+    .modal-dialog {
+      margin: 0;
+    }
+    .modal-content {
+      border-radius: 0;
+    }
+    .modal-dialog-scrollable .modal-content {
+      max-height: 100vh;
+    }
+    
+  }
   ::-webkit-scrollbar {
     width: 0px;
   }

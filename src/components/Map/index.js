@@ -60,11 +60,16 @@ const Map = compose(
       lng: parseFloat(process.env.REACT_APP_UWA_LNG)
     }}
     defaultOptions={{ styles: retroStyles }}
+    center={{
+      lat: props.mapCenter.lat,
+      lng: props.mapCenter.lng
+    }}
   >
     {props.isMarkerShown && (
       <Fragment>
         {props.POIList.map(marker => (
           <Marker
+            key={marker._id}
             position={{
               lat: marker.location.latitude,
               lng: marker.location.longitude

@@ -31,6 +31,7 @@ class Firebase {
   pois = () => this.db.collection("poi");
   poif = poiid => this.db.collection("poi").doc(poiid).collection("files");
   poiUpdate = poiid => this.db.collection("poi").doc(poiid);
+  poiDelete = poiid => this.db.collection("poi").doc(poiid).delete();
 
   // *** Auth API ***
 
