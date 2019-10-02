@@ -19,7 +19,7 @@ class  Admin extends Component {
   };
 
   updateSearch = event => {
-    this.setState({ search: event.target.value.substr(0,20) });
+    this.setState({ [event.target.name]: event.target.value });
   };
 
   render() {
