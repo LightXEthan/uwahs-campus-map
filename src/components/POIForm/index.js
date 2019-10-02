@@ -169,7 +169,7 @@ class POIForm extends Component {
                 metaID = doc.id;
                 url = doc.data().url;
               });
-              
+
               let filedata = {
                 name: null,
                 url: url,
@@ -290,17 +290,15 @@ class POIForm extends Component {
                   {showProgressBar && <Progress value={uploadProgress} />}
                 </Col>
               </FormGroup>
-              <FormGroup className="d-flex">
-                <div className="mr-auto p-2">
+              <FormGroup>
+                <Col>
                   <Button onClick={this.toggleModal}>
                     Cancel
                   </Button>
-                </div>
-                <div className="p-2">
-                  <Button type="submit" color="primary" disabled={isInvalid}>
+                  <Button type="submit" color="primary" disabled={isInvalid} style={{ position: "absolute", right: "16px" }}>
                     Save
                   </Button>
-                </div>
+                </Col>
               </FormGroup>
             </Form>
           </ModalBody>
