@@ -91,114 +91,64 @@ class POIForm extends Component {
       if (type !== null) {
 
         // Create a firebase storage reference to the uploading file. Types are put in folers
-        var filename = type + "s/" + fileupload.name;
+        var filename = type + "s/" + fileupload.name + "%%" + new Date();
         var storageRef = this.props.firebase.storage.ref(filename);
 
-        // checks if the file already exists
-        var fileRef = this.props.firebase.files();
-        fileRef.where("filepath", "==", filename)
-          .get()
-          .then(queryDoc => {
-            // If the query is empty, that means a document for the file does not exist
-            if (queryDoc.empty) {
-              // upload file
-              var uploadTask = storageRef.put(fileupload);
+        // upload file
+        var uploadTask = storageRef.put(fileupload);
 
-              // monitor progress of file upload
-              uploadTask.on('state_changed', (snapshot) => {
-                var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-                this.setState({ uploadProgress: progress });
-              },
-                error => {
-                  console.log(error);
-                  alert("Error with uploading file to firebase storage.");
-                },
-                () => {
-                  storageRef.getDownloadURL().then((url) => {
+        // monitor progress of file upload
+        uploadTask.on('state_changed', (snapshot) => {
+          var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+          this.setState({ uploadProgress: progress });
+        },
+          error => {
+            console.log(error);
+            alert("Error with uploading file to firebase storage.");
+          },
+          () => {
+            storageRef.getDownloadURL().then((url) => {
 
-                    // Set metadata
-                    var metadata = {
-                      name: null,
-                      description: null,
-                      filepath: storageRef.fullPath,
-                      filetype: type,
-                      nref: 1,
-                      url: url,
-                      date_added: firebase.firestore.FieldValue.serverTimestamp()
-                    }
-
-                    // Create a doc for the metadata in files collection
-                    this.props.firebase.files().add(metadata).then(fileRef => {
-
-                      // Add file data for poi doc
-                      var filedata = {
-                        name: null,
-                        url: url,
-                        metaID: fileRef.id
-                      }
-
-                      // Sets the data for file
-                      if (type === 'image') {
-                        data["imageArray"] = [filedata];
-                      }
-                      else if (type === 'audio') {
-                        data["audioArray"] = [filedata];
-                      }
-
-                      // Creates a new document with the data, adds the download link of file and data in firestore
-                      this.props.firebase.pois().add(data).then(() => {
-                        // Reset the states and closes modal
-                        this.setState({ ...INITIAL_STATE });
-                        this.toggleModal();
-                      });
-                    });
-                  },
-                    error => {
-                      console.log(error);
-                      alert("Error with getting file from firestore.");
-                    })
-                });
-            } else {
-              alert(`That document already exists in firebase storage. Please ensure that the file you have uploaded matches the one see. If not, please rename the file before uploading.`);
-              console.log("Document already exists: ", queryDoc);
-
-              var metaID, url;
-
-              // gets the metaid and url from the document, there should only be one
-              queryDoc.forEach(doc => {
-                metaID = doc.id;
-                url = doc.data().url;
-              });
-
-              let filedata = {
+              // Set metadata
+              var metadata = {
                 name: null,
+                description: null,
+                filepath: storageRef.fullPath,
+                filetype: type,
                 url: url,
-                metaID: metaID
-              };
-
-              // Add new file to the current viewing edit for and to firestore
-              // Sets the data for file
-              if (type === 'image') {
-                data["imageArray"] = [filedata];
+                date_added: firebase.firestore.FieldValue.serverTimestamp()
               }
-              else if (type === 'audio') {
-                data["audioArray"] = [filedata];
-              }
+              
+              // Create a doc for the metadata in files collection
+              this.props.firebase.files().add(metadata).then(fileRef => {
 
-              // Creates a new document with the data, adds the download link of file and data in firestore
-              this.props.firebase.pois().add(data).then(() => {
-                // Reset the states and closes modal
-                this.setState({ ...INITIAL_STATE });
-                this.toggleModal();
+                // Add file data for poi doc
+                var filedata = {
+                  name: null,
+                  url: url,
+                  metaID: fileRef.id
+                }
+
+                // Sets the data for file
+                if (type === 'image') {
+                  data["imageArray"] = [filedata];
+                }
+                else if (type === 'audio') {
+                  data["audioArray"] = [filedata];
+                }
+
+                // Creates a new document with the data, adds the download link of file and data in firestore
+                this.props.firebase.pois().add(data).then(() => {
+                  // Reset the states and closes modal
+                  this.setState({ ...INITIAL_STATE });
+                  this.toggleModal();
+                });
               });
-
-              // Increase metadata number of references count by one
-              this.props.firebase.files().doc(metaID).update({
-                nref: firebase.firestore.FieldValue.increment(1)
-              });
-
-              this.setState({ showProgressBar: false });
-            }
+            },
+              error => {
+                console.log(error);
+                alert("Error with getting file from firestore.");
+              })
           });
       }
     }
