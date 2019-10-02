@@ -47,10 +47,8 @@ const Map = compose(
         <Spinner color="warning" style={innerStyle} />
       </Fragment>
     ),
-    containerElement: (
-      <div style={{ height: `${window.innerHeight - 56}px`, width: `100%` }} />
-    ),
-    mapElement: <div style={{ height: `100%`, width: `100%` }} />
+    containerElement: <div style={{ height: `100vh`, width: `100%` }} />,
+    mapElement: <div style={{ height: `100vh`, width: `100%` }} />
   }),
   withScriptjs,
   withGoogleMap
