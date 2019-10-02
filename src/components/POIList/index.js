@@ -48,13 +48,20 @@ class POIList extends Component {
   render() {
     const { loading, poilist } = this.state;
 
+    // filter POI list based on search input
+    let filteredPois = poilist.filter(
+      (poi) => {
+        return poi.name.toLowerCase().startsWith(this.props.searchTerm.toLowerCase()) !== false;
+      }
+    );
+
     return (
       <Fragment>
         {loading ? (
           <h1>Loading</h1>
         ) : poilist.length > 0 ? (
           <ListGroup flush>
-            {poilist.map(poi => (
+            {filteredPois.map(poi => (
               // add the below to ListGroupItem to align edit pencil to the right
               //className="d-flex justify-content-between align-items-center"
               <ListGroupItem key={poi._id} action>
