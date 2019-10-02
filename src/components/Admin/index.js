@@ -14,10 +14,6 @@ class  Admin extends Component {
       };
   }
 
-  handleSignOut = event => {    
-      this.props.firebase.doSignOut()
-  };
-
   updateSearch = event => {
     this.setState({ [event.target.name]: event.target.value });
   };
