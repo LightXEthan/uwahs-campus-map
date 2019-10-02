@@ -61,7 +61,7 @@ const Map = compose(
       lat: parseFloat(process.env.REACT_APP_UWA_LAT),
       lng: parseFloat(process.env.REACT_APP_UWA_LNG)
     }}
-    defaultOptions={{ styles: retroStyles }}
+    defaultOptions={{ styles: retroStyles, disableDefaultUI: true }}
     center={{
       lat: props.mapCenter.lat,
       lng: props.mapCenter.lng
