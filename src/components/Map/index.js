@@ -35,7 +35,7 @@ const innerStyle = {
 
 const pointStyle = {
   position: "fixed",
-  left: "75vw",
+  left: "65vw",
   top: window.innerHeight - (window.innerHeight *0.90),
   width: "80px",
   height: "80px"
@@ -95,7 +95,7 @@ const Map = compose(
         lng: props.currentLocation.lng
       }}
     />
-     <img src={northPoint} style= {pointStyle}/>
+     <img src={northPoint} style= {pointStyle} alt="NorthPointer"/>
   </GoogleMap>
 ));
 
