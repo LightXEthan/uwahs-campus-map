@@ -31,15 +31,17 @@ const MapPOIInfo = props => {
           <Row noGutters className="carouselRow">
             <Col>
               <Slider {...carouselSettings}>
-                {poi.imageList.length === 0
-                  ? <div>There is no images for this point at the moment.</div>
-                  : poi.imageList.map(image => (
-                      <img
-                        src={image}
-                        key={image.split("token=")[1]}
-                        alt="UWA History"
-                      />
-                    ))}
+                {poi.imageList.length === 0 ? (
+                  <div>There is no images for this point at the moment.</div>
+                ) : (
+                  poi.imageList.map(image => (
+                    <img
+                      src={image}
+                      key={image.split("token=")[1]}
+                      alt="UWA History"
+                    />
+                  ))
+                )}
               </Slider>
             </Col>
           </Row>
@@ -86,6 +88,7 @@ const style = (
     }
     .modal-content {
       border-radius: 0;
+      word-wrap: break-word;
     }
     .modal-dialog-scrollable .modal-content {
       max-height: 100vh;
