@@ -90,6 +90,9 @@ const style = (
       border-radius: 0;
       word-wrap: break-word;
     }
+    .modal-title {
+      width: 83vw;
+    }
     .modal-dialog-scrollable .modal-content {
       max-height: 100vh;
     }
