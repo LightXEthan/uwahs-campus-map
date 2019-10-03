@@ -34,13 +34,11 @@ const MapPOIInfo = props => {
                 {poi.imageArray.length === 0
                   ? <div>There is no images for this point at the moment.</div>
                   : poi.imageArray.map(image => (
-                      <div>
-                        <img
-                          src={image.url}
-                          key={image.url.split("token=")[1]}
-                          alt="UWA History"
-                        />
-                      </div>
+                      <img
+                        src={image.url}
+                        key={image.url.split("token=")[1]}
+                        alt="UWA History"
+                      />
                     ))}
               </Slider>
             </Col>
