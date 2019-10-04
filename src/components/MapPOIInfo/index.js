@@ -36,8 +36,8 @@ const MapPOIInfo = props => {
                 ) : (
                   poi.imageList.map(image => (
                     <img
-                      src={image}
-                      key={image.split("token=")[1]}
+                      src={image.url}
+                      key={image.url.split("token=")[1]}
                       alt="UWA History"
                     />
                   ))
@@ -50,13 +50,13 @@ const MapPOIInfo = props => {
             <Col>
               <h4>Oral Histories</h4>
 
-              {poi.audioList.length === 0
+              {poi.audioArray.length === 0
                 ? "There is no audio files for this point at the moment."
-                : poi.audioList.map(audio => (
+                : poi.audioArray.map(audio => (
                     <ReactAudioPlayer
                       className="audioplayer"
-                      src={audio}
-                      key={audio.split("token=")[1]}
+                      src={audio.url}
+                      key={audio.url.split("token=")[1]}
                       controls
                     />
                   ))}
@@ -88,6 +88,10 @@ const style = (
     }
     .modal-content {
       border-radius: 0;
+      word-wrap: break-word;
+    }
+    .modal-title {
+      width: 83vw;
     }
     .modal-dialog-scrollable .modal-content {
       max-height: 100vh;
