@@ -119,14 +119,22 @@ class MapPage extends Component {
   };
 
   handleSelectPOI = poi => {
-    this.setState((state, props) => ({
-      mapCenter: {
-        lat: poi.location.latitude,
-        lng: poi.location.longitude
-      },
-      selectedPOI: poi,
-      modal: !state.modal
-    }));
+    this.setState(
+      (state, props) => ({
+        mapCenter: {
+          lat: poi.location.latitude,
+          lng: poi.location.longitude
+        },
+        selectedPOI: poi
+      }),
+      () => {
+        setTimeout(() => {
+          this.setState((state, props) => ({
+            modal: !state.modal
+          }));
+        }, 400);
+      }
+    );
   };
 
   render() {

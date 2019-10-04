@@ -31,30 +31,32 @@ const MapPOIInfo = props => {
           <Row noGutters className="carouselRow">
             <Col>
               <Slider {...carouselSettings}>
-                {poi.imageList.length === 0
-                  ? "There is no images for this point at the moment."
-                  : poi.imageList.map(image => (
-                      <img
-                        src={image}
-                        key={image.split("token=")[1]}
-                        alt="UWA History"
-                      />
-                    ))}
+                {poi.imageList.length === 0 ? (
+                  <div>There is no images for this point at the moment.</div>
+                ) : (
+                  poi.imageList.map(image => (
+                    <img
+                      src={image.url}
+                      key={image.url.split("token=")[1]}
+                      alt="UWA History"
+                    />
+                  ))
+                )}
               </Slider>
             </Col>
           </Row>
           <hr style={{ marginTop: "1.8rem" }} />
           <Row noGutters>
             <Col>
-              <h4>Oral Histories of {poi.name}</h4>
+              <h4>Oral Histories</h4>
 
-              {poi.audioList.length === 0
+              {poi.audioArray.length === 0
                 ? "There is no audio files for this point at the moment."
-                : poi.audioList.map(audio => (
+                : poi.audioArray.map(audio => (
                     <ReactAudioPlayer
                       className="audioplayer"
-                      src={audio}
-                      key={audio.split("token=")[1]}
+                      src={audio.url}
+                      key={audio.url.split("token=")[1]}
                       controls
                     />
                   ))}
@@ -77,6 +79,25 @@ const MapPOIInfo = props => {
 
 const style = (
   <style>{`
+  @media (max-width: 760px) {
+    .modal {
+      height: auto;
+    }
+    .modal-dialog {
+      margin: 0;
+    }
+    .modal-content {
+      border-radius: 0;
+      word-wrap: break-word;
+    }
+    .modal-title {
+      width: 83vw;
+    }
+    .modal-dialog-scrollable .modal-content {
+      max-height: 100vh;
+    }
+    
+  }
   ::-webkit-scrollbar {
     width: 0px;
   }
