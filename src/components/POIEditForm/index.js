@@ -38,17 +38,18 @@ class POIEditForm extends Component {
       longitude: this.props.poi.location.longitude,
       description: this.props.poi.description,
       fileupload: null,
-      imageList: this.props.poi.imageList,
-      audioList: this.props.poi.audioList,
+      imageArray: this.props.poi.imageArray,
+      audioArray: this.props.poi.audioArray,
       isModalOpen: false,
       isFileOpen: false,
-      fileShowing: null,
+      fileSelected: null,
       activeTab: "1",
       showProgressBar: false,
       uploadProgress: 0
     };
   }
 
+  // Toggles which files are being viewed (images, audio)
   toggleTab = tab => {
     if (this.state.activeTab !== tab) {
       this.setState({
@@ -66,13 +67,14 @@ class POIEditForm extends Component {
 
   // When an image is selected, the modal is open to confirm deleting the file
   // The file selected is saved in the state, null is passed when canceling (toggle off delete modal)
-  toggleFile(file) {
+  toggleFile = file => {
     this.setState({
       isFileOpen: !this.state.isFileOpen,
-      fileShowing: file
+      fileSelected: file
     });
-  }
-  //toggles the "Are you sure you want to delete" modal.
+  };
+
+  // Toggles the "Are you sure you want to delete" modal.
   toggleNestedModal = () => {
     this.setState({
       isAreYouSureOpen: !this.state.isAreYouSureOpen
@@ -91,71 +93,112 @@ class POIEditForm extends Component {
     }
   };
 
-  deleteFile = () => {
-    var filepath = null; // Used to delete the file from firebase storage
-    var filetype = null; // Used to delete the specific file type
-
-    // Delete the files metadata in the files collection
-    this.props.firebase
-      .poif(this.props.poi._id)
-      .get()
-      .then(snapshot => {
-        snapshot.forEach(doc => {
-          // Finds the doc in files collection by comparing the urls
-          let data = doc.data();
-          if (data.url === this.state.fileShowing) {
-            filepath = data.filepath;
-            filetype = data.filetype;
-            this.props.firebase
-              .poif(this.props.poi._id)
-              .doc(doc.id)
-              .delete();
-          }
-        });
-      })
-      .then(() => {
+  // Removes the metadata doc from the files collection in firestore
+  deleteMetadata = metaID => {
+    // Read the file metadata
+    this.props.firebase.files().doc(metaID).get().then(docRef => {
+      if (docRef) {
+        let file = docRef.data();
+  
         // Delete file from firebase storage
-        //this.props.firebase.storage.ref(filepath).delete();
+        this.props.firebase.storage.ref(file.filepath).delete();
 
-        // Delete file from the url list in firestore
-        if (filetype === "image") {
-          this.props.firebase
-            .poiUpdate(this.props.poi._id)
-            .update({
-              imageList: firebase.firestore.FieldValue.arrayRemove(
-                this.state.fileShowing
-              )
-            })
-            .then(() => {
-              // Update the new image list
-              this.setState({ imageList: this.props.poi.imageList });
-            });
-        } else if (filetype === "audio") {
-          this.props.firebase
-            .poiUpdate(this.props.poi._id)
-            .update({
-              audioList: firebase.firestore.FieldValue.arrayRemove(
-                this.state.fileShowing
-              )
-            })
-            .then(() => {
-              // Update the new audio list
-              this.setState({ audioList: this.props.poi.audioList });
-            });
-        }
+        // Delete the document
+        this.props.firebase.files().doc(metaID).delete();
+      }
+    });
+  }
+
+  // Delete the image from imageArray and metafile
+  deleteFile = () => {
+    var metaID = this.state.fileSelected.metaID;
+
+    // Delete the file from the file array, activeTab = 1 when image
+    if (this.state.activeTab === '1') {
+      // Removes the image on the modal
+      let index = this.state.imageArray.indexOf(this.state.fileSelected);
+      if (index > -1) {
+        let newArray = this.state.imageArray;
+        newArray.splice(index, 1);
+        this.setState({ imageArray: newArray });
+      }
+
+      // Removes the entry from firestore
+      this.props.firebase.poiUpdate(this.props.poi._id).update({
+        imageArray: firebase.firestore.FieldValue.arrayRemove(this.state.fileSelected)
       });
+      
+    }
+    else if (this.state.activeTab === '2') {
+      // Removes the audio on the modal, activeTab = 2 when audio
+      let index = this.state.audioArray.indexOf(this.state.fileSelected);
+      if (index > -1) {
+        let newArray = this.state.audioArray;
+        newArray.splice(index, 1);
+        this.setState({ audioArray: newArray });
+      }
 
-    // Toggle delete confirmation modal off
-    this.setState({ isFileOpen: !this.state.isFileOpen });
+      // Removes the entry from firestore
+      this.props.firebase.poiUpdate(this.props.poi._id).update({
+        audioArray: firebase.firestore.FieldValue.arrayRemove(this.state.fileSelected)
+      });
+    }
+
+    // Delete the file metadata
+    this.deleteMetadata(metaID);
+
+    // reset states and toggle delete confirmation model
+    this.setState({ fileSelected: null, isFileOpen: !this.state.isFileOpen });
   };
 
+  // Iterates through all files and deletes time
+  deleteAllFiles = () => {
+    this.state.imageArray.forEach(image => {
+      // Delete the file metadata
+      this.deleteMetadata(image.metaID);
+    });
+    this.state.audioArray.forEach(audio => {
+      // Delete the file metadata
+      this.deleteMetadata(audio.metaID);
+    });
+  }
 
   // Calls the database delete function for the specified poi and then hides the modals.
   onPOIDelete = () => {
+    // Delete all the files associated with this poi
+    this.deleteAllFiles();
+    
+    // Delete poi
     this.props.firebase.poiDelete(this.props.poi._id);
     this.toggleNestedModal();
     this.toggleModal();
   };
+
+  // Add new file to the current viewing edit for and to firestore
+  addFile = (type, filedata) => {
+    if (type === 'image') {
+      // Add to currently viewing edit form
+      let newFileData = this.state.imageArray;
+      newFileData.push(filedata);
+      this.setState({ imageArray: newFileData });
+      
+      // Adds a new image using a map to the image array to firestore
+      this.props.firebase.poiUpdate(this.props.poi._id).update({
+        imageArray: firebase.firestore.FieldValue.arrayUnion(filedata)
+      });
+    }
+    else if (type === 'audio') {
+      // Add to currently viewing edit form
+      let newFileData = this.state.audioArray;
+      newFileData.push(filedata);
+      this.setState({ audioArray: newFileData });
+
+      // Adds a new audio using a map to the image array to firestore
+      this.props.firebase.poiUpdate(this.props.poi._id).update({
+        audioArray: firebase.firestore.FieldValue.arrayUnion(filedata)
+      });
+    }
+  }
 
   onSubmit = event => {
     const {
@@ -163,9 +206,7 @@ class POIEditForm extends Component {
       longitude,
       latitude,
       description,
-      fileupload,
-      imageList,
-      audioList
+      fileupload
     } = this.state;
 
     const data = {
@@ -201,9 +242,9 @@ class POIEditForm extends Component {
       }
 
       if (type !== null) {
-        var storageRef = this.props.firebase.storage.ref(
-          type + "s/" + fileupload.name
-        );
+        // gets the storage reference for the file to be added
+        var filename = type + "s/" + fileupload.name + "%%" + new Date();
+        var storageRef = this.props.firebase.storage.ref(filename);
 
         // upload file
         var uploadTask = storageRef.put(fileupload);
@@ -219,24 +260,29 @@ class POIEditForm extends Component {
           },
           () => {
             storageRef.getDownloadURL().then((url) => {
-              if (type === 'image') {
-                imageList.push(url);
-                data["imageList"] = imageList;
-              }
-              else if (type === 'audio') {
-                audioList.push(url);
-                data["audioList"] = audioList;
-              }
-              // Updates the poi with the new data
-              this.props.firebase.poiUpdate(this.props.poi._id).set(data, { merge: true });
 
-              // Adds the file metadata to the files collection
-              this.props.firebase.poif(this.props.poi._id).add({
+              // Set metadata
+              var metadata = {
                 name: null,
                 description: null,
                 filepath: storageRef.fullPath,
                 filetype: type,
-                url: url
+                url: url,
+                date_added: firebase.firestore.FieldValue.serverTimestamp()
+              }
+
+              // Adds the file metadata to the files collection
+              this.props.firebase.files().add(metadata).then(fileRef => {
+
+                // Add file data for poi doc
+                var filedata = {
+                  name: null,
+                  url: url,
+                  metaID: fileRef.id
+                }
+
+                // Add new file to the current viewing edit for and to firestore
+                this.addFile(type, filedata);
               });
 
               // Resets the file states
@@ -249,25 +295,24 @@ class POIEditForm extends Component {
           });
       }
     }
-
     event.preventDefault();
   };
 
   loadImage() {
     // Only loads when the modal is open
     if (this.state.isModalOpen) {
-      // Loads each image from the imageList of the poi found in the firestore
-      return this.state.imageList.map(image => (
+      // Loads each image from the imageArray of the poi found in the firestore
+      return this.state.imageArray.map(image => (
         // key of the image is the url token generated by firebase storage
-        <Col md="6" className="img-col" key={image.split("token=")[1]}>
+        <Col md="6" className="img-col" key={image.url.split("token=")[1]}>
           <Card>
             <CardImg
               className="card-img-top"
-              src={image}
-              alt="Image name here"
+              src={image.url}
+              alt={image.name}
               onClick={() => this.toggleFile(image)}
             />
-            <CardTitle>Image name here</CardTitle>
+            <CardTitle>{image.name}</CardTitle>
           </Card>
         </Col>
       ));
@@ -277,11 +322,11 @@ class POIEditForm extends Component {
   loadAudio() {
     // Only loads when the modal is open
     if (this.state.isModalOpen) {
-      // Loads each audio from the audioList of the poi found in the firestore
-      return this.state.audioList.map(audio => (
+      // Loads each audio from the audioArray of the poi found in the firestore
+      return this.state.audioArray.map(audio => (
         // key of the audio is the url token generated by firebase storage
-        <div key={audio.split("token=")[1]}>
-          <ReactAudioPlayer src={audio} controls />
+        <div key={audio.url.split("token=")[1]}>
+          <ReactAudioPlayer src={audio.url} controls />
           <Button close onClick={() => this.toggleFile(audio)} />
         </div>
       ));
@@ -289,7 +334,7 @@ class POIEditForm extends Component {
   }
 
   render() {
-    const {name, latitude, longitude, description, uploadProgress, showProgressBar} = this.state;
+    const { name, latitude, longitude, description, uploadProgress, showProgressBar } = this.state;
 
     return (
       <Fragment>
