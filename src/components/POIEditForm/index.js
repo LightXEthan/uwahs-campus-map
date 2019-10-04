@@ -287,6 +287,8 @@ class POIEditForm extends Component {
 
               // Resets the file states
               this.setState({ fileupload: null, uploadProgress: 0, showProgressBar: false });
+              var file = document.getElementById("fileupload");
+              file.value = file.defaultValue;
             },
               error => {
                 console.log(error);
