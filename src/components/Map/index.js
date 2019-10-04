@@ -47,10 +47,8 @@ const Map = compose(
         <Spinner color="warning" style={innerStyle} />
       </Fragment>
     ),
-    containerElement: (
-      <div style={{ height: `${window.innerHeight - 56}px`, width: `100%` }} />
-    ),
-    mapElement: <div style={{ height: `100%`, width: `100%` }} />
+    containerElement: <div style={{ height: `100vh`, width: `100%` }} />,
+    mapElement: <div style={{ height: `100vh`, width: `100%` }} />
   }),
   withScriptjs,
   withGoogleMap
@@ -61,7 +59,7 @@ const Map = compose(
       lat: parseFloat(process.env.REACT_APP_UWA_LAT),
       lng: parseFloat(process.env.REACT_APP_UWA_LNG)
     }}
-    defaultOptions={{ styles: retroStyles }}
+    defaultOptions={{ styles: retroStyles, disableDefaultUI: true }}
     center={{
       lat: props.mapCenter.lat,
       lng: props.mapCenter.lng
