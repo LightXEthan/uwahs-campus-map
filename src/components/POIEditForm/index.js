@@ -309,7 +309,7 @@ class POIEditForm extends Component {
             <CardImg
               className="card-img-top"
               src={image.url}
-              alt="Image name here"
+              alt={image.name}
               onClick={() => this.toggleFile(image)}
             />
             <CardTitle>{image.name}</CardTitle>
