@@ -45,6 +45,14 @@ class POIForm extends Component {
     }
   };
 
+  /** When save button is pressed the below function will run
+   *  If no file
+   *    1. Updated poi data will be updated to firestore
+   *  If file is uploaded
+   *    1. The file is uploaded to firebase storage
+   *    2. A document is created in 'files' collection for the file
+   *    3. A document is added to the 'poi' collection for the poi
+   */
   onSubmit = e => {
     const { name, longitude, latitude, description, fileupload } = this.state;
 
