@@ -23,6 +23,7 @@ Find the meeting agendas and minutes at the [wiki](https://github.com/LightXEtha
 
 ## Setup the Firebase back-end API and Google Maps API ##
 The `env_template` file is for the api keys, add the api keys and rename the file to `.env`, Getting api keys:
+
 **Firebase API**
 1. Go to the console: https://console.firebase.google.com
 2. Add a new project
