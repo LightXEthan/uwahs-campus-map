@@ -87,15 +87,12 @@ class POIEditForm extends Component {
     });
   };
 
-  
    // Toggles the "Are you sure you want to delete file" modal.
    toggleNestedDeleteFileModal = () => {
     this.setState({
       isDeleteFileModalOpen: !this.state.isDeleteFileModalOpen
     });
   };
-
-
 
   onChange = event => {
     this.setState({ [event.target.name]: event.target.value });
@@ -110,9 +107,59 @@ class POIEditForm extends Component {
     }
   };
 
-  onFileInfoChange = event => {
-    // update firebase
-    // toggle editfile modal
+  onFileInfoChange = () => {
+    const {selectedFileName, selectedFileDescription, fileSelected, audioArray, imageArray} = this.state;
+    const data = {
+      name: selectedFileName,
+      description: selectedFileDescription,
+      last_modified: firebase.firestore.FieldValue.serverTimestamp()
+    };
+
+    // get fileID
+    var metaID = fileSelected.metaID;
+
+    // update firestore file collection
+    this.props.firebase.fileUpdate(metaID).set(data, { merge: true });
+
+    // Update imageArray, activeTab = 1 when image
+    if (this.state.activeTab === '1') {
+      let index = this.state.imageArray.indexOf(this.state.fileSelected);
+      if (index > -1) {
+        let newArray = imageArray;
+        newArray[index].name = selectedFileName;
+        newArray[index].description = selectedFileDescription;
+        this.setState({ imageArray: newArray });
+
+        const data = {
+          imageArray: newArray,
+          last_modified: firebase.firestore.FieldValue.serverTimestamp()
+        };
+
+        // Update firestore POI collection
+        this.props.firebase.poiUpdate(this.props.poi._id).set(data, { merge: true });
+      }      
+    }
+
+    // Update audioArray, activeTab = 2 when audio
+    else if (this.state.activeTab === '2') {
+      let index = this.state.audioArray.indexOf(this.state.fileSelected);
+      if (index > -1) {
+        let newArray = audioArray;
+        newArray[index].name = selectedFileName;
+        newArray[index].description = selectedFileDescription;
+        this.setState({ audioArray: newArray });
+
+        const data = {
+          audioArray: newArray,
+          last_modified: firebase.firestore.FieldValue.serverTimestamp()
+        };
+
+        // Update firestore POI collection
+        this.props.firebase.poiUpdate(this.props.poi._id).set(data, { merge: true });
+      }
+    }
+
+    // set states and close edit file modal
     this.setState({ isEditFileModalOpen: !this.state.isEditFileModalOpen });
   }
 
@@ -302,7 +349,8 @@ class POIEditForm extends Component {
                 var filedata = {
                   name: filename,
                   url: url,
-                  metaID: fileRef.id
+                  metaID: fileRef.id,
+                  description: null
                 }
 
                 // Add new file to the current viewing edit for and to firestore
@@ -583,14 +631,14 @@ class POIEditForm extends Component {
                 </Col>
             </FormGroup>
             <FormGroup>
-                <Label htmlFor="selectedfiledescription" xs={12}>
+                <Label htmlFor="selectedFileDescription" xs={12}>
                 Description
                 </Label>
                 <Col>
                 <Input
                     type="textarea"
-                    name="selectedfiledescription"
-                    id="selectedfiledescription"
+                    name="selectedFileDescription"
+                    id="selectedFileDescription"
                     value={selectedFileDescription}
                     onChange={this.onChange}
                     rows="6"
