@@ -1,8 +1,7 @@
 import React, { Component, Fragment } from "react";
 import { Modal, ModalBody, ModalHeader, Form, FormGroup, Col, Input, Label, Button } from "reactstrap";
-import onClickOutside from 'react-onclickoutside'
 
-class UploadFile extends Component {
+class EditFile extends Component {
     constructor(props) {
         super(props);
 
@@ -81,7 +80,7 @@ class UploadFile extends Component {
                         <Button
                             type="button"
                             color="danger"
-                            //onClick={this.toggleNestedModal}
+                            onClick={this.toggleModal}
                         >
                             Cancel
                         </Button>
@@ -103,5 +102,5 @@ class UploadFile extends Component {
     }
 }
 
-export default onClickOutside(UploadFile);
+export default EditFile
 

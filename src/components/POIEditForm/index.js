@@ -1,5 +1,5 @@
 import React, { Component, Fragment } from "react";
-import UploadFile from "../UploadFile";
+import EditFile from "../EditFile";
 
 import {
   Button,
@@ -47,7 +47,7 @@ class POIEditForm extends Component {
       activeTab: "1",
       showProgressBar: false,
       uploadProgress: 0,
-      isFileUploadModalOpen: false,
+      isFileEditModalOpen: false,
     };
   }
 
@@ -93,7 +93,7 @@ class POIEditForm extends Component {
     if (e.target.files.length === 0) {
       this.setState({ fileupload: null });
     } else {
-      this.setState({ fileupload: e.target.files[0], isFileUploadModalOpen: true });
+      this.setState({ fileupload: e.target.files[0], isFileEditModalOpen: true });
     }
   };
 
@@ -205,7 +205,7 @@ class POIEditForm extends Component {
   }
 
   myCallBack = (isModalOpen) => {
-    this.setState({ isFileUploadModalOpen: isModalOpen })
+    this.setState({ isFileEditModalOpen: isModalOpen })
   };
 
   onSubmit = event => {
@@ -344,7 +344,7 @@ class POIEditForm extends Component {
   }
 
   render() {
-    const { name, latitude, longitude, description, uploadProgress, showProgressBar, isFileUploadModalOpen, fileupload } = this.state;
+    const { name, latitude, longitude, description, uploadProgress, showProgressBar, fileupload } = this.state;
 
     let filename;
     if(fileupload !== null) {
@@ -511,7 +511,7 @@ class POIEditForm extends Component {
                   </Button>
                 </Col>
               </FormGroup>
-              { isFileUploadModalOpen && <UploadFile filename={filename} parentCallback={this.myCallBack} />}
+              { isfileEditModalOpen && <EditFile filename={filename} parentCallback={this.myCallBack} />}
             </Form>
             <Modal
               isOpen={this.state.isAreYouSureOpen}
