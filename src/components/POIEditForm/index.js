@@ -1,5 +1,4 @@
 import React, { Component, Fragment } from "react";
-import EditFile from "../EditFile";
 
 import {
   Button,
