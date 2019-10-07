@@ -44,6 +44,8 @@ class POIEditForm extends Component {
       isModalOpen: false,
       isEditFileModalOpen: false,
       fileSelected: null,
+      selectedFileName: "",
+      selectedFileDescription: "",
       activeTab: "1",
       showProgressBar: false,
       uploadProgress: 0,
@@ -69,10 +71,12 @@ class POIEditForm extends Component {
 
   // When an image is selected, the modal is open to confirm deleting the file
   // The file selected is saved in the state, null is passed when canceling (toggle off delete modal)
-  toggleFile = file => {
+  toggleFile = (file, fileName, fileDescription) => {
     this.setState({
       isEditFileModalOpen: !this.state.isEditFileModalOpen,
-      fileSelected: file
+      fileSelected: file,
+      selectedFileName: fileName,
+      selectedFileDescription: fileDescription
     });
   };
 
@@ -332,7 +336,7 @@ class POIEditForm extends Component {
               className="card-img-top"
               src={image.url}
               alt={image.name}
-              onClick={() => this.toggleFile(image)}
+              onClick={() => this.toggleFile(image, image.name, image.description)}
             />
             <CardTitle>{image.name}</CardTitle>
           </Card>
@@ -356,12 +360,7 @@ class POIEditForm extends Component {
   }
 
   render() {
-    const { name, latitude, longitude, description, uploadProgress, showProgressBar, fileupload } = this.state;
-
-    let filename;
-    if(fileupload !== null) {
-      filename = this.state.fileupload.name.split('.').slice(0, -1).join('.');
-    }
+    const { name, latitude, longitude, description, uploadProgress, showProgressBar, selectedFileName, selectedFileDescription } = this.state;
     
     return (
       <Fragment>
@@ -570,29 +569,29 @@ class POIEditForm extends Component {
           <ModalBody>
             <Form onSubmit={this.onSubmit}>
             <FormGroup>
-                <Label htmlFor="filename" xs={12}>
+                <Label htmlFor="selectedFileName" xs={12}>
                 File Name
                 </Label>
                 <Col>
                 <Input
-                    id="filename"
-                    name="filename"
-                    value={filename}
+                    id="selectedFileName"
+                    name="selectedFileName"
+                    value={selectedFileName}
                     onChange={this.onChange}
                     type="text"
                 />
                 </Col>
             </FormGroup>
             <FormGroup>
-                <Label htmlFor="description" xs={12}>
+                <Label htmlFor="selectedfiledescription" xs={12}>
                 Description
                 </Label>
                 <Col>
                 <Input
                     type="textarea"
-                    name="description"
-                    id="description"
-                    value={description}
+                    name="selectedfiledescription"
+                    id="selectedfiledescription"
+                    value={selectedFileDescription}
                     onChange={this.onChange}
                     rows="6"
                 />
