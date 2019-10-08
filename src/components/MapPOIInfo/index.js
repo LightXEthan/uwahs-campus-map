@@ -19,6 +19,23 @@ const carouselSettings = {
   speed: 1000
 };
 
+const getMeta = id => {};
+
+const getAllMeta = () => {};
+
+const ImageMeta = props => {
+  const { name, desc } = props;
+
+  return (
+    <div className="imageMetaContainer">
+      <div className="imageMetaBackground">
+        <p className="imageName">{name ? name : "No name"}</p>
+        <p className="imageDesc">{desc ? desc : "No description"}</p>
+      </div>
+    </div>
+  );
+};
+
 const MapPOIInfo = props => {
   const { poi, modal, toggle } = props;
 
@@ -35,11 +52,15 @@ const MapPOIInfo = props => {
                   <div>There is no images for this point at the moment.</div>
                 ) : (
                   poi.imageArray.map(image => (
-                    <img
-                      src={image.url}
-                      key={image.url.split("token=")[1]}
-                      alt="UWA History"
-                    />
+                    <>
+                      <img
+                        src={image.url}
+                        key={image.url.split("token=")[1]}
+                        alt="UWA History"
+                        className="carouselImage"
+                      />
+                      <ImageMeta name={image.name} />
+                    </>
                   ))
                 )}
               </Slider>
@@ -96,13 +117,9 @@ const style = (
     .modal-dialog-scrollable .modal-content {
       max-height: 100vh;
     }
-    
   }
   ::-webkit-scrollbar {
     width: 0px;
-  }
-  .slick-slide {
-    max-height: 400px;
   }
   .slick-slide img {
     max-height: 400px;
@@ -119,19 +136,27 @@ const style = (
   .carouselRow {
     background-color: #fafafa;
   }
-  // .carouselImage {
-  //   max-width: 100%;
-  //   max-height: 350x;
-  //   margin-left: auto;
-  //   margin-right: auto;
-  //   vertical-align: middle
-  // }
+  .imageMetaContainer {
+    background-color: #fafafa;
+    text-align: center;
+    padding: .5rem 2rem;
+  }
+  .imageMetaBackground { 
+    background-color: #eaeaea;
+    height: 100%;
+  }
+  .imageName {
+    margin: 0;
+  }
+  .imageDesc {
+    margin-top: 10px;
+    color: #000000ad;
+  }
   .audioplayer {
     display: block;
     width: 100%;
     margin-bottom: 0.5rem;
   }
-  
   `}</style>
 );
 
