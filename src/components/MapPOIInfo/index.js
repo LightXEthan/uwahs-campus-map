@@ -38,6 +38,12 @@ const getImageMeta = (imageMetaId, fileList) => {
   });
 };
 
+const getAudioMeta = (audioMetaId, fileList) => {
+  return fileList.find(e => {
+    return e._id === audioMetaId;
+  });
+};
+
 const MapPOIInfo = props => {
   const { poi, files, modal, toggle } = props;
 
@@ -81,14 +87,23 @@ const MapPOIInfo = props => {
 
               {poi.audioArray.length === 0
                 ? "There is no audio files for this point at the moment."
-                : poi.audioArray.map(audio => (
-                    <ReactAudioPlayer
-                      className="audioplayer"
-                      src={audio.url}
-                      key={audio.url.split("token=")[1]}
-                      controls
-                    />
-                  ))}
+                : poi.audioArray.map(audio => {
+                    const audioMeta = getAudioMeta(audio.metaID, files);
+
+                    return (
+                      <>
+                        <p style={{ marginBottom: ".5rem" }}>
+                          {audioMeta.name}
+                        </p>
+                        <ReactAudioPlayer
+                          className="audioplayer"
+                          src={audioMeta.url}
+                          key={audioMeta.url.split("token=")[1]}
+                          controls
+                        />
+                      </>
+                    );
+                  })}
             </Col>
           </Row>
           <hr style={{ marginTop: "0.5rem" }} />
