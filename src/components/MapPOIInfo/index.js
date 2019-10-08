@@ -10,7 +10,7 @@ import ReactAudioPlayer from "react-audio-player";
 const carouselSettings = {
   accessibility: true,
   arrows: false,
-  autoplay: true,
+  // autoplay: true,
   autoplaySpeed: 3000,
   dots: true,
   infinite: true,
@@ -32,8 +32,14 @@ const ImageMeta = props => {
   );
 };
 
+const getImageMeta = (imageMetaId, fileList) => {
+  return fileList.find(e => {
+    return e._id === imageMetaId;
+  });
+};
+
 const MapPOIInfo = props => {
-  const { poi, modal, toggle } = props;
+  const { poi, files, modal, toggle } = props;
 
   return (
     <>
@@ -47,17 +53,23 @@ const MapPOIInfo = props => {
                 {poi.imageArray.length === 0 ? (
                   <div>There is no images for this point at the moment.</div>
                 ) : (
-                  poi.imageArray.map(image => (
-                    <>
-                      <img
-                        src={image.url}
-                        key={image.url.split("token=")[1]}
-                        alt="UWA History"
-                        className="carouselImage"
-                      />
-                      <ImageMeta name={image.name} />
-                    </>
-                  ))
+                  poi.imageArray.map(image => {
+                    const imageMeta = getImageMeta(image.metaID, files);
+
+                    return (
+                      <>
+                        <div className="imageContainer">
+                          <img
+                            src={imageMeta.url}
+                            key={imageMeta.url.split("token=")[1]}
+                            alt="UWA History"
+                            className="carouselImage"
+                          />
+                        </div>
+                        <ImageMeta name={imageMeta.name} />
+                      </>
+                    );
+                  })
                 )}
               </Slider>
             </Col>
@@ -115,6 +127,7 @@ const style = (
     }
     .imageMetaContainer {
       padding: 0.4rem 0 !important;
+      // height: auto;
     }
   }
   ::-webkit-scrollbar {
@@ -125,6 +138,7 @@ const style = (
     max-width: 100% !important;
     margin-left: auto !important;
     margin-right: auto !important;  
+    // margin: auto !important;
     width: auto !important;
     display: flex !important;
   }
@@ -135,21 +149,28 @@ const style = (
   .carouselRow {
     background-color: #fafafa;
   }
+  .imageContainer {
+    // display: flex;
+    // height: 400px;
+  }
   .imageMetaContainer {
     background-color: #fafafa;
     text-align: center;
     padding: .5rem 2rem;
+    bottom: 0;
   }
   .imageMetaBackground { 
     background-color: #eaeaea;
     height: 100%;
+    padding: .5rem;
   }
   .imageName {
     margin: 0;
   }
   .imageDesc {
-    margin-top: 10px;
+    margin: 10px 0 0 0;
     color: #000000ad;
+
   }
   .audioplayer {
     display: block;
