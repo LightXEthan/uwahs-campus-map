@@ -19,10 +19,6 @@ const carouselSettings = {
   speed: 1000
 };
 
-const getMeta = id => {};
-
-const getAllMeta = () => {};
-
 const ImageMeta = props => {
   const { name, desc } = props;
 
@@ -116,6 +112,9 @@ const style = (
     }
     .modal-dialog-scrollable .modal-content {
       max-height: 100vh;
+    }
+    .imageMetaContainer {
+      padding: 0.4rem 0 !important;
     }
   }
   ::-webkit-scrollbar {
