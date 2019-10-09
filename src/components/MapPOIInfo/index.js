@@ -72,7 +72,10 @@ const MapPOIInfo = props => {
                             className="carouselImage"
                           />
                         </div>
-                        <ImageMeta name={imageMeta.name} />
+                        <ImageMeta
+                          name={imageMeta.name}
+                          desc={imageMeta.description}
+                        />
                       </>
                     );
                   })
