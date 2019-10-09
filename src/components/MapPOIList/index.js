@@ -24,22 +24,25 @@ class MapPOIList extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.POIList !== this.state.searchRes) {
-      this.setState({
-        searchRes: [...nextProps.POIList]
-      });
-    }
+    this.setState({
+      searchRes: [...nextProps.POIList]
+    });
     this.fuse = new Fuse(this.props.POIList, options);
   }
 
   handleInputChange = e => {
-    let stuff =
-      e.target.value !== ""
-        ? this.fuse.search(e.target.value)
-        : this.props.POIList;
-    this.setState({
-      searchRes: [...stuff]
-    });
+    if (this.fuse !== undefined) {
+      console.log(e.target.value);
+      let stuff =
+        e.target.value !== ""
+          ? this.fuse.search(e.target.value)
+          : this.props.POIList;
+      this.setState({
+        searchRes: [...stuff]
+      });
+    } else {
+      e.target.value = "";
+    }
   };
 
   handleSubmit = e => {
@@ -48,7 +51,7 @@ class MapPOIList extends Component {
   };
 
   render() {
-    const { POIList, onListItemClick } = this.props;
+    const { onListItemClick } = this.props;
 
     return (
       <>
