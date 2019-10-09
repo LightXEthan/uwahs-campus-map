@@ -86,7 +86,7 @@ const MapPOIInfo = props => {
           <hr style={{ marginTop: "1.8rem" }} />
           <Row noGutters>
             <Col>
-              <h4>Oral Histories</h4>
+              <h4>Oral History Excerpts</h4>
 
               {poi.audioArray.length === 0
                 ? "There is no audio files for this point at the moment."
