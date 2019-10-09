@@ -42,13 +42,18 @@ class MapPOIList extends Component {
     });
   };
 
+  handleSubmit = e => {
+    this.props.onListItemClick(this.state.searchRes[0]);
+    e.preventDefault();
+  };
+
   render() {
     const { POIList, onListItemClick } = this.props;
 
     return (
       <>
         {style}
-        <form>
+        <form onSubmit={this.handleSubmit}>
           <div className="searchContainer">
             <div className="searchbar">
               <input
