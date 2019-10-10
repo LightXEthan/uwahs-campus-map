@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 import { Spinner } from "reactstrap";
 import userMarker from "./locateMarker.png";
 import northPoint from "./NorthPoint1.png";
+
 import {
   withScriptjs,
   withGoogleMap,
@@ -33,13 +34,29 @@ const innerStyle = {
   height: "10vw"
 };
 
-const pointStyle = {
+const sidebarWidth = 380;
+
+const pointStyleWeb = {
   position: "fixed",
-  left: "65vw",
-  top: window.innerHeight - (window.innerHeight *0.90),
+  left: window.innerWidth - (1.25*sidebarWidth),
+  top: window.innerHeight - (window.innerHeight *0.925),
   width: "80px",
   height: "80px"
 };
+
+
+const pointStyleMobile ={
+  
+      position : "fixed",
+      left : "85vw",
+      top : window.innerHeight - (window.innerHeight *0.90),
+      width : "15vw",
+      height : "15vw"
+}
+
+
+
+
 
 /**
  * loadingElement: react element when loading google maps
@@ -95,7 +112,7 @@ const Map = compose(
         lng: props.currentLocation.lng
       }}
     />
-     <img src={northPoint} style= {pointStyle} alt="NorthPointer"/>
+     <img src={northPoint} style= {(window.innerWidth > 760) ? pointStyleWeb : pointStyleMobile} alt="NorthPointer"/>
   </GoogleMap>
 ));
 
