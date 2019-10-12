@@ -19,6 +19,7 @@ class MapPage extends Component {
         lng: 0
       },
       POIList: [],
+      fileList: [],
       mapCenter: {
         lat: parseFloat(process.env.REACT_APP_UWA_LAT),
         lng: parseFloat(process.env.REACT_APP_UWA_LNG)
@@ -48,6 +49,26 @@ class MapPage extends Component {
         this.setState({
           POIList,
           loading: false
+        });
+      },
+      error => {
+        // TODO: set error state and display error as alert
+      }
+    );
+
+    this.filelistener = this.props.firebase.files().onSnapshot(
+      snapshot => {
+        let fileList = [];
+
+        snapshot.forEach(doc => {
+          const _id = doc.id;
+          const data = doc.data();
+          const file = { _id, ...data };
+          fileList.push(file);
+        });
+
+        this.setState({
+          fileList
         });
       },
       error => {
@@ -103,6 +124,7 @@ class MapPage extends Component {
 
   componentWillUnmount() {
     this.listener();
+    this.filelistener();
   }
 
   delayedShowMarker = () => {
@@ -119,14 +141,22 @@ class MapPage extends Component {
   };
 
   handleSelectPOI = poi => {
-    this.setState((state, props) => ({
-      mapCenter: {
-        lat: poi.location.latitude,
-        lng: poi.location.longitude
-      },
-      selectedPOI: poi,
-      modal: !state.modal
-    }));
+    this.setState(
+      (state, props) => ({
+        mapCenter: {
+          lat: poi.location.latitude,
+          lng: poi.location.longitude
+        },
+        selectedPOI: poi
+      }),
+      () => {
+        setTimeout(() => {
+          this.setState((state, props) => ({
+            modal: !state.modal
+          }));
+        }, 400);
+      }
+    );
   };
 
   render() {
@@ -137,7 +167,8 @@ class MapPage extends Component {
       mapCenter,
       mapZoom,
       selectedPOI,
-      modal
+      modal,
+      fileList
     } = this.state;
 
     return (
@@ -176,6 +207,7 @@ class MapPage extends Component {
           <MapPOIInfo
             modal={modal}
             poi={selectedPOI}
+            files={fileList}
             toggle={this.handleDeselect}
           />
         )}

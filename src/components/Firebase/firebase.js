@@ -30,11 +30,17 @@ class Firebase {
   // Collection reference
   pois = () => this.db.collection("poi");
 
-  // File metadata reference, input document id
-  poif = poiid => this.db.collection("poi").doc(poiid).collection("files");
-
   // Updating poi reference, input document id
   poiUpdate = poiid => this.db.collection("poi").doc(poiid);
+
+  // Deletes the poi, input document id
+  poiDelete = poiid => this.db.collection("poi").doc(poiid).delete();
+
+  // References the files collection
+  files = () => this.db.collection("files");
+
+  // Updating the specific file metadata document, input document id
+  fileUpdate = fileid => this.db.collection("files").doc(fileid);
 
   // *** Auth API from Firebase Authentication ***
 

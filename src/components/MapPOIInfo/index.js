@@ -10,7 +10,7 @@ import ReactAudioPlayer from "react-audio-player";
 const carouselSettings = {
   accessibility: true,
   arrows: false,
-  autoplay: true,
+  // autoplay: true,
   autoplaySpeed: 3000,
   dots: true,
   infinite: true,
@@ -19,8 +19,33 @@ const carouselSettings = {
   speed: 1000
 };
 
+const ImageMeta = props => {
+  const { name, desc } = props;
+
+  return (
+    <div className="imageMetaContainer">
+      <div className="imageMetaBackground">
+        <p className="imageName">{name ? name : "No name"}</p>
+        <p className="imageDesc">{desc ? desc : "No description"}</p>
+      </div>
+    </div>
+  );
+};
+
+const getImageMeta = (imageMetaId, fileList) => {
+  return fileList.find(e => {
+    return e._id === imageMetaId;
+  });
+};
+
+const getAudioMeta = (audioMetaId, fileList) => {
+  return fileList.find(e => {
+    return e._id === audioMetaId;
+  });
+};
+
 const MapPOIInfo = props => {
-  const { poi, modal, toggle } = props;
+  const { poi, files, modal, toggle } = props;
 
   return (
     <>
@@ -31,33 +56,57 @@ const MapPOIInfo = props => {
           <Row noGutters className="carouselRow">
             <Col>
               <Slider {...carouselSettings}>
-                {poi.imageList.length === 0
-                  ? "There is no images for this point at the moment."
-                  : poi.imageList.map(image => (
-                      <img
-                        src={image}
-                        key={image.split("token=")[1]}
-                        alt="UWA History"
-                      />
-                    ))}
+                {poi.imageArray.length === 0 ? (
+                  <div>There is no images for this point at the moment.</div>
+                ) : (
+                  poi.imageArray.map(image => {
+                    const imageMeta = getImageMeta(image.metaID, files);
+
+                    return (
+                      <>
+                        <div className="imageContainer">
+                          <img
+                            src={imageMeta.url}
+                            key={imageMeta.url.split("token=")[1]}
+                            alt="UWA History"
+                            className="carouselImage"
+                          />
+                        </div>
+                        <ImageMeta
+                          name={imageMeta.name}
+                          desc={imageMeta.description}
+                        />
+                      </>
+                    );
+                  })
+                )}
               </Slider>
             </Col>
           </Row>
           <hr style={{ marginTop: "1.8rem" }} />
           <Row noGutters>
             <Col>
-              <h4>Oral Histories of {poi.name}</h4>
+              <h4>Oral History Excerpts</h4>
 
-              {poi.audioList.length === 0
+              {poi.audioArray.length === 0
                 ? "There is no audio files for this point at the moment."
-                : poi.audioList.map(audio => (
-                    <ReactAudioPlayer
-                      className="audioplayer"
-                      src={audio}
-                      key={audio.split("token=")[1]}
-                      controls
-                    />
-                  ))}
+                : poi.audioArray.map(audio => {
+                    const audioMeta = getAudioMeta(audio.metaID, files);
+
+                    return (
+                      <>
+                        <p style={{ marginBottom: ".5rem" }}>
+                          {audioMeta.name}
+                        </p>
+                        <ReactAudioPlayer
+                          className="audioplayer"
+                          src={audioMeta.url}
+                          key={audioMeta.url.split("token=")[1]}
+                          controls
+                        />
+                      </>
+                    );
+                  })}
             </Col>
           </Row>
           <hr style={{ marginTop: "0.5rem" }} />
@@ -77,17 +126,37 @@ const MapPOIInfo = props => {
 
 const style = (
   <style>{`
+  @media (max-width: 760px) {
+    .modal {
+      height: auto;
+    }
+    .modal-dialog {
+      margin: 0;
+    }
+    .modal-content {
+      border-radius: 0;
+      word-wrap: break-word;
+    }
+    .modal-title {
+      width: 83vw;
+    }
+    .modal-dialog-scrollable .modal-content {
+      max-height: 100vh;
+    }
+    .imageMetaContainer {
+      padding: 0.4rem 0 !important;
+      // height: auto;
+    }
+  }
   ::-webkit-scrollbar {
     width: 0px;
-  }
-  .slick-slide {
-    max-height: 400px;
   }
   .slick-slide img {
     max-height: 400px;
     max-width: 100% !important;
     margin-left: auto !important;
     margin-right: auto !important;  
+    // margin: auto !important;
     width: auto !important;
     display: flex !important;
   }
@@ -98,19 +167,34 @@ const style = (
   .carouselRow {
     background-color: #fafafa;
   }
-  // .carouselImage {
-  //   max-width: 100%;
-  //   max-height: 350x;
-  //   margin-left: auto;
-  //   margin-right: auto;
-  //   vertical-align: middle
-  // }
+  .imageContainer {
+    // display: flex;
+    // height: 400px;
+  }
+  .imageMetaContainer {
+    background-color: #fafafa;
+    text-align: center;
+    padding: .5rem 2rem;
+    bottom: 0;
+  }
+  .imageMetaBackground { 
+    background-color: #eaeaea;
+    height: 100%;
+    padding: .5rem;
+  }
+  .imageName {
+    margin: 0;
+  }
+  .imageDesc {
+    margin: 10px 0 0 0;
+    color: #000000ad;
+
+  }
   .audioplayer {
     display: block;
     width: 100%;
     margin-bottom: 0.5rem;
   }
-  
   `}</style>
 );
 
