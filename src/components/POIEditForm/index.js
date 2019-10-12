@@ -41,11 +41,14 @@ class POIEditForm extends Component {
       imageArray: this.props.poi.imageArray,
       audioArray: this.props.poi.audioArray,
       isModalOpen: false,
-      isFileOpen: false,
+      isEditFileModalOpen: false,
       fileSelected: null,
+      selectedFileName: "",
+      selectedFileDescription: "",
       activeTab: "1",
       showProgressBar: false,
-      uploadProgress: 0
+      uploadProgress: 0,
+      isDeleteFileModalOpen: false,
     };
   }
 
@@ -65,12 +68,14 @@ class POIEditForm extends Component {
     });
   };
 
-  // When an image is selected, the modal is open to confirm deleting the file
+  // When an image is selected, the edit file modal is open
   // The file selected is saved in the state, null is passed when canceling (toggle off delete modal)
-  toggleFile = file => {
+  toggleFile = (file, fileName, fileDescription) => {
     this.setState({
-      isFileOpen: !this.state.isFileOpen,
-      fileSelected: file
+      isEditFileModalOpen: !this.state.isEditFileModalOpen,
+      fileSelected: file,
+      selectedFileName: fileName,
+      selectedFileDescription: fileDescription
     });
   };
 
@@ -81,13 +86,20 @@ class POIEditForm extends Component {
     });
   };
 
-  // Updates state when form input changes
+   // Toggles the "Are you sure you want to delete file" modal.
+   toggleNestedDeleteFileModal = () => {
+    this.setState({
+      isDeleteFileModalOpen: !this.state.isDeleteFileModalOpen
+    });
+  };
+
   onChange = event => {
     this.setState({ [event.target.name]: event.target.value });
   };
 
   // Updates state when form input changes for files
   onChangeFile = e => {
+
     if (e.target.files.length === 0) {
       // Removes the file from state when canceling upload
       this.setState({ fileupload: null });
@@ -96,6 +108,62 @@ class POIEditForm extends Component {
       this.setState({ fileupload: e.target.files[0] });
     }
   };
+
+  onFileInfoChange = () => {
+    const {selectedFileName, selectedFileDescription, fileSelected, audioArray, imageArray} = this.state;
+    const data = {
+      name: selectedFileName,
+      description: selectedFileDescription,
+      last_modified: firebase.firestore.FieldValue.serverTimestamp()
+    };
+
+    // get fileID
+    var metaID = fileSelected.metaID;
+
+    // update firestore file collection
+    this.props.firebase.fileUpdate(metaID).set(data, { merge: true });
+
+    // Update imageArray, activeTab = 1 when image
+    if (this.state.activeTab === '1') {
+      let index = this.state.imageArray.indexOf(this.state.fileSelected);
+      if (index > -1) {
+        let newArray = imageArray;
+        newArray[index].name = selectedFileName;
+        newArray[index].description = selectedFileDescription;
+        this.setState({ imageArray: newArray });
+
+        const data = {
+          imageArray: newArray,
+          last_modified: firebase.firestore.FieldValue.serverTimestamp()
+        };
+
+        // Update firestore POI collection
+        this.props.firebase.poiUpdate(this.props.poi._id).set(data, { merge: true });
+      }      
+    }
+
+    // Update audioArray, activeTab = 2 when audio
+    else if (this.state.activeTab === '2') {
+      let index = this.state.audioArray.indexOf(this.state.fileSelected);
+      if (index > -1) {
+        let newArray = audioArray;
+        newArray[index].name = selectedFileName;
+        newArray[index].description = selectedFileDescription;
+        this.setState({ audioArray: newArray });
+
+        const data = {
+          audioArray: newArray,
+          last_modified: firebase.firestore.FieldValue.serverTimestamp()
+        };
+
+        // Update firestore POI collection
+        this.props.firebase.poiUpdate(this.props.poi._id).set(data, { merge: true });
+      }
+    }
+
+    // set states and close edit file modal
+    this.setState({ isEditFileModalOpen: !this.state.isEditFileModalOpen });
+  }
 
   // Removes the metadata doc from the files collection in firestore
   deleteMetadata = metaID => {
@@ -152,7 +220,7 @@ class POIEditForm extends Component {
     this.deleteMetadata(metaID);
 
     // reset states and toggle delete confirmation model
-    this.setState({ fileSelected: null, isFileOpen: !this.state.isFileOpen });
+    this.setState({ fileSelected: null, isEditFileModalOpen: !this.state.isEditFileModalOpen, isDeleteFileModalOpen: !this.state.isDeleteFileModalOpen });
   };
 
   // Iterates through all files and deletes time
@@ -255,8 +323,9 @@ class POIEditForm extends Component {
 
       if (type !== null) {
         // gets the storage reference for the file to be added
-        var filename = type + "s/" + fileupload.name + "%%" + new Date();
-        var storageRef = this.props.firebase.storage.ref(filename);
+        var filename = fileupload.name.split('.').slice(0, -1).join('.'); // Name of the file
+        var filelabel = type + "s/" + fileupload.name + "%%" + new Date(); // Name for storage
+        var storageRef = this.props.firebase.storage.ref(filelabel);
 
         // upload file
         var uploadTask = storageRef.put(fileupload);
@@ -275,7 +344,7 @@ class POIEditForm extends Component {
 
               // Set metadata
               var metadata = {
-                name: null,
+                name: filename,
                 description: null,
                 filepath: storageRef.fullPath,
                 filetype: type,
@@ -288,9 +357,10 @@ class POIEditForm extends Component {
 
                 // Add file data for poi doc
                 var filedata = {
-                  name: null,
+                  name: filename,
                   url: url,
-                  metaID: fileRef.id
+                  metaID: fileRef.id,
+                  description: null
                 }
 
                 // Add new file to the current viewing edit for and to firestore
@@ -324,7 +394,7 @@ class POIEditForm extends Component {
               className="card-img-top"
               src={image.url}
               alt={image.name}
-              onClick={() => this.toggleFile(image)}
+              onClick={() => this.toggleFile(image, image.name, image.description)}
             />
             <CardTitle>{image.name}</CardTitle>
           </Card>
@@ -339,17 +409,25 @@ class POIEditForm extends Component {
       // Loads each audio from the audioArray of the poi found in the firestore
       return this.state.audioArray.map(audio => (
         // key of the audio is the url token generated by firebase storage
-        <div key={audio.url.split("token=")[1]}>
+        <Col md="6" className="img-col" key={audio.url.split("token=")[1]}>
+          <figure >
+          <figcaption>{audio.name}</figcaption>
           <ReactAudioPlayer src={audio.url} controls />
-          <Button close onClick={() => this.toggleFile(audio)} />
-        </div>
+          <Button outline 
+            color="none" 
+            onClick={() => this.toggleFile(audio, audio.name, audio.description)} 
+            style={{ position: "absolute", top: "30px", right: "35px" }}>
+            <i className="fa fa-pencil"></i>
+          </Button> 
+          </figure>
+        </Col>
       ));
     }
   }
 
   render() {
-    const { name, latitude, longitude, description, uploadProgress, showProgressBar } = this.state;
-
+    const { name, latitude, longitude, description, uploadProgress, showProgressBar, selectedFileName, selectedFileDescription } = this.state;
+    
     return (
       <Fragment>
         {style}
@@ -465,9 +543,7 @@ class POIEditForm extends Component {
                       <Row>{this.loadImage()}</Row>
                     </TabPane>
                     <TabPane tabId="2">
-                      <Row>
-                        <Col sm="12">{this.loadAudio()}</Col>
-                      </Row>
+                      <Row>{this.loadAudio()}</Row>
                     </TabPane>
                   </TabContent>
                 </Col>
@@ -510,6 +586,7 @@ class POIEditForm extends Component {
                   </Button>
                 </Col>
               </FormGroup>
+            
             </Form>
             <Modal
               isOpen={this.state.isAreYouSureOpen}
@@ -544,19 +621,92 @@ class POIEditForm extends Component {
             </Modal>
           </ModalBody>
         </Modal>
+
+        {/* Edit file modal */}
         <Modal
-          isOpen={this.state.isFileOpen}
+          isOpen={this.state.isEditFileModalOpen}
           toggle={() => this.toggleFile(null)}
         >
           <ModalHeader toggle={() => this.toggleFile(null)}>
-            Are you sure you want to delete?
+            Edit file
           </ModalHeader>
           <ModalBody>
-            <Button outline color="danger" onClick={this.deleteFile}>
-              Delete
-            </Button>
+            <Form onSubmit={this.onSubmit}>
+            <FormGroup>
+                <Label htmlFor="selectedFileName" xs={12}>
+                File Name
+                </Label>
+                <Col>
+                <Input
+                    id="selectedFileName"
+                    name="selectedFileName"
+                    value={selectedFileName}
+                    onChange={this.onChange}
+                    type="text"
+                />
+                </Col>
+            </FormGroup>
+            <FormGroup>
+                <Label htmlFor="selectedFileDescription" xs={12}>
+                Description
+                </Label>
+                <Col>
+                <Input
+                    type="textarea"
+                    name="selectedFileDescription"
+                    id="selectedFileDescription"
+                    value={selectedFileDescription}
+                    onChange={this.onChange}
+                    rows="6"
+                />
+                </Col>
+            </FormGroup>
+            <FormGroup>
+                <Col>
+                <Button type="button" outline color="danger" onClick={this.toggleNestedDeleteFileModal}>
+                  Delete
+                </Button>
+                <Button
+                    color="primary"
+                    onClick={this.onFileInfoChange} 
+                    style={{ position: "absolute", right: "16px" }}
+                >
+                    Apply
+                </Button>
+                </Col>
+            </FormGroup>
+            </Form>
           </ModalBody>
-        </Modal>
+
+          {/* delete file modal */}
+          <Modal
+              isOpen={this.state.isDeleteFileModalOpen}
+              toggle={this.toggleNestedDeleteFileModal}
+            >
+              <ModalHeader toggle={this.toggleNestedDeleteFileModal}>
+                Are you sure you want to delete?
+              </ModalHeader>
+              <ModalBody>
+                  <Col>
+                    <Button
+                      type="button"
+                      color="danger"
+                      onClick={this.deleteFile}
+                    >
+                      Yes
+                    </Button>
+                    <Button
+                      type="button"
+                      color="success"
+                      onClick={this.toggleNestedDeleteFileModal}
+                      style={{ position: "absolute", right: "16px" }}
+                    >
+                      No
+                    </Button>
+                  </Col>
+              </ModalBody>
+            </Modal>
+        </Modal>   
       </Fragment>
     );
   }
@@ -591,3 +741,6 @@ const style = (
 );
 
 export default withFirebase(POIEditForm);
+
+
+

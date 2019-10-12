@@ -71,8 +71,6 @@ class POIForm extends Component {
       location: new firebase.firestore.GeoPoint(parseFloat(latitude), parseFloat(longitude)),
       last_modified: firebase.firestore.FieldValue.serverTimestamp(),
       date_created: firebase.firestore.FieldValue.serverTimestamp(),
-      imageList: [],	// Remove after pull request (upgrade-firestore-3)
-      audioList: [],  // Remove after pull request (upgrade-firestore-3)
       imageArray: [],
       audioArray: []
     };
@@ -104,8 +102,9 @@ class POIForm extends Component {
       if (type !== null) {
 
         // Create a firebase storage reference to the uploading file. Types are put in folers
-        var filename = type + "s/" + fileupload.name + "%%" + new Date();
-        var storageRef = this.props.firebase.storage.ref(filename);
+        var filename = fileupload.name.split('.').slice(0, -1).join('.'); // Name of the file
+        var filelabel = type + "s/" + fileupload.name + "%%" + new Date(); // Name for storage
+        var storageRef = this.props.firebase.storage.ref(filelabel);
 
         // upload file
         var uploadTask = storageRef.put(fileupload);
@@ -124,7 +123,7 @@ class POIForm extends Component {
 
               // Set metadata
               var metadata = {
-                name: null,
+                name: filename,
                 description: null,
                 filepath: storageRef.fullPath,
                 filetype: type,
@@ -137,7 +136,7 @@ class POIForm extends Component {
 
                 // Add file data for poi doc
                 var filedata = {
-                  name: null,
+                  name: filename,
                   url: url,
                   metaID: fileRef.id
                 }
