@@ -184,6 +184,10 @@ class MapPage extends Component {
                 padding: 0
               }}
             >
+              <a href="/about" className="title">
+                <h1 className="name">UWAHS Campus Map</h1>
+                <p>About</p>
+              </a>
               <Map
                 isMarkerShown={isMarkerShown}
                 onMarkerClick={this.handleSelectPOI}
@@ -224,6 +228,22 @@ const style = (
       .sidebar {
         display: none;
       }
+    }
+    .title {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      margin: 20px 10px 0 10px;
+      text-align: center; 
+      color: black;
+      z-index: 3000;
+    }
+    a:hover {
+      text-decoration: none;
+    }
+    .name {
+      font-size: 30px;
     }
   `}</style>
 );
