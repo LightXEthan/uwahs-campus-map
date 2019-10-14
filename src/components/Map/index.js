@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import React, { Fragment, Button } from "react";
 import { compose, withProps } from "recompose";
 import dotenv from "dotenv";
 import { Spinner } from "reactstrap";
@@ -54,7 +54,18 @@ const pointStyleMobile ={
       height : "15vw"
 }
 
-
+  //Function regarding reseting the view when a button is pressed
+  function resetView(){
+    this.setState(
+      (state,props) => ({
+        mapCenter: {
+          lat: -31.9809,  //Lat value as specified in the env file
+          lng: 115.8178,  //Long value as specified in the env file
+          zoom: 16        //Zoom value as specified in the env file
+        }
+      })
+    );
+  };
 
 
 
