@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 import { Spinner } from "reactstrap";
 import userMarker from "./locateMarker.png";
 import northPoint from "./NorthPoint1.png";
+import poiIcon from "./infoIcon.png";
 
 import {
   withScriptjs,
@@ -54,10 +55,6 @@ const pointStyleMobile ={
       height : "15vw"
 }
 
-
-
-
-
 /**
  * loadingElement: react element when loading google maps
  * containerElement: container... set to window height - height of header
@@ -91,10 +88,12 @@ const Map = compose(
       lng: props.mapCenter.lng
     }}
   >
-    {props.isMarkerShown && (
+    {props.isMarkerShown && (   //This section relates to displaying of PoI Markers
       <Fragment>
         {props.POIList.map(marker => (
           <Marker
+            opacity = {0.8}
+            icon = {poiIcon}
             key={marker._id}
             position={{
               lat: marker.location.latitude,
@@ -110,6 +109,7 @@ const Map = compose(
 
     <Marker //Seperate userLocation from PoI markers.
       icon={userMarker}
+      zIndex = {10}
       position={{
         lat: props.currentLocation.lat,
         lng: props.currentLocation.lng
