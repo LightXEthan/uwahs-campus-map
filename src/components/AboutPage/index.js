@@ -55,12 +55,12 @@ const style = (
       z-index: 3000;
       left: 0;
       right: 0;
-      margin-left: 10px;
-      margin-right: 10px;
-      height: 100px;
+      margin-left: 10px !important;
+      margin-right: 10px !important;
+      height: 100px !important;
     }
     .button-text {
-      margin: 30px 0;
+      margin: 30px 0 !important;
     }
   }
   .back-button {
