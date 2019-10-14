@@ -55,11 +55,6 @@ const pointStyleMobile ={
       height : "15vw"
 }
 
-const opacityValue = 0.8;
-
-
-
-
 /**
  * loadingElement: react element when loading google maps
  * containerElement: container... set to window height - height of header
@@ -97,7 +92,7 @@ const Map = compose(
       <Fragment>
         {props.POIList.map(marker => (
           <Marker
-            opacity = {opacityValue}
+            opacity = {0.8}
             icon = {poiIcon}
             key={marker._id}
             position={{
