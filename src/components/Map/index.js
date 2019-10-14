@@ -1,7 +1,7 @@
-import React, { Fragment, Button } from "react";
+import React, { Fragment } from "react";
 import { compose, withProps } from "recompose";
 import dotenv from "dotenv";
-import { Spinner } from "reactstrap";
+import { Spinner, Button } from "reactstrap";
 import userMarker from "./locateMarker.png";
 import northPoint from "./NorthPoint1.png";
 
@@ -35,6 +35,7 @@ const innerStyle = {
 };
 
 const sidebarWidth = 380;
+const mapWidth = 760;
 
 const pointStyleWeb = {
   position: "fixed",
@@ -54,18 +55,23 @@ const pointStyleMobile ={
       height : "15vw"
 }
 
-  //Function regarding reseting the view when a button is pressed
-  function resetView(){
-    this.setState(
-      (state,props) => ({
-        mapCenter: {
-          lat: -31.9809,  //Lat value as specified in the env file
-          lng: 115.8178,  //Long value as specified in the env file
-          zoom: 16        //Zoom value as specified in the env file
-        }
-      })
-    );
-  };
+const resetViewButtonWeb ={
+  position : "fixed",
+  left : window.innerWidth - (sidebarWidth + 100),
+  top : window.innerHeight - (window.innerHeight *0.08),
+  width : "100px",
+  height : "2rem"
+}
+
+const resetViewButtonMobile ={
+  
+  position : "fixed",
+  left : window.innerWidth - 100,
+  top : window.innerHeight - (window.innerHeight *0.06),
+  width : "100px",
+  height : "2rem"
+}
+
 
 
 
@@ -126,7 +132,11 @@ const Map = compose(
         lng: props.currentLocation.lng
       }}
     />
-     <img src={northPoint} style= {(window.innerWidth > 760) ? pointStyleWeb : pointStyleMobile} alt="NorthPointer"/>
+     <img src={northPoint} style= {(window.innerWidth > mapWidth) ? pointStyleWeb : pointStyleMobile} alt="NorthPointer"/>
+     <Button color="info" size="sm" 
+      style={window.innerWidth > mapWidth ? resetViewButtonWeb : resetViewButtonMobile} 
+      onClick={props.onResetView}
+      >Reset View</Button>
   </GoogleMap>
 ));
 
