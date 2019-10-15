@@ -35,6 +35,8 @@ const innerStyle = {
   height: "10vw"
 };
 
+
+  //Styling for North Pointer
 const sidebarWidth = 380;
 
 const pointStyleWeb = {
@@ -45,7 +47,6 @@ const pointStyleWeb = {
   height: "80px"
 };
 
-
 const pointStyleMobile ={
   
       position : "fixed",
@@ -53,7 +54,16 @@ const pointStyleMobile ={
       top : window.innerHeight - (window.innerHeight *0.90),
       width : "15vw",
       height : "15vw"
-}
+};
+
+  //Styling for Hide PoI Button
+  const buttonStyle = {
+    position: "fixed",
+    left: "5vw",
+    top: window.innerHeight - (window.innerHeight *0.03),
+  };
+
+
 
 /**
  * loadingElement: react element when loading google maps
