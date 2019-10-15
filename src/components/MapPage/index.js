@@ -101,7 +101,7 @@ class MapPage extends Component {
   }
   */
 
-    //Function regarding reseting the view when a button is pressed
+  //Function regarding reseting the view when a button is pressed
   resetView = () => {
     this.setState(
       () => ({
@@ -109,7 +109,6 @@ class MapPage extends Component {
           lat: parseFloat(process.env.REACT_APP_UWA_LAT),  //Lat value as specified in the env file
           lng: parseFloat(process.env.REACT_APP_UWA_LNG),  //Long value as specified in the env file
         },
-        mapZoom: 16      //Zoom value as specified in the env file.
       })
     );
   };
@@ -221,14 +220,14 @@ class MapPage extends Component {
                   window.innerWidth > 760
                     ? window.innerWidth - 380
                     : window.innerWidth
-                }px`,
+                  }px`,
                 padding: 0
               }}
             >
               <Map
                 isMarkerShown={isMarkerShown}
                 onMarkerClick={this.handleSelectPOI}
-                onResetView = {this.resetView}
+                onResetView={this.resetView}
                 currentLocation={currentLatLng}
                 mapCenter={mapCenter}
                 zoom={mapZoom}
