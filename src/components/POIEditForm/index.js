@@ -79,7 +79,7 @@ class POIEditForm extends Component {
     });
   };
 
-  // Toggles the "Are you sure you want to delete" modal.
+  // Toggles the "Are you sure you want to delete POI" modal.
   toggleNestedModal = () => {
     this.setState({
       isAreYouSureOpen: !this.state.isAreYouSureOpen
@@ -93,12 +93,13 @@ class POIEditForm extends Component {
     });
   };
 
+  // Updates state
   onChange = event => {
     this.setState({ [event.target.name]: event.target.value });
   };
 
+  // Updates state
   onChangeFile = e => {
-
     if (e.target.files.length === 0) {
       this.setState({ fileupload: null });
     } else {
@@ -106,6 +107,7 @@ class POIEditForm extends Component {
     }
   };
 
+  // Updates state and file information in firestore
   onFileInfoChange = () => {
     const {selectedFileName, selectedFileDescription, fileSelected, audioArray, imageArray} = this.state;
     const data = {
@@ -114,13 +116,13 @@ class POIEditForm extends Component {
       last_modified: firebase.firestore.FieldValue.serverTimestamp()
     };
 
-    // get fileID
+    // Gets fileID
     var metaID = fileSelected.metaID;
 
-    // update firestore file collection
+    // Updates firestore file collection
     this.props.firebase.fileUpdate(metaID).set(data, { merge: true });
 
-    // Update imageArray, activeTab = 1 when image
+    // Updates imageArray, activeTab = 1 when image
     if (this.state.activeTab === '1') {
       let index = this.state.imageArray.indexOf(this.state.fileSelected);
       if (index > -1) {
@@ -134,12 +136,12 @@ class POIEditForm extends Component {
           last_modified: firebase.firestore.FieldValue.serverTimestamp()
         };
 
-        // Update firestore POI collection
+        // Updates firestore POI collection
         this.props.firebase.poiUpdate(this.props.poi._id).set(data, { merge: true });
       }      
     }
 
-    // Update audioArray, activeTab = 2 when audio
+    // Updates audioArray, activeTab = 2 when audio
     else if (this.state.activeTab === '2') {
       let index = this.state.audioArray.indexOf(this.state.fileSelected);
       if (index > -1) {
@@ -153,12 +155,12 @@ class POIEditForm extends Component {
           last_modified: firebase.firestore.FieldValue.serverTimestamp()
         };
 
-        // Update firestore POI collection
+        // Updates firestore POI collection
         this.props.firebase.poiUpdate(this.props.poi._id).set(data, { merge: true });
       }
     }
 
-    // set states and close edit file modal
+    // Sets states and close edit file modal
     this.setState({ isEditFileModalOpen: !this.state.isEditFileModalOpen });
   }
 
@@ -178,7 +180,7 @@ class POIEditForm extends Component {
     });
   }
 
-  // Delete the image from imageArray and metafile
+  // Deletes the image from imageArray and metafile
   deleteFile = () => {
     var metaID = this.state.fileSelected.metaID;
 
@@ -316,10 +318,10 @@ class POIEditForm extends Component {
         var filelabel = type + "s/" + fileupload.name + "%%" + new Date(); // Name for storage
         var storageRef = this.props.firebase.storage.ref(filelabel);
 
-        // upload file
+        // uploads file
         var uploadTask = storageRef.put(fileupload);
 
-        // monitor progress of file upload
+        // monitors progress of file upload
         uploadTask.on('state_changed', (snapshot) => {
           var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
           this.setState({ uploadProgress: progress });
@@ -331,7 +333,7 @@ class POIEditForm extends Component {
           () => {
             storageRef.getDownloadURL().then((url) => {
 
-              // Set metadata
+              // Sets metadata
               var metadata = {
                 name: filename,
                 description: null,
@@ -344,7 +346,7 @@ class POIEditForm extends Component {
               // Adds the file metadata to the files collection
               this.props.firebase.files().add(metadata).then(fileRef => {
 
-                // Add file data for poi doc
+                // Adds file data for poi doc
                 var filedata = {
                   name: filename,
                   url: url,
@@ -352,7 +354,7 @@ class POIEditForm extends Component {
                   description: null
                 }
 
-                // Add new file to the current viewing edit for and to firestore
+                // Adds new file to the current viewing edit for and to firestore
                 this.addFile(type, filedata);
               });
 
@@ -423,14 +425,12 @@ class POIEditForm extends Component {
         <Button outline color="none" onClick={this.toggleModal}>
           <i className="fa fa-pencil"></i>
         </Button>
-
-        {/* toggle - so that when we click outside of the modal the form disappear */}
+        {/* Edit POI modal */}
         <Modal
           isOpen={this.state.isModalOpen}
           toggle={this.toggleModal}
           className="modal-lg"
         >
-          {/* toggle - so that an 'x' appears in the header and we can dismiss the form */}
           <ModalHeader toggle={this.toggleModal}>
             Edit place of interest
           </ModalHeader>
@@ -575,8 +575,9 @@ class POIEditForm extends Component {
                   </Button>
                 </Col>
               </FormGroup>
-            
             </Form>
+
+            {/* Delete POI modal */}
             <Modal
               isOpen={this.state.isAreYouSureOpen}
               toggle={this.toggleNestedModal}
@@ -667,7 +668,7 @@ class POIEditForm extends Component {
             </Form>
           </ModalBody>
 
-          {/* delete file modal */}
+          {/* Delete file modal */}
           <Modal
               isOpen={this.state.isDeleteFileModalOpen}
               toggle={this.toggleNestedDeleteFileModal}
