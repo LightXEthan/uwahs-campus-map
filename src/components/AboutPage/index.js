@@ -12,7 +12,7 @@ const AboutPage = () => (
     </Button>
     <Container>
       <Row>
-        <Col style={{ textAlign: "center", marginBottom: "120px" }}>
+        <Col className="content">
           <div className="title">
             <h1>UWA Historical Society Campus Map</h1>
           </div>
@@ -69,6 +69,12 @@ const style = (
     .button-text {
       margin: 30px 0 !important;
     }
+    .content {
+      margin-bottom: 120px;
+    }
+  }
+  .content {
+    text-align: center;
   }
   .back-button {
     position: fixed;
@@ -87,7 +93,7 @@ const style = (
   }
   .title {
     word-wrap: break-word;
-    margin: 30px 0;
+    margin: 20px 0;
   }
   .github-icon {
     margin: 0 5px;
