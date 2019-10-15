@@ -59,10 +59,6 @@ class SignInFormBase extends Component {
         this.setState( { displayErrorMessage : false });
     };
 
-    onForgot = event => {
-        alert("Hello! I am an alert box!!");
-    };
-
     render() {
         const {email, password, error, displayErrorMessage } = this.state;
         const isInvalid = password === '' || email === '';
