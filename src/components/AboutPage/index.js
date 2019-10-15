@@ -17,14 +17,18 @@ const AboutPage = () => (
             <h1>UWA Historical Society Campus Map</h1>
           </div>
           <h2>About</h2>
-          <p>description ladida</p>
+          <p>description ladida... This app was built for UWAHS as a project for CITS3200 Professional Computing 2019.</p>
+          <h2>Members of Group 23</h2>
+          <ul style={{ listStyleType: "none", padding: 0 }}>
+            <li>Ethan Li-Ming Chin</li>
+            <li>Huey Charn Lee</li>
+            <li>Jong Kyung Kim</li>
+            <li>Joshua Richard Mussell</li>
+            <li>Tomas James Mijat</li>
+          </ul>
           <h2>Acknowledgements</h2>
           <ul style={{ listStyleType: "none", padding: 0 }}>
-            <li>Name</li>
-            <li>Name</li>
-            <li>Name</li>
-            <li>Name</li>
-            <li>Name</li>
+            <li>Arian Nevjestic (Microsoft)</li>
           </ul>
           <h2>Contribute</h2>
           <p>
