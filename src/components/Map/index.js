@@ -1,7 +1,7 @@
 import React, { Fragment } from "react";
 import { compose, withProps } from "recompose";
 import dotenv from "dotenv";
-import { Spinner } from "reactstrap";
+import { Spinner , Button } from "reactstrap";
 import userMarker from "./locateMarker.png";
 import northPoint from "./NorthPoint1.png";
 import poiIcon from "./infoIcon.png";
@@ -106,6 +106,8 @@ const Map = compose(
         ))}
       </Fragment>
     )}
+
+    <Button color="primary" size="sm" style = {buttonStyle} onClick = {props.onButtonClick} >{props.isMarkerShown ? "Hide Markers" : "Show Markers"}</Button>
 
     <Marker //Seperate userLocation from PoI markers.
       icon={userMarker}
