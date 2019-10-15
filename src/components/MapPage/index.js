@@ -101,9 +101,6 @@ class MapPage extends Component {
   }
   */
 
-
-
-
   componentDidUpdate() {
     if (navigator.geolocation) {
       navigator.geolocation.watchPosition(
@@ -257,16 +254,19 @@ const style = (
       .sidebar {
         display: none;
       }
+      .title {
+        margin: 20px 10px 0 10px !important;
+      }
     }
     .title {
       position: absolute;
       top: 0;
       left: 0;
       right: 0;
-      margin: 20px 10px 0 10px;
+      margin: 20px 20% 0 20%;
       text-align: center; 
       color: black;
-      z-index: 3000;
+      z-index: 1;
     }
     a:hover {
       text-decoration: none;
