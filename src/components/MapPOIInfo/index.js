@@ -211,6 +211,10 @@ const style = (
     width: 100%;
     margin-bottom: 0.5rem;
   }
+  .modal-content {
+    border-radius: 0;
+    word-wrap: break-word;
+  }
   `}</style>
 );
 
