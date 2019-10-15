@@ -102,14 +102,14 @@ class MapPage extends Component {
   */
 
     //Function regarding reseting the view when a button is pressed
-  resetView(){
+  resetView = () => {
     this.setState(
       () => ({
         mapCenter: {
-          lat: -31.9809,  //Lat value as specified in the env file
-          lng: 115.8178,  //Long value as specified in the env file
+          lat: parseFloat(process.env.REACT_APP_UWA_LAT),  //Lat value as specified in the env file
+          lng: parseFloat(process.env.REACT_APP_UWA_LNG),  //Long value as specified in the env file
         },
-        mapZoom: 16,      //Zoom value as specified in the env file.
+        mapZoom: 16      //Zoom value as specified in the env file.
       })
     );
   };
