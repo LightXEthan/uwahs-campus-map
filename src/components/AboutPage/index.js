@@ -45,6 +45,9 @@ const AboutPage = () => (
             </a>
             .
           </p>
+          <h2>QR Code</h2>
+          <p><a href="https://firebasestorage.googleapis.com/v0/b/uwacampusmap-eed18.appspot.com/o/adminguides%2Fqr-code.png?alt=media&token=aa53ab85-b0c6-4e72-bb88-fc9d09b28630">QR Code download link</a></p>
+          <img src="https://firebasestorage.googleapis.com/v0/b/uwacampusmap-eed18.appspot.com/o/adminguides%2Fqr-code.png?alt=media&token=aa53ab85-b0c6-4e72-bb88-fc9d09b28630"/>
           <h2>Copyright</h2>
           <p>copyright stuff</p>
         </Col>
