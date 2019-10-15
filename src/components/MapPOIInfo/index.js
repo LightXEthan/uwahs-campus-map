@@ -86,7 +86,7 @@ const MapPOIInfo = props => {
           <hr style={{ marginTop: "1.8rem" }} />
           <Row noGutters>
             <Col>
-              <h4>Oral History Excerpts</h4>
+              <h4 className="header">Oral History Excerpts</h4>
 
               {poi.audioArray.length === 0
                 ? "There is no audio files for this point at the moment."
@@ -95,11 +95,12 @@ const MapPOIInfo = props => {
 
                     return (
                       <>
-                        <p style={{ marginBottom: ".5rem" }}>
-                          {audioMeta.name}
-                        </p>
+                        <div className="audioMeta">
+                          <p className="audioName">{audioMeta.name}</p>
+                          <p className="audioDesc">{audioMeta.description}</p>
+                        </div>
                         <ReactAudioPlayer
-                          className="audioplayer"
+                          className="audioPlayer"
                           src={audioMeta.url}
                           key={audioMeta.url.split("token=")[1]}
                           controls
@@ -109,10 +110,10 @@ const MapPOIInfo = props => {
                   })}
             </Col>
           </Row>
-          <hr style={{ marginTop: "0.5rem" }} />
+          <hr />
           <Row noGutters>
             <Col>
-              <h4>About {poi.name}</h4>
+              <h4 className="header">About {poi.name}</h4>
               {poi.description === "" || poi.description === undefined //TODO: for dev only
                 ? "There is no description for this point at the moment."
                 : poi.description}
@@ -184,13 +185,28 @@ const style = (
   }
   .imageName {
     margin: 0;
+    word-wrap: break-word;
   }
   .imageDesc {
     margin: 10px 0 0 0;
     color: #000000ad;
-
+    word-wrap: break-word;
   }
-  .audioplayer {
+  .header { 
+    text-align: center;
+  }
+  .audioName {
+    text-align: center;
+    margin-bottom: 0px;
+    word-wrap: break-word;
+  }
+  .audioDesc {
+    text-align: center;
+    margin-bottom: 5px;
+    color: grey;
+    word-wrap: break-word;
+  }
+  .audioPlayer {
     display: block;
     width: 100%;
     margin-bottom: 0.5rem;
