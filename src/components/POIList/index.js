@@ -1,5 +1,5 @@
 import React, { Component, Fragment } from "react";
-import { ListGroup, ListGroupItem, Col, Button, Span } from "reactstrap";
+import { ListGroup, ListGroupItem } from "reactstrap";
 import { withFirebase } from "../Firebase";
 
 import POIEditForm from "../POIEditForm";
