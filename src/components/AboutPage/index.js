@@ -19,15 +19,15 @@ const AboutPage = () => (
           <h2>About</h2>
           <p>
             This app was built for the UWA Historical Society as a project for
-            CITS3200 Professional Computing 2019.
+            <a href="http://teaching.csse.uwa.edu.au/units/CITS3200/"> CITS3200 Professional Computing</a> 2019.
           </p>
           <h2>Group 23</h2>
           <ul style={{ listStyleType: "none", padding: 0 }}>
-            <li>Ethan Li-Ming Chin</li>
-            <li>Huey Charn Lee</li>
-            <li>Jong Kyung Kim</li>
-            <li>Joshua Richard Mussell</li>
-            <li>Tomas James Mijat</li>
+            <li><a href="https://github.com/LightXEthan">Ethan Li-Ming Chin</a></li>
+            <li><a href="https://github.com/Elenaires">Huey Charn Lee</a></li>
+            <li><a href="https://github.com/JKKim98">Jong Kyung Kim</a></li>
+            <li><a href="https://github.com/JMu55">Joshua Richard Mussell</a></li>
+            <li><a href="https://github.com/BologneseBandit">Tomas James Mijat</a></li>
           </ul>
           <h2>Acknowledgements</h2>
           <ul style={{ listStyleType: "none", padding: 0 }}>
