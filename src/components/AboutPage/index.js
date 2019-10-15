@@ -17,8 +17,11 @@ const AboutPage = () => (
             <h1>UWA Historical Society Campus Map</h1>
           </div>
           <h2>About</h2>
-          <p>description ladida... This app was built for UWAHS as a project for CITS3200 Professional Computing 2019.</p>
-          <h2>Members of Group 23</h2>
+          <p>
+            This app was built for the UWA Historical Society as a project for
+            CITS3200 Professional Computing 2019.
+          </p>
+          <h2>Group 23</h2>
           <ul style={{ listStyleType: "none", padding: 0 }}>
             <li>Ethan Li-Ming Chin</li>
             <li>Huey Charn Lee</li>
@@ -28,7 +31,7 @@ const AboutPage = () => (
           </ul>
           <h2>Acknowledgements</h2>
           <ul style={{ listStyleType: "none", padding: 0 }}>
-            <li>Arian Nevjestic (Microsoft)</li>
+            <li>Arian Nevjestic - Mentor, Microsoft</li>
           </ul>
           <h2>Contribute</h2>
           <p>
@@ -43,7 +46,7 @@ const AboutPage = () => (
             .
           </p>
           <h2>Copyright</h2>
-          <p>copyright mumbo jumbo</p>
+          <p>copyright stuff</p>
         </Col>
       </Row>
     </Container>
