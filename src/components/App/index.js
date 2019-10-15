@@ -5,6 +5,7 @@ import { withAuthentication } from "../Session";
 import AuthUserContext from "../Session/context";
 
 import MapPage from "../MapPage";
+import AboutPage from "../AboutPage";
 import Navigation from "../Navigation";
 import SignInPage from "../SignIn";
 import AdminPage from "../Admin";
@@ -18,6 +19,7 @@ const App = () => (
         {authUser => (authUser ? <Navigation /> : null)}
       </AuthUserContext.Consumer>
       <Route exact path={ROUTES.MAP} component={MapPage} />
+      <Route exact path={ROUTES.ABOUT} component={AboutPage} />
       <Route path={ROUTES.SIGN_IN} component={SignInPage} />
       <Route path={ROUTES.ADMIN} component={AdminPage} />
       <Route path={ROUTES.PASSWORD_FORGET} component={PasswordForgetPage} />
