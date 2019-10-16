@@ -101,6 +101,18 @@ class MapPage extends Component {
   }
   */
 
+  //Function regarding reseting the view when a button is pressed
+  resetView = () => {
+    this.setState(
+      () => ({
+        mapCenter: {
+          lat: parseFloat(process.env.REACT_APP_UWA_LAT),  //Lat value as specified in the env file
+          lng: parseFloat(process.env.REACT_APP_UWA_LNG),  //Long value as specified in the env file
+        },
+      })
+    );
+  };
+
   componentDidUpdate() {
     if (navigator.geolocation) {
       navigator.geolocation.watchPosition(
@@ -217,7 +229,7 @@ handleShowPOI= () => {
                   (window.innerWidth > 760 && isMarkerShown)
                     ? window.innerWidth - 380
                     : window.innerWidth
-                }px`,
+                  }px`,
                 padding: 0
               }}
             >
@@ -229,6 +241,7 @@ handleShowPOI= () => {
                 isMarkerShown={isMarkerShown}
                 onButtonClick = {this.handleShowPOI}
                 onMarkerClick={this.handleSelectPOI}
+                onResetView={this.resetView}
                 currentLocation={currentLatLng}
                 mapCenter={mapCenter}
                 zoom={mapZoom}
