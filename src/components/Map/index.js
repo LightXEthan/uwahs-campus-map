@@ -75,6 +75,17 @@ const resetViewButton = {
   padding: ".5rem 2rem"
 };
 
+//Styling for Hide PoI Button
+const buttonStyle = {
+  position: "absolute",
+  bottom: "10px",
+  left: "50%",
+  transform: "translate(-50%, 0)",
+  padding: ".5rem 2rem"
+  // left: "5vw",
+  // top: window.innerHeight - window.innerHeight * 0.03
+};
+
 // const resetViewButtonMobile = {
 //   position: "fixed",
 //   left: window.innerWidth - 100,
@@ -90,9 +101,9 @@ const resetViewButton = {
 //       width : "15vw",
 //       height : "15vw"
 // }
-  // left: "5vw",
-  // top: window.innerHeight - window.innerHeight * 0.03
-};
+// left: "5vw",
+// top: window.innerHeight - window.innerHeight * 0.03
+// };
 
 // const buttonStyleMobile = {
 //   position: "fixed",
