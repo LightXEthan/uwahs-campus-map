@@ -41,9 +41,6 @@ const sidebarWidth = 380;
 const mapWidth = 760;
 
 const pointStyleWeb = {
-  // position: "fixed",
-  // left: window.innerWidth - 1.25 * sidebarWidth,
-  // top: window.innerHeight - window.innerHeight * 0.925,
   position: "absolute",
   top: "20px",
   right: "20px",
@@ -52,9 +49,6 @@ const pointStyleWeb = {
 };
 
 const pointStyleMobile = {
-  // position: "fixed",
-  // left: "85vw",
-  // top: window.innerHeight - window.innerHeight * 0.9,
   position: "absolute",
   top: "60px",
   right: "20px",
@@ -62,32 +56,17 @@ const pointStyleMobile = {
   height: "15vw"
 };
 
-const resetViewButton = {
-  // position: "fixed",
-  // left: window.innerWidth - (sidebarWidth + 100),
-  // top: window.innerHeight - window.innerHeight * 0.08,
-  // width: "100px",
-  // height: "2rem"
-  // position: "absolute",
-  // bottom: "10px",
-  // left: "50%",
-  // transform: "translate(-50%, 0)",
+//Styling for Hide PoI Button
+const greaterButton = {
   padding: ".5rem 0rem",
   fontWeight: "500",
   fontSize: "1em"
 };
 
-//Styling for Hide PoI Button
-const hidePOIButton = {
-  // position: "absolute",
-  // bottom: "10px",
-  // left: "50%",
-  // transform: "translate(-50%, 0)",
-  padding: "1rem 0rem",
+const lesserButton = {
+  padding: ".2rem 0rem",
   fontWeight: "500",
   fontSize: "1em"
-  // left: "5vw",
-  // top: window.innerHeight - window.innerHeight * 0.03
 };
 
 const buttonGroupStyle = {
@@ -108,35 +87,9 @@ const buttonGroupStyleMobile = {
   width: "80%"
 };
 
-// const resetViewButtonMobile = {
-//   position: "fixed",
-//   left: window.innerWidth - 100,
-//   top: window.innerHeight - window.innerHeight * 0.06,
-//   width: "100px",
-//   height: "2rem"
-// };
-// const pointStyleMobile ={
-
-//       position : "fixed",
-//       left : "85vw",
-//       top : window.innerHeight - (window.innerHeight *0.90),
-//       width : "15vw",
-//       height : "15vw"
-// }
-// left: "5vw",
-// top: window.innerHeight - window.innerHeight * 0.03
-// };
-
-// const buttonStyleMobile = {
-//   position: "fixed",
-//   left: "1vw",
-//   top: window.innerHeight - window.innerHeight * 0.07
-// };
-
 /**
  * loadingElement: react element when loading google maps
  * containerElement: container... set to window height - height of header
- * TODO: doesn't affect mobile view...
  * mapElement: react element for contained in containerElement... set to 100 to fill containerElement
  */
 const Map = compose(
@@ -223,7 +176,7 @@ const Map = compose(
       <Button
         color="primary"
         size="sm"
-        style={hidePOIButton}
+        style={greaterButton}
         onClick={props.onButtonClick}
       >
         {props.isMarkerShown ? "Hide Markers" : "Show Markers"}
@@ -231,10 +184,18 @@ const Map = compose(
       <Button
         color="info"
         size="sm"
-        style={resetViewButton}
+        style={lesserButton}
         onClick={props.onResetView}
       >
         Reset View
+      </Button>
+      <Button
+        color="info"
+        size="sm"
+        style={lesserButton}
+        onClick={props.onCenterOnMe}
+      >
+        My Location
       </Button>
     </div>
   </GoogleMap>

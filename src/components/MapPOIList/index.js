@@ -136,7 +136,7 @@ const style = (
     }
 
     .listButton {
-      padding: .5rem .75rem;
+      padding: 0;
       color: black;
     }
 

@@ -105,14 +105,21 @@ class MapPage extends Component {
 
   //Function regarding reseting the view when a button is pressed
   resetView = () => {
-    this.setState(
-      () => ({
-        mapCenter: {
-          lat: parseFloat(process.env.REACT_APP_UWA_LAT),  //Lat value as specified in the env file
-          lng: parseFloat(process.env.REACT_APP_UWA_LNG),  //Long value as specified in the env file
-        },
-      })
-    );
+    this.setState(() => ({
+      mapCenter: {
+        lat: parseFloat(process.env.REACT_APP_UWA_LAT), //Lat value as specified in the env file
+        lng: parseFloat(process.env.REACT_APP_UWA_LNG) //Long value as specified in the env file
+      }
+    }));
+  };
+
+  handleCenterOnMe = () => {
+    this.setState(() => ({
+      mapCenter: {
+        lat: this.state.currentLatLng.lat,
+        lng: this.state.currentLatLng.lng
+      }
+    }));
   };
 
   componentDidUpdate() {
@@ -197,16 +204,13 @@ class MapPage extends Component {
     );
   };
 
-//This function relates to the showing/hiding of PoI Markers
+  //This function relates to the showing/hiding of PoI Markers
 
-handleShowPOI= () => {
-  this.setState((state, props) => (
-    {
+  handleShowPOI = () => {
+    this.setState((state, props) => ({
       isMarkerShown: !state.isMarkerShown
-    }
-  ));
-}
-
+    }));
+  };
 
   render() {
     const {
@@ -228,10 +232,10 @@ handleShowPOI= () => {
             <Col
               style={{
                 maxWidth: `${
-                  (window.innerWidth > 760 && isMarkerShown)
+                  window.innerWidth > 760 && isMarkerShown
                     ? window.innerWidth - 380
                     : window.innerWidth
-                  }px`,
+                }px`,
                 padding: 0
               }}
             >
@@ -241,16 +245,24 @@ handleShowPOI= () => {
               </a>
               <Map
                 isMarkerShown={isMarkerShown}
-                onButtonClick = {this.handleShowPOI}
+                onButtonClick={this.handleShowPOI}
                 onMarkerClick={this.handleSelectPOI}
                 onResetView={this.resetView}
+                onCenterOnMe={this.handleCenterOnMe}
                 currentLocation={currentLatLng}
                 mapCenter={mapCenter}
                 zoom={mapZoom}
                 POIList={POIList}
               />
             </Col>
-            <Col className="sidebar" style={(isMarkerShown && window.innerWidth > 760) ? {display : "block"} : {display : "none"}}>
+            <Col
+              className="sidebar"
+              style={
+                isMarkerShown && window.innerWidth > 760
+                  ? { display: "block" }
+                  : { display: "none" }
+              }
+            >
               <MapPOIList
                 POIList={POIList}
                 onListItemClick={this.handleSelectPOI}
