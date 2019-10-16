@@ -39,41 +39,40 @@ const mapWidth = 760;
 
 const pointStyleWeb = {
   position: "fixed",
-  left: window.innerWidth - (1.25*sidebarWidth),
-  top: window.innerHeight - (window.innerHeight *0.925),
+  left: window.innerWidth - 1.25 * sidebarWidth,
+  top: window.innerHeight - window.innerHeight * 0.925,
   width: "80px",
   height: "80px"
 };
 
+const pointStyleMobile = {
+  position: "fixed",
+  left: "85vw",
+  top: window.innerHeight - window.innerHeight * 0.9,
+  width: "15vw",
+  height: "15vw"
+};
 
-const pointStyleMobile ={
-  
-      position : "fixed",
-      left : "85vw",
-      top : window.innerHeight - (window.innerHeight *0.90),
-      width : "15vw",
-      height : "15vw"
-}
+const resetViewButton = {
+  // position: "fixed",
+  // left: window.innerWidth - (sidebarWidth + 100),
+  // top: window.innerHeight - window.innerHeight * 0.08,
+  // width: "100px",
+  // height: "2rem"
+  position: "absolute",
+  bottom: "10px",
+  left: "50%",
+  transform: "translate(-50%, 0)",
+  padding: ".5rem 2rem"
+};
 
-const resetViewButtonWeb ={
-  position : "fixed",
-  left : window.innerWidth - (sidebarWidth + 100),
-  top : window.innerHeight - (window.innerHeight *0.08),
-  width : "100px",
-  height : "2rem"
-}
-
-const resetViewButtonMobile ={
-  
-  position : "fixed",
-  left : window.innerWidth - 100,
-  top : window.innerHeight - (window.innerHeight *0.06),
-  width : "100px",
-  height : "2rem"
-}
-
-
-
+// const resetViewButtonMobile = {
+//   position: "fixed",
+//   left: window.innerWidth - 100,
+//   top: window.innerHeight - window.innerHeight * 0.06,
+//   width: "100px",
+//   height: "2rem"
+// };
 
 /**
  * loadingElement: react element when loading google maps
@@ -132,11 +131,19 @@ const Map = compose(
         lng: props.currentLocation.lng
       }}
     />
-     <img src={northPoint} style= {(window.innerWidth > mapWidth) ? pointStyleWeb : pointStyleMobile} alt="NorthPointer"/>
-     <Button color="info" size="sm" 
-      style={window.innerWidth > mapWidth ? resetViewButtonWeb : resetViewButtonMobile} 
+    <img
+      src={northPoint}
+      style={window.innerWidth > mapWidth ? pointStyleWeb : pointStyleMobile}
+      alt="NorthPointer"
+    />
+    <Button
+      color="info"
+      size="sm"
+      style={resetViewButton}
       onClick={props.onResetView}
-      >Reset View</Button>
+    >
+      Reset View
+    </Button>
   </GoogleMap>
 ));
 
