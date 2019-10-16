@@ -60,11 +60,11 @@ const AboutPage = () => (
           </p>
           <h2>QR Code</h2>
           <p style={{ marginBottom: 0 }}>
-            <a href="https://firebasestorage.googleapis.com/v0/b/uwacampusmap-eed18.appspot.com/o/adminguides%2Fqr-code.png?alt=media&token=aa53ab85-b0c6-4e72-bb88-fc9d09b28630">
+            <a href="https://github.com/LightXEthan/uwahs-campus-map/blob/docs/demos/demo/qr-code.png?raw=true">
               QR Code download link
             </a>
           </p>
-          <img src="https://firebasestorage.googleapis.com/v0/b/uwacampusmap-eed18.appspot.com/o/adminguides%2Fqr-code.png?alt=media&token=aa53ab85-b0c6-4e72-bb88-fc9d09b28630" />
+          <img alt="" src="https://github.com/LightXEthan/uwahs-campus-map/blob/docs/demos/demo/qr-code.png?raw=true" />
           <h2>Copyright</h2>
           <p>copyright stuff</p>
         </Col>
