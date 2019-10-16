@@ -74,14 +74,14 @@ const resetViewButton = {
 //   width: "100px",
 //   height: "2rem"
 // };
-const pointStyleMobile ={
-  
-      position : "fixed",
-      left : "85vw",
-      top : window.innerHeight - (window.innerHeight *0.90),
-      width : "15vw",
-      height : "15vw"
-}
+// const pointStyleMobile ={
+
+//       position : "fixed",
+//       left : "85vw",
+//       top : window.innerHeight - (window.innerHeight *0.90),
+//       width : "15vw",
+//       height : "15vw"
+// }
 
 /**
  * loadingElement: react element when loading google maps
@@ -116,12 +116,12 @@ const Map = compose(
       lng: props.mapCenter.lng
     }}
   >
-    {props.isMarkerShown && (   //This section relates to displaying of PoI Markers
+    {props.isMarkerShown && ( //This section relates to displaying of PoI Markers
       <Fragment>
         {props.POIList.map(marker => (
           <Marker
-            opacity = {0.8}
-            icon = {poiIcon}
+            opacity={0.8}
+            icon={poiIcon}
             key={marker._id}
             position={{
               lat: marker.location.latitude,
@@ -137,7 +137,7 @@ const Map = compose(
 
     <Marker //Seperate userLocation from PoI markers.
       icon={userMarker}
-      zIndex = {10}
+      zIndex={10}
       position={{
         lat: props.currentLocation.lat,
         lng: props.currentLocation.lng
