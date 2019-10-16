@@ -27,6 +27,9 @@ class Firebase {
   }
 
   // *** Points of interest Firestore database references ***
+  // Points of interest firestore database
+  poi = () => this.db.collection("poi").doc();
+
   // Collection reference
   pois = () => this.db.collection("poi");
 
