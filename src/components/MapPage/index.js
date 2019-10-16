@@ -183,6 +183,17 @@ class MapPage extends Component {
     );
   };
 
+//This function relates to the showing/hiding of PoI Markers
+
+handleShowPOI= () => {
+  this.setState((state, props) => (
+    {
+      isMarkerShown: !state.isMarkerShown
+    }
+  ));
+}
+
+
   render() {
     const {
       isMarkerShown,
@@ -203,7 +214,7 @@ class MapPage extends Component {
             <Col
               style={{
                 maxWidth: `${
-                  window.innerWidth > 760
+                  (window.innerWidth > 760 && isMarkerShown)
                     ? window.innerWidth - 380
                     : window.innerWidth
                 }px`,
@@ -216,6 +227,7 @@ class MapPage extends Component {
               </a>
               <Map
                 isMarkerShown={isMarkerShown}
+                onButtonClick = {this.handleShowPOI}
                 onMarkerClick={this.handleSelectPOI}
                 currentLocation={currentLatLng}
                 mapCenter={mapCenter}
@@ -223,7 +235,7 @@ class MapPage extends Component {
                 POIList={POIList}
               />
             </Col>
-            <Col className="sidebar">
+            <Col className="sidebar" style={(isMarkerShown && window.innerWidth > 760) ? {display : "block"} : {display : "none"}}>
               <MapPOIList
                 POIList={POIList}
                 onListItemClick={this.handleSelectPOI}

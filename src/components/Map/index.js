@@ -1,7 +1,7 @@
 import React, { Fragment } from "react";
 import { compose, withProps } from "recompose";
 import dotenv from "dotenv";
-import { Spinner } from "reactstrap";
+import { Spinner, Button } from "reactstrap";
 import userMarker from "./locateMarker.png";
 import northPoint from "./NorthPoint1.png";
 import poiIcon from "./infoIcon.png";
@@ -16,6 +16,7 @@ import {
 dotenv.config();
 
 const retroStyles = require("./retroStyle.json");
+const retroLabels = require("./retroStyleLabel.json");
 
 const outterStyle = {
   position: "fixed",
@@ -35,25 +36,47 @@ const innerStyle = {
   height: "10vw"
 };
 
+//Styling for North Pointer
 const sidebarWidth = 380;
 
 const pointStyleWeb = {
-  position: "fixed",
-  left: window.innerWidth - (1.25*sidebarWidth),
-  top: window.innerHeight - (window.innerHeight *0.925),
+  // position: "fixed",
+  // left: window.innerWidth - 1.25 * sidebarWidth,
+  // top: window.innerHeight - window.innerHeight * 0.925,
+  position: "absolute",
+  top: "20px",
+  right: "20px",
   width: "80px",
   height: "80px"
 };
 
+const pointStyleMobile = {
+  // position: "fixed",
+  // left: "85vw",
+  // top: window.innerHeight - window.innerHeight * 0.9,
+  position: "absolute",
+  top: "20px",
+  right: "20px",
+  width: "15vw",
+  height: "15vw"
+};
 
-const pointStyleMobile ={
-  
-      position : "fixed",
-      left : "85vw",
-      top : window.innerHeight - (window.innerHeight *0.90),
-      width : "15vw",
-      height : "15vw"
-}
+//Styling for Hide PoI Button
+const buttonStyle = {
+  position: "absolute",
+  bottom: "10px",
+  left: "50%",
+  transform: "translate(-50%, 0)",
+  padding: ".5rem 2rem"
+  // left: "5vw",
+  // top: window.innerHeight - window.innerHeight * 0.03
+};
+
+// const buttonStyleMobile = {
+//   position: "fixed",
+//   left: "1vw",
+//   top: window.innerHeight - window.innerHeight * 0.07
+// };
 
 /**
  * loadingElement: react element when loading google maps
@@ -82,18 +105,33 @@ const Map = compose(
       lat: parseFloat(process.env.REACT_APP_UWA_LAT),
       lng: parseFloat(process.env.REACT_APP_UWA_LNG)
     }}
-    defaultOptions={{ styles: retroStyles, disableDefaultUI: true }}
+    options={
+      props.isMarkerShown
+        ? {
+            styles: retroStyles,
+            disableDefaultUI: true,
+            mapTypeId: "roadmap",
+            zoomControl: true
+          }
+        : {
+            styles: [],
+            disableDefaultUI: false,
+            fullscreenControl: false,
+            streetViewControl: false,
+            mapTypeControlOptions: { mapTypeIds: ["roadmap", "satellite"] }
+          }
+    }
     center={{
       lat: props.mapCenter.lat,
       lng: props.mapCenter.lng
     }}
   >
-    {props.isMarkerShown && (   //This section relates to displaying of PoI Markers
+    {props.isMarkerShown && ( //This section relates to displaying of PoI Markers
       <Fragment>
         {props.POIList.map(marker => (
           <Marker
-            opacity = {0.8}
-            icon = {poiIcon}
+            opacity={0.8}
+            icon={poiIcon}
             key={marker._id}
             position={{
               lat: marker.location.latitude,
@@ -107,15 +145,29 @@ const Map = compose(
       </Fragment>
     )}
 
+    <Button
+      color="primary"
+      size="sm"
+      style={buttonStyle}
+      onClick={props.onButtonClick}
+    >
+      {props.isMarkerShown ? "Hide Markers" : "Show Markers"}
+    </Button>
+
     <Marker //Seperate userLocation from PoI markers.
       icon={userMarker}
-      zIndex = {10}
+      zIndex={10}
       position={{
         lat: props.currentLocation.lat,
         lng: props.currentLocation.lng
       }}
     />
-     <img src={northPoint} style= {(window.innerWidth > 760) ? pointStyleWeb : pointStyleMobile} alt="NorthPointer"/>
+    <img
+      className="northPoint"
+      src={northPoint}
+      style={window.innerWidth > 760 ? pointStyleWeb : pointStyleMobile}
+      alt="NorthPointer"
+    />
   </GoogleMap>
 ));
 
