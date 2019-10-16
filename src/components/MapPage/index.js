@@ -113,8 +113,6 @@ class MapPage extends Component {
     );
   };
 
-
-
   componentDidUpdate() {
     if (navigator.geolocation) {
       navigator.geolocation.watchPosition(
@@ -224,6 +222,10 @@ class MapPage extends Component {
                 padding: 0
               }}
             >
+              <a href="/about" className="title">
+                <h1 className="name">UWAHS Campus Map</h1>
+                <p>About</p>
+              </a>
               <Map
                 isMarkerShown={isMarkerShown}
                 onMarkerClick={this.handleSelectPOI}
@@ -265,6 +267,22 @@ const style = (
       .sidebar {
         display: none;
       }
+    }
+    .title {
+      position: absolute;
+      top: 10px;
+      left: 50%;
+      margin: 0 -50% 0 0;
+      transform: translate(-50%, 0);
+      text-align: center; 
+      color: black;
+      z-index: 1;
+    }
+    a:hover {
+      text-decoration: none;
+    }
+    .name {
+      font-size: 30px;
     }
   `}</style>
 );
