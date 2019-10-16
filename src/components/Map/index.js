@@ -57,17 +57,17 @@ const pointStyleMobile = {
 };
 
 //Styling for Hide PoI Button
-const greaterButton = {
+const buttonStyle = {
   padding: ".5rem 0rem",
   fontWeight: "500",
   fontSize: "1em"
 };
 
-const lesserButton = {
-  padding: ".2rem 0rem",
-  fontWeight: "500",
-  fontSize: "1em"
-};
+// const lesserButton = {
+//   padding: ".2rem 0rem",
+//   fontWeight: "500",
+//   fontSize: "1em"
+// };
 
 const buttonGroupStyle = {
   position: "absolute",
@@ -75,7 +75,7 @@ const buttonGroupStyle = {
   left: "50%",
   transform: "translate(-50%, 0)",
   padding: ".5rem 2rem",
-  width: "40%"
+  width: "60%"
 };
 
 const buttonGroupStyleMobile = {
@@ -168,15 +168,23 @@ const Map = compose(
       alt="NorthPointer"
     />
     <div
-      className="btn-group-vertical"
+      className="btn-group"
       style={
         window.innerWidth > 760 ? buttonGroupStyle : buttonGroupStyleMobile
       }
     >
       <Button
+        color="info"
+        size="sm"
+        style={buttonStyle}
+        onClick={props.onResetView}
+      >
+        Reset View
+      </Button>
+      <Button
         color="primary"
         size="sm"
-        style={greaterButton}
+        style={buttonStyle}
         onClick={props.onButtonClick}
       >
         {props.isMarkerShown ? "Hide Markers" : "Show Markers"}
@@ -184,15 +192,7 @@ const Map = compose(
       <Button
         color="info"
         size="sm"
-        style={lesserButton}
-        onClick={props.onResetView}
-      >
-        Reset View
-      </Button>
-      <Button
-        color="info"
-        size="sm"
-        style={lesserButton}
+        style={buttonStyle}
         onClick={props.onCenterOnMe}
       >
         My Location
