@@ -56,7 +56,7 @@ const pointStyleMobile = {
   // left: "85vw",
   // top: window.innerHeight - window.innerHeight * 0.9,
   position: "absolute",
-  top: "20px",
+  top: "60px",
   right: "20px",
   width: "15vw",
   height: "15vw"
@@ -68,22 +68,35 @@ const resetViewButton = {
   // top: window.innerHeight - window.innerHeight * 0.08,
   // width: "100px",
   // height: "2rem"
-  position: "absolute",
-  bottom: "10px",
-  left: "50%",
-  transform: "translate(-50%, 0)",
-  padding: ".5rem 2rem"
+  // position: "absolute",
+  // bottom: "10px",
+  // left: "50%",
+  // transform: "translate(-50%, 0)",
+  padding: ".5rem 0rem",
+  fontWeight: "500",
+  fontSize: "1em"
 };
 
 //Styling for Hide PoI Button
-const buttonStyle = {
-  position: "absolute",
-  bottom: "10px",
-  left: "50%",
-  transform: "translate(-50%, 0)",
-  padding: ".5rem 2rem"
+const hidePOIButton = {
+  // position: "absolute",
+  // bottom: "10px",
+  // left: "50%",
+  // transform: "translate(-50%, 0)",
+  padding: "1rem 0rem",
+  fontWeight: "500",
+  fontSize: "1em"
   // left: "5vw",
   // top: window.innerHeight - window.innerHeight * 0.03
+};
+
+const buttonGroupStyle = {
+  position: "absolute",
+  bottom: "14px",
+  left: "50%",
+  transform: "translate(-50%, 0)",
+  padding: ".5rem 2rem",
+  width: "60%"
 };
 
 // const resetViewButtonMobile = {
@@ -178,15 +191,6 @@ const Map = compose(
       </Fragment>
     )}
 
-    <Button
-      color="primary"
-      size="sm"
-      style={buttonStyle}
-      onClick={props.onButtonClick}
-    >
-      {props.isMarkerShown ? "Hide Markers" : "Show Markers"}
-    </Button>
-
     <Marker //Seperate userLocation from PoI markers.
       icon={userMarker}
       zIndex={10}
@@ -201,14 +205,24 @@ const Map = compose(
       style={window.innerWidth > 760 ? pointStyleWeb : pointStyleMobile}
       alt="NorthPointer"
     />
-    <Button
-      color="info"
-      size="sm"
-      style={resetViewButton}
-      onClick={props.onResetView}
-    >
-      Reset View
-    </Button>
+    <div className="btn-group-vertical" style={buttonGroupStyle}>
+      <Button
+        color="primary"
+        size="sm"
+        style={hidePOIButton}
+        onClick={props.onButtonClick}
+      >
+        {props.isMarkerShown ? "Hide Markers" : "Show Markers"}
+      </Button>
+      <Button
+        color="info"
+        size="sm"
+        style={resetViewButton}
+        onClick={props.onResetView}
+      >
+        Reset View
+      </Button>
+    </div>
   </GoogleMap>
 ));
 
