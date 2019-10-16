@@ -96,7 +96,16 @@ const buttonGroupStyle = {
   left: "50%",
   transform: "translate(-50%, 0)",
   padding: ".5rem 2rem",
-  width: "60%"
+  width: "40%"
+};
+
+const buttonGroupStyleMobile = {
+  position: "absolute",
+  bottom: "14px",
+  left: "50%",
+  transform: "translate(-50%, 0)",
+  padding: ".5rem 2rem",
+  width: "80%"
 };
 
 // const resetViewButtonMobile = {
@@ -205,7 +214,12 @@ const Map = compose(
       style={window.innerWidth > 760 ? pointStyleWeb : pointStyleMobile}
       alt="NorthPointer"
     />
-    <div className="btn-group-vertical" style={buttonGroupStyle}>
+    <div
+      className="btn-group-vertical"
+      style={
+        window.innerWidth > 760 ? buttonGroupStyle : buttonGroupStyleMobile
+      }
+    >
       <Button
         color="primary"
         size="sm"
