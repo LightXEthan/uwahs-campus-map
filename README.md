@@ -5,6 +5,13 @@
 
 A web application for the UWA Historical Society. The app will use a map of the UWA Crawley Campus to orientate new students and utilise excerpts from the [UWAHS Oral Collection](https://www.web.uwa.edu.au/uwahs/oral-histories) in the History Mode.
 
+## Demo
+![User Demo](https://github.com/LightXEthan/uwahs-campus-map/blob/docs/demos/demo/mainDemoUser.gif)
+The user can look around the map and view points of interest. Points of interest can contain a description, images and oral histories.
+
+![Admin Demo](https://github.com/LightXEthan/uwahs-campus-map/blob/docs/demos/demo/demoMainAdmin.gif)
+The admins (UWAHS Volunteers) can add points of interest for the users.
+
 ## Meetings
 Find the meeting agendas and minutes at the [wiki](https://github.com/LightXEthan/uwahs-campus-map/wiki).
 
