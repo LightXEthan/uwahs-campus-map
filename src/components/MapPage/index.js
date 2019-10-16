@@ -31,8 +31,10 @@ class MapPage extends Component {
   }
 
   componentDidMount() {
+    // Delay showing markers for 3 seconds
     this.delayedShowMarker();
 
+    // Gets realtime list of poi from firestore for markers
     this.listener = this.props.firebase.pois().onSnapshot(
       snapshot => {
         let POIList = [];

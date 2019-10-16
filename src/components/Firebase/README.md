@@ -33,5 +33,5 @@
     
 *More data structures can be found in the documentation file that allows name,description,other to the image/audio*
 
-**Documentation file:**
-https://docs.google.com/document/d/1KBm7-WoN9Ej_YCd167hBMFTxSYeOZo-kPdkqS3dOfWc/edit?usp=sharing
+**Documentation**
+- [Development Docs](https://github.com/LightXEthan/uwahs-campus-map/wiki/Development-Documentation)

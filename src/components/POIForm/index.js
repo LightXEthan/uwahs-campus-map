@@ -21,25 +21,38 @@ class POIForm extends Component {
     this.state = { ...INITIAL_STATE };
   }
 
+  // Toggles the 'add new poi' modal
   toggleModal = () => {
     this.setState({
       isModalOpen: !this.state.isModalOpen
     });
   };
 
+  // Updates state when form input changes
   onChange = e => {
     this.setState({ [e.target.name]: e.target.value });
   };
 
+  // Updates state when form input changes for files
   onChangeFile = e => {
     if (e.target.files.length === 0) {
+      // Removes the file from state when canceling upload
       this.setState({ fileupload: null });
     }
     else {
+      // Adds the file to the state
       this.setState({ fileupload: e.target.files[0] });
     }
   };
 
+  /** When save button is pressed the below function will run
+   *  If no file
+   *    1. Updated poi data will be updated to firestore
+   *  If file is uploaded
+   *    1. The file is uploaded to firebase storage
+   *    2. A document is created in 'files' collection for the file
+   *    3. A document is added to the 'poi' collection for the poi
+   */
   onSubmit = e => {
     const { name, longitude, latitude, description, fileupload } = this.state;
 
