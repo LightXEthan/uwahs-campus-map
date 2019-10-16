@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import React, { Fragment, Component } from "react";
 import { compose, withProps } from "recompose";
 import dotenv from "dotenv";
 import { Spinner, Button } from "reactstrap";
@@ -87,6 +87,234 @@ const buttonGroupStyleMobile = {
   width: "80%"
 };
 
+class MapBase extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      zoomLvl: parseFloat(process.env.REACT_APP_UWA_ZOOM),
+      mapCenter: {
+        lat: parseFloat(process.env.REACT_APP_UWA_LAT),
+        lng: parseFloat(process.env.REACT_APP_UWA_LNG)
+      },
+      currentLoc: {
+        lat: 0,
+        lng: 0
+      },
+      selectedPOI: null
+    };
+  }
+
+  componentDidMount() {
+    // this.delayedShowMarker();
+  }
+
+  componentDidUpdate() {
+    if (navigator.geolocation) {
+      navigator.geolocation.watchPosition(
+        position => {
+          if (position.coords) {
+            this.setState(prevState => ({
+              currentLoc: {
+                ...prevState.currentLoc,
+                lat: position.coords.latitude,
+                lng: position.coords.longitude
+              }
+            }));
+          } else {
+            alert("GeoLocation is not supported by this browser.");
+          }
+        },
+        error => {
+          let msg = null;
+          switch (error.code) {
+            case error.PERMISSION_DENIED:
+              msg = "User denied the request for Geolocation.";
+              break;
+            case error.POSITION_UNAVAILABLE:
+              msg = "Location information is unavailable.";
+              break;
+            case error.TIMEOUT:
+              msg = "The request to get user location timed out.";
+              break;
+            default:
+              msg = "An unknown error occurred.";
+              break;
+          }
+          alert(msg);
+        },
+        {
+          enableHighAccuracy: false,
+          // timeout: 10000,
+          maximumAge: 0
+        }
+      );
+    } else {
+      alert("GeoLocation is not supported by this browser.");
+    }
+  }
+
+  componentWillReceiveProps(nextProps) {
+    this.setState({
+      selectedPOI: nextProps.selectedPOI
+    });
+
+    if (nextProps.selectedPOI === null) {
+      this.handleResetView();
+    } else {
+      nextProps.selectedPOI && this.handleMoveToMarker(nextProps.selectedPOI);
+    }
+  }
+
+  handleCenterChanged = () => {
+    const center = this.refs.map.getCenter();
+    const mapCenter = { lat: center.lat(), lng: center.lng() };
+    if (JSON.stringify(mapCenter) !== JSON.stringify(this.state.mapCenter)) {
+      this.setState({ mapCenter });
+    }
+  };
+
+  handleZoomChanged = () => {
+    const zoomLvl = this.refs.map.getZoom();
+    if (JSON.stringify(zoomLvl) !== JSON.stringify(this.state.zoomLvl)) {
+      this.setState({ zoomLvl });
+    }
+  };
+
+  handleMoveToMarker = poi => {
+    this.refs.map.panTo({
+      lat: poi.location.latitude, //Lat value as specified in the env file
+      lng: poi.location.longitude
+    });
+    this.setState({
+      zoomLvl: parseFloat(process.env.REACT_APP_UWA_ZOOM) + 2
+    });
+  };
+
+  //Function regarding reseting the view when a button is pressed
+  handleResetView = () => {
+    this.refs.map.panTo({
+      lat: parseFloat(process.env.REACT_APP_UWA_LAT), //Lat value as specified in the env file
+      lng: parseFloat(process.env.REACT_APP_UWA_LNG) //Long value as specified in the env file
+    });
+    this.setState({ zoomLvl: parseFloat(process.env.REACT_APP_UWA_ZOOM) });
+  };
+
+  handleCenterOnMe = () => {
+    this.refs.map.panTo({
+      lat: this.state.currentLoc.lat,
+      lng: this.state.currentLoc.lng
+    });
+    this.setState({ zoomLvl: parseFloat(process.env.REACT_APP_UWA_ZOOM) });
+  };
+
+  render() {
+    const { zoomLvl, mapCenter, currentLoc } = this.state;
+    const {
+      POIList,
+      isMarkerShown,
+      onMarkerClick,
+      onPOIVisibility
+    } = this.props;
+
+    return (
+      <GoogleMap
+        defaultZoom={parseFloat(process.env.REACT_APP_UWA_ZOOM)}
+        defaultCenter={{
+          lat: parseFloat(process.env.REACT_APP_UWA_LAT),
+          lng: parseFloat(process.env.REACT_APP_UWA_LNG)
+        }}
+        zoom={zoomLvl}
+        center={mapCenter}
+        onCenterChanged={this.handleCenterChanged}
+        onZoomChanged={this.handleZoomChanged}
+        ref="map"
+        options={
+          isMarkerShown
+            ? {
+                styles: retroStyles,
+                disableDefaultUI: true,
+                mapTypeId: "roadmap",
+                zoomControl: true
+              }
+            : {
+                styles: [],
+                disableDefaultUI: false,
+                fullscreenControl: false,
+                streetViewControl: false,
+                mapTypeControlOptions: { mapTypeIds: ["roadmap", "satellite"] }
+              }
+        }
+      >
+        {isMarkerShown && ( //This section relates to displaying of PoI Markers
+          <Fragment>
+            {POIList.map(marker => (
+              <Marker
+                opacity={0.8}
+                icon={poiIcon}
+                key={marker._id}
+                position={{
+                  lat: marker.location.latitude,
+                  lng: marker.location.longitude
+                }}
+                onClick={() => {
+                  onMarkerClick(marker);
+                }}
+              />
+            ))}
+          </Fragment>
+        )}
+
+        <Marker //Seperate userLocation from PoI markers.
+          icon={userMarker}
+          zIndex={10}
+          position={{
+            lat: currentLoc.lat,
+            lng: currentLoc.lng
+          }}
+        />
+        <img
+          className="northPoint"
+          src={northPoint}
+          style={window.innerWidth > 760 ? pointStyleWeb : pointStyleMobile}
+          alt="NorthPointer"
+        />
+        <div
+          className="btn-group"
+          style={
+            window.innerWidth > 760 ? buttonGroupStyle : buttonGroupStyleMobile
+          }
+        >
+          <Button
+            color="info"
+            size="sm"
+            style={buttonStyle}
+            onClick={this.handleResetView}
+          >
+            Reset View
+          </Button>
+          <Button
+            color="primary"
+            size="sm"
+            style={buttonStyle}
+            onClick={onPOIVisibility}
+          >
+            {isMarkerShown ? "Hide Markers" : "Show Markers"}
+          </Button>
+          <Button
+            color="info"
+            size="sm"
+            style={buttonStyle}
+            onClick={this.handleCenterOnMe}
+          >
+            My Location
+          </Button>
+        </div>
+      </GoogleMap>
+    );
+  }
+}
+
 /**
  * loadingElement: react element when loading google maps
  * containerElement: container... set to window height - height of header
@@ -106,99 +334,6 @@ const Map = compose(
   }),
   withScriptjs,
   withGoogleMap
-)(props => (
-  <GoogleMap
-    defaultZoom={parseFloat(process.env.REACT_APP_UWA_ZOOM)}
-    defaultCenter={{
-      lat: parseFloat(process.env.REACT_APP_UWA_LAT),
-      lng: parseFloat(process.env.REACT_APP_UWA_LNG)
-    }}
-    options={
-      props.isMarkerShown
-        ? {
-            styles: retroStyles,
-            disableDefaultUI: true,
-            mapTypeId: "roadmap",
-            zoomControl: true
-          }
-        : {
-            styles: [],
-            disableDefaultUI: false,
-            fullscreenControl: false,
-            streetViewControl: false,
-            mapTypeControlOptions: { mapTypeIds: ["roadmap", "satellite"] }
-          }
-    }
-    center={{
-      lat: props.mapCenter.lat,
-      lng: props.mapCenter.lng
-    }}
-  >
-    {props.isMarkerShown && ( //This section relates to displaying of PoI Markers
-      <Fragment>
-        {props.POIList.map(marker => (
-          <Marker
-            opacity={0.8}
-            icon={poiIcon}
-            key={marker._id}
-            position={{
-              lat: marker.location.latitude,
-              lng: marker.location.longitude
-            }}
-            onClick={() => {
-              props.onMarkerClick(marker);
-            }}
-          />
-        ))}
-      </Fragment>
-    )}
-
-    <Marker //Seperate userLocation from PoI markers.
-      icon={userMarker}
-      zIndex={10}
-      position={{
-        lat: props.currentLocation.lat,
-        lng: props.currentLocation.lng
-      }}
-    />
-    <img
-      className="northPoint"
-      src={northPoint}
-      style={window.innerWidth > 760 ? pointStyleWeb : pointStyleMobile}
-      alt="NorthPointer"
-    />
-    <div
-      className="btn-group"
-      style={
-        window.innerWidth > 760 ? buttonGroupStyle : buttonGroupStyleMobile
-      }
-    >
-      <Button
-        color="info"
-        size="sm"
-        style={buttonStyle}
-        onClick={props.onResetView}
-      >
-        Reset View
-      </Button>
-      <Button
-        color="primary"
-        size="sm"
-        style={buttonStyle}
-        onClick={props.onButtonClick}
-      >
-        {props.isMarkerShown ? "Hide Markers" : "Show Markers"}
-      </Button>
-      <Button
-        color="info"
-        size="sm"
-        style={buttonStyle}
-        onClick={props.onCenterOnMe}
-      >
-        My Location
-      </Button>
-    </div>
-  </GoogleMap>
-));
+)(MapBase);
 
 export default Map;
