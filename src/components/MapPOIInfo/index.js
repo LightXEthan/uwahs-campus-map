@@ -86,6 +86,15 @@ const MapPOIInfo = props => {
           <hr style={{ marginTop: "1.8rem" }} />
           <Row noGutters>
             <Col>
+              <h4 className="header">About {poi.name}</h4>
+              {poi.description === "" || poi.description === undefined //TODO: for dev only
+                ? "There is no description for this point at the moment."
+                : poi.description}
+            </Col>
+          </Row>
+          <hr />
+          <Row noGutters>
+            <Col>
               <h4 className="header">Oral History Excerpts</h4>
 
               {poi.audioArray.length === 0
@@ -108,15 +117,6 @@ const MapPOIInfo = props => {
                       </>
                     );
                   })}
-            </Col>
-          </Row>
-          <hr />
-          <Row noGutters>
-            <Col>
-              <h4 className="header">About {poi.name}</h4>
-              {poi.description === "" || poi.description === undefined //TODO: for dev only
-                ? "There is no description for this point at the moment."
-                : poi.description}
             </Col>
           </Row>
         </ModalBody>
