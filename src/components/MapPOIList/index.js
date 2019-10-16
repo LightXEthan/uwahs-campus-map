@@ -72,8 +72,9 @@ class MapPOIList extends Component {
           style={{ overflow: "auto", height: `${window.innerHeight - 56}px` }}
         >
           {this.state.searchRes.map(poiitem => (
-            <ListGroupItem key={poiitem._id}>
+            <div className="btn-group-vertical">
               <Button
+                className="listButton"
                 key={poiitem._id}
                 color="link"
                 onClick={() => {
@@ -82,7 +83,7 @@ class MapPOIList extends Component {
               >
                 {poiitem.name}
               </Button>
-            </ListGroupItem>
+            </div>
           ))}
         </ListGroup>
       </>
@@ -129,9 +130,19 @@ const style = (
       margin: 0;
       height: 100%;
       width: 2.67em;
-      opacity: .5;
+      opacity: .7;
       font-size: 25px;
       height: 25px;
+    }
+
+    .listButton {
+      padding: .5rem .75rem;
+      color: black;
+    }
+
+    .listButton:hover {
+      background-color: #f3f2f2;
+      text-decoration: none;
     }
   `}
   </style>

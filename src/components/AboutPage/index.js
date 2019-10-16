@@ -12,19 +12,39 @@ const AboutPage = () => (
     </Button>
     <Container>
       <Row>
-        <Col style={{ textAlign: "center", marginBottom: "120px" }}>
+        <Col className="content">
           <div className="title">
             <h1>UWA Historical Society Campus Map</h1>
           </div>
           <h2>About</h2>
-          <p>description ladida</p>
+          <p>
+            This app was built for the UWA Historical Society as a project for
+            <a href="http://teaching.csse.uwa.edu.au/units/CITS3200/">
+              CITS3200 Professional Computing
+            </a>
+            2019.
+          </p>
+          <h2>Group 23</h2>
+          <ul style={{ listStyleType: "none", padding: 0 }}>
+            <li>
+              <a href="https://github.com/LightXEthan">Ethan Li-Ming Chin</a>
+            </li>
+            <li>
+              <a href="https://github.com/Elenaires">Huey Charn Lee</a>
+            </li>
+            <li>
+              <a href="https://github.com/JKKim98">Jong Kyung Kim</a>
+            </li>
+            <li>
+              <a href="https://github.com/JMu55">Joshua Richard Mussell</a>
+            </li>
+            <li>
+              <a href="https://github.com/BologneseBandit">Tomas James Mijat</a>
+            </li>
+          </ul>
           <h2>Acknowledgements</h2>
           <ul style={{ listStyleType: "none", padding: 0 }}>
-            <li>Name</li>
-            <li>Name</li>
-            <li>Name</li>
-            <li>Name</li>
-            <li>Name</li>
+            <li>Arian Nevjestic - Mentor, Microsoft</li>
           </ul>
           <h2>Contribute</h2>
           <p>
@@ -38,8 +58,15 @@ const AboutPage = () => (
             </a>
             .
           </p>
+          <h2>QR Code</h2>
+          <p style={{ marginBottom: 0 }}>
+            <a href="https://firebasestorage.googleapis.com/v0/b/uwacampusmap-eed18.appspot.com/o/adminguides%2Fqr-code.png?alt=media&token=aa53ab85-b0c6-4e72-bb88-fc9d09b28630">
+              QR Code download link
+            </a>
+          </p>
+          <img src="https://firebasestorage.googleapis.com/v0/b/uwacampusmap-eed18.appspot.com/o/adminguides%2Fqr-code.png?alt=media&token=aa53ab85-b0c6-4e72-bb88-fc9d09b28630" />
           <h2>Copyright</h2>
-          <p>copyright mumbo jumbo</p>
+          <p>copyright stuff</p>
         </Col>
       </Row>
     </Container>
@@ -62,6 +89,13 @@ const style = (
     .button-text {
       margin: 30px 0 !important;
     }
+    .content {
+      margin-bottom: 120px;
+    }
+  }
+  .content {
+    text-align: center;
+    margin-bottom: 60px;
   }
   .back-button {
     position: fixed;
@@ -80,7 +114,7 @@ const style = (
   }
   .title {
     word-wrap: break-word;
-    margin: 30px 0;
+    margin: 20px 0;
   }
   .github-icon {
     margin: 0 5px;
