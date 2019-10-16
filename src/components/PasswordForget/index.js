@@ -1,6 +1,5 @@
 import React, { Component, Fragment } from "react";
-import { withRouter } from "react-router-dom";
-import { Card, CardTitle, Container, Row, Button, Form, FormGroup, Label, Input, Col } from 'reactstrap';
+import { Card, CardTitle, Container, Row, Button, Form, FormGroup, Input, Col } from 'reactstrap';
 import { Link } from "react-router-dom";
 
 import { withFirebase } from "../Firebase";

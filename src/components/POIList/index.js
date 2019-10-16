@@ -1,5 +1,5 @@
 import React, { Component, Fragment } from "react";
-import { ListGroup, ListGroupItem, Col, Button, Span } from "reactstrap";
+import { ListGroup, ListGroupItem } from "reactstrap";
 import { withFirebase } from "../Firebase";
 
 import POIEditForm from "../POIEditForm";
@@ -36,7 +36,8 @@ class POIList extends Component {
         });
       },
       error => {
-        // TODO: set error state and display error as alert
+        console.log(error);
+        alert("Error: unable to load points of interest");
       }
     );
   }
@@ -48,7 +49,7 @@ class POIList extends Component {
   render() {
     const { loading, poilist } = this.state;
 
-    // filter POI list based on search input
+    // filters POI list based on search input
     let filteredPois = poilist.filter(
       (poi) => {
         return poi.name.toLowerCase().startsWith(this.props.searchTerm.toLowerCase()) !== false;
@@ -62,8 +63,6 @@ class POIList extends Component {
         ) : poilist.length > 0 ? (
           <ListGroup flush>
             {filteredPois.map(poi => (
-              // add the below to ListGroupItem to align edit pencil to the right
-              //className="d-flex justify-content-between align-items-center"
               <ListGroupItem key={poi._id} action>
                   name: {poi.name},
                   latitude: {poi.location.latitude},
