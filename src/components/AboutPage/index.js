@@ -18,10 +18,10 @@ const AboutPage = () => (
           </div>
           <h2>About</h2>
           <p>
-            This app was built for the UWA Historical Society as a project for
+            This app was built for the UWA Historical Society as a project for&nbsp; 
             <a href="http://teaching.csse.uwa.edu.au/units/CITS3200/">
-              CITS3200 Professional Computing
-            </a>
+              CITS3200 Professional Computing&nbsp; 
+            </a> 
             2019.
           </p>
           <h2>Group 23</h2>
