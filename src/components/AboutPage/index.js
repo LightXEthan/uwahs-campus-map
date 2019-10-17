@@ -65,8 +65,8 @@ const AboutPage = () => (
             </a>
           </p>
           <img alt="" src="https://github.com/LightXEthan/uwahs-campus-map/blob/docs/demos/demo/qr-code.png?raw=true" />
-          <h2>Copyright</h2>
-          <p>copyright stuff</p>
+          <h2>Credit</h2>
+          <p>Credit stuff</p>
         </Col>
       </Row>
     </Container>
