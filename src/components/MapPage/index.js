@@ -13,7 +13,7 @@ class MapPage extends Component {
     super(props);
 
     this.state = {
-      isMarkerShown: false,
+      isMarkerShown: true,
       currentLatLng: {
         lat: 0,
         lng: 0
@@ -24,7 +24,7 @@ class MapPage extends Component {
         lat: parseFloat(process.env.REACT_APP_UWA_LAT),
         lng: parseFloat(process.env.REACT_APP_UWA_LNG)
       },
-      mapZoom: 16,
+      mapZoom: parseFloat(process.env.REACT_APP_UWA_ZOOM),
       selectedPOI: null,
       modal: false
     };
@@ -32,7 +32,7 @@ class MapPage extends Component {
 
   componentDidMount() {
     // Delay showing markers for 3 seconds
-    this.delayedShowMarker();
+    // this.delayedShowMarker();
 
     // Gets realtime list of poi from firestore for markers
     this.listener = this.props.firebase.pois().onSnapshot(
@@ -104,79 +104,79 @@ class MapPage extends Component {
   */
 
   //Function regarding reseting the view when a button is pressed
-  resetView = () => {
-    this.setState(() => ({
-      mapCenter: {
-        lat: parseFloat(process.env.REACT_APP_UWA_LAT), //Lat value as specified in the env file
-        lng: parseFloat(process.env.REACT_APP_UWA_LNG) //Long value as specified in the env file
-      }
-    }));
-  };
+  // resetView = () => {
+  //   this.setState(() => ({
+  //     mapCenter: {
+  //       lat: parseFloat(process.env.REACT_APP_UWA_LAT), //Lat value as specified in the env file
+  //       lng: parseFloat(process.env.REACT_APP_UWA_LNG) //Long value as specified in the env file
+  //     }
+  //   }));
+  // };
 
-  handleCenterOnMe = () => {
-    this.setState(() => ({
-      mapCenter: {
-        lat: this.state.currentLatLng.lat,
-        lng: this.state.currentLatLng.lng
-      }
-    }));
-  };
+  // handleCenterOnMe = () => {
+  //   this.setState(() => ({
+  //     mapCenter: {
+  //       lat: this.state.currentLatLng.lat,
+  //       lng: this.state.currentLatLng.lng
+  //     }
+  //   }));
+  // };
 
-  componentDidUpdate() {
-    if (navigator.geolocation) {
-      navigator.geolocation.watchPosition(
-        position => {
-          if (position.coords) {
-            this.setState(prevState => ({
-              currentLatLng: {
-                ...prevState.currentLatLng,
-                lat: position.coords.latitude,
-                lng: position.coords.longitude
-              }
-            }));
-          } else {
-            alert("GeoLocation is not supported by this browser.");
-          }
-        },
-        error => {
-          let msg = null;
-          switch (error.code) {
-            case error.PERMISSION_DENIED:
-              msg = "User denied the request for Geolocation.";
-              break;
-            case error.POSITION_UNAVAILABLE:
-              msg = "Location information is unavailable.";
-              break;
-            case error.TIMEOUT:
-              msg = "The request to get user location timed out.";
-              break;
-            default:
-              msg = "An unknown error occurred.";
-              break;
-          }
-          alert(msg);
-        },
-        {
-          enableHighAccuracy: false,
-          // timeout: 10000,
-          maximumAge: 0
-        }
-      );
-    } else {
-      alert("GeoLocation is not supported by this browser.");
-    }
-  }
+  // componentDidUpdate() {
+  //   if (navigator.geolocation) {
+  //     navigator.geolocation.watchPosition(
+  //       position => {
+  //         if (position.coords) {
+  //           this.setState(prevState => ({
+  //             currentLatLng: {
+  //               ...prevState.currentLatLng,
+  //               lat: position.coords.latitude,
+  //               lng: position.coords.longitude
+  //             }
+  //           }));
+  //         } else {
+  //           alert("GeoLocation is not supported by this browser.");
+  //         }
+  //       },
+  //       error => {
+  //         let msg = null;
+  //         switch (error.code) {
+  //           case error.PERMISSION_DENIED:
+  //             msg = "User denied the request for Geolocation.";
+  //             break;
+  //           case error.POSITION_UNAVAILABLE:
+  //             msg = "Location information is unavailable.";
+  //             break;
+  //           case error.TIMEOUT:
+  //             msg = "The request to get user location timed out.";
+  //             break;
+  //           default:
+  //             msg = "An unknown error occurred.";
+  //             break;
+  //         }
+  //         alert(msg);
+  //       },
+  //       {
+  //         enableHighAccuracy: false,
+  //         // timeout: 10000,
+  //         maximumAge: 0
+  //       }
+  //     );
+  //   } else {
+  //     alert("GeoLocation is not supported by this browser.");
+  //   }
+  // }
 
   componentWillUnmount() {
     this.listener();
     this.filelistener();
   }
 
-  delayedShowMarker = () => {
-    setTimeout(() => {
-      this.setState({ isMarkerShown: true });
-    }, 3000);
-  };
+  // delayedShowMarker = () => {
+  //   setTimeout(() => {
+  //     this.setState({ isMarkerShown: true });
+  //   }, 3000);
+  // };
 
   handleDeselect = () => {
     this.setState((state, props) => ({
@@ -199,14 +199,14 @@ class MapPage extends Component {
           this.setState((state, props) => ({
             modal: !state.modal
           }));
-        }, 400);
+        }, 1000);
       }
     );
   };
 
   //This function relates to the showing/hiding of PoI Markers
 
-  handleShowPOI = () => {
+  handlePOIVisibility = () => {
     this.setState((state, props) => ({
       isMarkerShown: !state.isMarkerShown
     }));
@@ -245,14 +245,15 @@ class MapPage extends Component {
               </a>
               <Map
                 isMarkerShown={isMarkerShown}
-                onButtonClick={this.handleShowPOI}
+                onPOIVisibility={this.handlePOIVisibility}
                 onMarkerClick={this.handleSelectPOI}
-                onResetView={this.resetView}
-                onCenterOnMe={this.handleCenterOnMe}
-                currentLocation={currentLatLng}
+                // onResetView={this.resetView}
+                // onCenterOnMe={this.handleCenterOnMe}
+                // currentLocation={currentLatLng}
                 mapCenter={mapCenter}
-                zoom={mapZoom}
+                // zoom={mapZoom}
                 POIList={POIList}
+                selectedPOI={selectedPOI}
               />
             </Col>
             <Col
