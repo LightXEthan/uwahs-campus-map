@@ -238,11 +238,11 @@ class MapBase extends Component {
                 zoomControl: true
               }
             : {
-                styles: [],
+                styles: retroLabels,
                 disableDefaultUI: false,
                 fullscreenControl: false,
                 streetViewControl: false,
-                mapTypeControlOptions: { mapTypeIds: ["roadmap", "satellite"] }
+                mapTypeControl: false
               }
         }
       >
