@@ -1,13 +1,5 @@
 [
   {
-    "elementType": "geometry",
-    "stylers": [
-      {
-        "color": "#ebe3cd"
-      }
-    ]
-  },
-  {
     "elementType": "labels",
     "stylers": [
       {
@@ -75,6 +67,15 @@
     ]
   },
   {
+    "featureType": "landscape.man_made",
+    "elementType": "geometry",
+    "stylers": [
+      {
+        "color": "#ebe3cd"
+      }
+    ]
+  },
+  {
     "featureType": "landscape.natural",
     "elementType": "geometry",
     "stylers": [
@@ -106,12 +107,48 @@
     "elementType": "geometry.fill",
     "stylers": [
       {
-        "color": "#a5b076"
+        "color": "#c5d190"
       }
     ]
   },
   {
     "featureType": "poi.park",
+    "elementType": "labels.text.fill",
+    "stylers": [
+      {
+        "color": "#447530"
+      }
+    ]
+  },
+  {
+    "featureType": "poi.business",
+    "elementType": "geometry.fill",
+    "stylers": [
+      {
+        "color": "#c5d190"
+      }
+    ]
+  },
+  {
+    "featureType": "poi.business",
+    "elementType": "labels.text.fill",
+    "stylers": [
+      {
+        "color": "#447530"
+      }
+    ]
+  },
+  {
+    "featureType": "poi.sports_complex",
+    "elementType": "geometry.fill",
+    "stylers": [
+      {
+        "color": "#c5d190"
+      }
+    ]
+  },
+  {
+    "featureType": "poi.sports_complex",
     "elementType": "labels.text.fill",
     "stylers": [
       {
